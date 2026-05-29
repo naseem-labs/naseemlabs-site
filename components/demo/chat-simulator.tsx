@@ -28,6 +28,17 @@ const GREEN = "#16a34a";
 const CHAT_BG_PATTERN =
   "url(\"data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d9d0c3' fill-opacity='0.18'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E\")";
 
+const CONNECTION_ERROR = "Sorry, connection issue. Please try again.";
+
+function getOrCreateSessionId(): string {
+  let id = localStorage.getItem("naseem_preet_id");
+  if (!id) {
+    id = "nsm_" + Math.random().toString(36).slice(2, 11);
+    localStorage.setItem("naseem_preet_id", id);
+  }
+  return id;
+}
+
 function formatTime() {
   return new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -89,12 +100,7 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let id = localStorage.getItem("naseem_preet_id");
-    if (!id) {
-      id = "nsm_" + Math.random().toString(36).slice(2, 11);
-      localStorage.setItem("naseem_preet_id", id);
-    }
-    sessionRef.current = id;
+    sessionRef.current = getOrCreateSessionId();
   }, []);
 
   const scrollToBottom = useCallback((smooth = true) => {
@@ -153,6 +159,13 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
     [appendMessage]
   );
 
+  const showConnectionError = useCallback(async () => {
+    setStatus("typing");
+    await new Promise((r) => setTimeout(r, typingDelay(CONNECTION_ERROR)));
+    appendMessage({ type: "incoming", text: CONNECTION_ERROR });
+    setStatus("online");
+  }, [appendMessage]);
+
   const sendMessage = useCallback(
     async (manualText?: string, file?: File) => {
       let msg = (manualText ?? input).trim();
@@ -173,8 +186,9 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
       inputRef.current?.focus();
       setStatus("typing");
 
-      const fallbackReply =
-        "Thanks for your message — I'm looking at this now.|||Can you share a bit more detail so I can guide you properly?";
+      if (!sessionRef.current && typeof window !== "undefined") {
+        sessionRef.current = getOrCreateSessionId();
+      }
 
       try {
         const res = await fetch(N8N_DEMO_URL, {
@@ -188,23 +202,33 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
           }),
         });
 
+        if (!res.ok) {
+          await showConnectionError();
+          return;
+        }
+
         let reply = "";
         const raw = await res.text();
         if (raw) {
           try {
             const data = JSON.parse(raw) as { reply?: string };
-            if (data?.reply) reply = String(data.reply);
+            if (data?.reply != null) reply = String(data.reply);
           } catch {
             reply = raw.trim();
           }
         }
-        if (!reply) reply = fallbackReply;
+
+        if (!reply.trim()) {
+          await showConnectionError();
+          return;
+        }
 
         await playIncomingReplies(reply);
       } catch {
-        await playIncomingReplies(fallbackReply);
+        await showConnectionError();
       } finally {
         setSending(false);
+        inputRef.current?.focus();
       }
     },
     [appendMessage, input, playIncomingReplies, scenarioId, sending]
@@ -246,7 +270,7 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
           <p className="text-[10px] opacity-90">
             {status === "typing" ? (
               <span className="flex items-center gap-1.5">
-                Preet is typing… <TypingDots />
+                Preet is typing... <TypingDots />
               </span>
             ) : (
               "Online"

@@ -26,7 +26,7 @@ function incoming(text: string): ChatMessage {
   return { id: crypto.randomUUID(), type: "incoming", text, time: ts() };
 }
 
-export const N8N_DEMO_URL = "https://api.naseemlabs.com/webhook/preet-web-demo";
+export const N8N_DEMO_URL = "https://vps.naseemlabs.com/webhook/preet-web-demo";
 
 export const DEMO_SCENARIOS: DemoScenario[] = [
   {
