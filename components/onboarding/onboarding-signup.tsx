@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Shield } from "lucide-react";
 
@@ -11,7 +11,28 @@ const FB_BLUE = "#0866ff";
 const FB_BLUE_HOVER = "#0654d4";
 
 const FB_APP_ID = "1441438130621249";
-const FB_VERSION = "v22.0";
+const FB_VERSION = "v25.0";
+const FB_CONFIG_ID = "1703604087528258";
+
+type EmbeddedSignupMessage = {
+  type?: string;
+  event?: string;
+  data?: {
+    phone_number_id?: string;
+    waba_id?: string;
+    business_id?: string;
+    current_step?: string;
+    error_message?: string;
+    error_code?: string;
+  };
+};
+
+type OnboardingAssets = {
+  authorizationCode: string | null;
+  wabaId: string | null;
+  phoneNumberId: string | null;
+  businessId: string | null;
+};
 
 declare global {
   interface Window {
@@ -19,8 +40,7 @@ declare global {
       init: (params: Record<string, unknown>) => void;
       login: (
         callback: (response: {
-          status?: string;
-          authResponse?: { accessToken?: string };
+          authResponse?: { code?: string };
         }) => void,
         options: Record<string, unknown>
       ) => void;
@@ -40,16 +60,16 @@ function loadFacebookSdk() {
     try {
       window.FB?.init({
         appId: FB_APP_ID,
-        cookie: true,
-        xfbml: false,
+        autoLogAppEvents: true,
+        xfbml: true,
         version: FB_VERSION,
       });
       window.__fbSdkInitialized = true;
       console.log("[Naseem Labs Onboarding] FB.init succeeded", {
         appId: FB_APP_ID,
         version: FB_VERSION,
-        xfbml: false,
-        cookie: true,
+        autoLogAppEvents: true,
+        xfbml: true,
       });
     } catch (err) {
       console.error("[Naseem Labs Onboarding] FB.init threw an error:", err);
@@ -71,39 +91,50 @@ function loadFacebookSdk() {
   document.body.appendChild(script);
 }
 
-function launchWhatsAppSignup() {
-  if (typeof window.FB === "undefined") {
-    console.error("[Naseem Labs] Facebook SDK is not loaded yet.");
-    alert("Facebook SDK is loading... please try again in 2 seconds.");
-    return;
-  }
-
-  console.log("[Naseem Labs] Triggering Embedded Signup Flow...");
-
-  window.FB.login(
-    function (response) {
-      console.log("[Naseem Labs] FB.login response:", response);
-      if (response?.status === "connected" && response.authResponse) {
-        console.log("[Naseem Labs] Success! Access Token:", response.authResponse.accessToken);
-        alert("Success! Your business is now linked to Naseem Labs AI.");
-      } else {
-        console.warn("[Naseem Labs] Login cancelled or not fully authorized.");
-      }
-    },
-    {
-      scope:
-        "business_management,whatsapp_business_management,whatsapp_business_messaging",
-      extras: {
-        feature: "whatsapp_embedded_signup",
-        setup_handler: function (data: unknown) {
-          console.log("[Naseem Labs] Embedded Signup setup data:", data);
-        },
-      },
-    }
-  );
-}
-
 export default function OnboardingSignup() {
+  const [assets, setAssets] = useState<OnboardingAssets>({
+    authorizationCode: null,
+    wabaId: null,
+    phoneNumberId: null,
+    businessId: null,
+  });
+
+  const fbLoginCallback = useCallback((response: { authResponse?: { code?: string } }) => {
+    if (response.authResponse) {
+      const code = response.authResponse.code;
+      console.log("[Naseem Labs Onboarding] response (authorization code):", code);
+      setAssets((prev) => ({ ...prev, authorizationCode: code ?? null }));
+    } else {
+      console.log("[Naseem Labs Onboarding] response:", response);
+    }
+  }, []);
+
+  const launchWhatsAppSignup = useCallback(() => {
+    if (typeof window.FB === "undefined") {
+      console.error("[Naseem Labs Onboarding] Facebook SDK is not loaded yet.");
+      alert("Facebook SDK is loading... please try again in 2 seconds.");
+      return;
+    }
+
+    if (!FB_CONFIG_ID) {
+      console.error(
+        "[Naseem Labs Onboarding] Missing configuration ID. Set NEXT_PUBLIC_FB_CONFIG_ID to your Facebook Login for Business configuration ID."
+      );
+      return;
+    }
+
+    console.log("[Naseem Labs Onboarding] Launching Embedded Signup v4...");
+
+    window.FB.login(fbLoginCallback, {
+      config_id: FB_CONFIG_ID,
+      response_type: "code",
+      override_default_response_type: true,
+      extras: {
+        setup: {},
+      },
+    });
+  }, [fbLoginCallback]);
+
   useEffect(() => {
     if (window.location.protocol === "file:") {
       console.warn(
@@ -112,6 +143,37 @@ export default function OnboardingSignup() {
     }
     loadFacebookSdk();
   }, []);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.origin.endsWith("facebook.com")) return;
+
+      try {
+        const data = JSON.parse(event.data as string) as EmbeddedSignupMessage;
+        if (data.type === "WA_EMBEDDED_SIGNUP") {
+          console.log("[Naseem Labs Onboarding] message event:", data);
+
+          if (data.data?.waba_id || data.data?.phone_number_id || data.data?.business_id) {
+            setAssets((prev) => ({
+              ...prev,
+              wabaId: data.data?.waba_id ?? prev.wabaId,
+              phoneNumberId: data.data?.phone_number_id ?? prev.phoneNumberId,
+              businessId: data.data?.business_id ?? prev.businessId,
+            }));
+          }
+        }
+      } catch {
+        console.log("[Naseem Labs Onboarding] message event:", event.data);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  useEffect(() => {
+    console.log("[Naseem Labs Onboarding] captured assets:", assets);
+  }, [assets]);
 
   return (
     <div className="w-full max-w-[460px] mx-auto min-w-0 flex flex-col gap-4">
