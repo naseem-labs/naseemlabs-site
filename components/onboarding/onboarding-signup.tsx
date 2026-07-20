@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { CheckCircle2, Shield } from "lucide-react";
 
 const TEXT = "#111111";
 const GREEN = "#16a34a";
@@ -175,6 +175,8 @@ export default function OnboardingSignup() {
     console.log("[Naseem Labs Onboarding] captured assets:", assets);
   }, [assets]);
 
+  const isConnected = Boolean(assets.businessId && assets.wabaId && assets.phoneNumberId);
+
   return (
     <div className="w-full max-w-[460px] mx-auto min-w-0 flex flex-col gap-4">
       <Link
@@ -185,50 +187,102 @@ export default function OnboardingSignup() {
         ← Back to Naseem Labs
       </Link>
 
-      <article
-        className="rounded-2xl border bg-white px-5 py-7 sm:px-8 sm:py-9 shadow-[0_2px_20px_rgba(0,0,0,0.06)] min-w-0"
-        style={{ borderColor: BORDER }}
-      >
-        <div
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.1em] uppercase mb-5"
-          style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+      {isConnected ? (
+        <article
+          className="rounded-2xl border bg-white px-5 py-7 sm:px-8 sm:py-9 shadow-[0_2px_20px_rgba(0,0,0,0.06)] min-w-0"
+          style={{ borderColor: BORDER }}
         >
-          <Shield className="w-3.5 h-3.5" strokeWidth={2} />
-          Embedded signup
-        </div>
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.1em] uppercase mb-5"
+            style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2} />
+            Connected
+          </div>
 
-        <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
-          Welcome to Naseem Labs AI Onboarding
-        </h1>
-        <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
-          Connect your WhatsApp Business Account to deploy your AI Agent.
-        </p>
+          <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
+            ✅ WhatsApp Connected Successfully
+          </h1>
+          <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
+            Your clinic has successfully connected to Naseem Labs.
+          </p>
 
-        <button
-          type="button"
-          onClick={launchWhatsAppSignup}
-          className="mt-7 w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl text-[15px] font-semibold text-white transition-colors min-h-[48px]"
-          style={{ backgroundColor: FB_BLUE }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = FB_BLUE_HOVER;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = FB_BLUE;
-          }}
+          <dl className="mt-7 space-y-4 text-[14px] sm:text-[15px] leading-[1.65]">
+            <div>
+              <dt className="font-medium text-[#111]">Business ID:</dt>
+              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
+                {assets.businessId}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-medium text-[#111]">WhatsApp Business Account ID:</dt>
+              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
+                {assets.wabaId}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-medium text-[#111]">Phone Number ID:</dt>
+              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
+                {assets.phoneNumberId}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-medium text-[#111]">Status:</dt>
+              <dd
+                className="mt-1.5 inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-semibold"
+                style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+              >
+                Ready for AI Automation
+              </dd>
+            </div>
+          </dl>
+        </article>
+      ) : (
+        <article
+          className="rounded-2xl border bg-white px-5 py-7 sm:px-8 sm:py-9 shadow-[0_2px_20px_rgba(0,0,0,0.06)] min-w-0"
+          style={{ borderColor: BORDER }}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-          </svg>
-          Login with Facebook
-        </button>
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.1em] uppercase mb-5"
+            style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+          >
+            <Shield className="w-3.5 h-3.5" strokeWidth={2} />
+            Embedded signup
+          </div>
 
-        <p className="mt-6 text-[12px] sm:text-[13px] leading-[1.6] text-[#888] text-center">
-          By continuing, you authorize Naseem Labs to access the permissions required for
-          WhatsApp Business onboarding. This page must be opened over{" "}
-          <strong className="font-semibold text-[#555]">HTTPS</strong> on a domain allowed in
-          your Meta app settings for Login to work.
-        </p>
-      </article>
+          <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
+            Welcome to Naseem Labs AI Onboarding
+          </h1>
+          <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
+            Connect your WhatsApp Business Account to deploy your AI Agent.
+          </p>
+
+          <button
+            type="button"
+            onClick={launchWhatsAppSignup}
+            className="mt-7 w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl text-[15px] font-semibold text-white transition-colors min-h-[48px]"
+            style={{ backgroundColor: FB_BLUE }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = FB_BLUE_HOVER;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = FB_BLUE;
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+            Login with Facebook
+          </button>
+
+          <p className="mt-6 text-[12px] sm:text-[13px] leading-[1.6] text-[#888] text-center">
+            By continuing, you authorize Naseem Labs to access the permissions required for
+            WhatsApp Business onboarding. This page must be opened over{" "}
+            <strong className="font-semibold text-[#555]">HTTPS</strong> on a domain allowed in
+            your Meta app settings for Login to work.
+          </p>
+        </article>
+      )}
     </div>
   );
 }
