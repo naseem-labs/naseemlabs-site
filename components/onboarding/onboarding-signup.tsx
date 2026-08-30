@@ -29,6 +29,7 @@ type EmbeddedSignupMessage = {
 
 type OnboardingAssets = {
   authorizationCode: string | null;
+  accessToken: string | null;
   wabaId: string | null;
   phoneNumberId: string | null;
   businessId: string | null;
@@ -94,24 +95,80 @@ function loadFacebookSdk() {
 export default function OnboardingSignup() {
   const [assets, setAssets] = useState<OnboardingAssets>({
     authorizationCode: null,
+    accessToken: null,
     wabaId: null,
     phoneNumberId: null,
     businessId: null,
   });
 
-  const fbLoginCallback = useCallback((response: { authResponse?: { code?: string } }) => {
-    if (response.authResponse) {
-      const code = response.authResponse.code;
-      console.log("[Naseem Labs Onboarding] response (authorization code):", code);
-      setAssets((prev) => ({ ...prev, authorizationCode: code ?? null }));
-    } else {
-      console.log("[Naseem Labs Onboarding] response:", response);
-    }
-  }, []);
+  const fbLoginCallback = useCallback(
+    async (response: { authResponse?: { code?: string } }) => {
+      if (response.authResponse) {
+        const code = response.authResponse.code;
+
+        console.log(
+          "[Naseem Labs Onboarding] response (authorization code):",
+          code
+        );
+
+        setAssets((prev) => ({
+          ...prev,
+          authorizationCode: code ?? null,
+        }));
+
+        if (code) {
+          try {
+            const exchangeResponse = await fetch("/api/whatsapp/exchange", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                code,
+              }),
+            });
+
+            const exchangeData = await exchangeResponse.json();
+
+            console.log(
+              "[Naseem Labs Onboarding] token exchange response:",
+              exchangeData
+            );
+
+            if (!exchangeResponse.ok) {
+              console.error(
+                "[Naseem Labs Onboarding] token exchange failed:",
+                exchangeData
+              );
+              return;
+            }
+
+            setAssets((prev) => ({
+              ...prev,
+              accessToken: exchangeData.access_token ?? null,
+            }));
+          } catch (err) {
+            console.error(
+              "[Naseem Labs Onboarding] token exchange request failed:",
+              err
+            );
+          }
+        }
+      } else {
+        console.log(
+          "[Naseem Labs Onboarding] response:",
+          response
+        );
+      }
+    },
+    []
+  );
 
   const launchWhatsAppSignup = useCallback(() => {
     if (typeof window.FB === "undefined") {
-      console.error("[Naseem Labs Onboarding] Facebook SDK is not loaded yet.");
+      console.error(
+        "[Naseem Labs Onboarding] Facebook SDK is not loaded yet."
+      );
       alert("Facebook SDK is loading... please try again in 2 seconds.");
       return;
     }
@@ -123,7 +180,9 @@ export default function OnboardingSignup() {
       return;
     }
 
-    console.log("[Naseem Labs Onboarding] Launching Embedded Signup v4...");
+    console.log(
+      "[Naseem Labs Onboarding] Launching Embedded Signup v4..."
+    );
 
     window.FB.login(fbLoginCallback, {
       config_id: FB_CONFIG_ID,
@@ -141,6 +200,7 @@ export default function OnboardingSignup() {
         "[Naseem Labs Onboarding] Page opened via file:// — Meta Login requires HTTPS on an allowed domain. Upload this page to your server for App Review."
       );
     }
+
     loadFacebookSdk();
   }, []);
 
@@ -149,40 +209,70 @@ export default function OnboardingSignup() {
       if (!event.origin.endsWith("facebook.com")) return;
 
       try {
-        const data = JSON.parse(event.data as string) as EmbeddedSignupMessage;
-        if (data.type === "WA_EMBEDDED_SIGNUP") {
-          console.log("[Naseem Labs Onboarding] message event:", data);
+        const data = JSON.parse(
+          event.data as string
+        ) as EmbeddedSignupMessage;
 
-          if (data.data?.waba_id || data.data?.phone_number_id || data.data?.business_id) {
+        if (data.type === "WA_EMBEDDED_SIGNUP") {
+          console.log(
+            "[Naseem Labs Onboarding] message event:",
+            data
+          );
+
+          if (
+            data.data?.waba_id ||
+            data.data?.phone_number_id ||
+            data.data?.business_id
+          ) {
             setAssets((prev) => ({
               ...prev,
-              wabaId: data.data?.waba_id ?? prev.wabaId,
-              phoneNumberId: data.data?.phone_number_id ?? prev.phoneNumberId,
-              businessId: data.data?.business_id ?? prev.businessId,
+              wabaId:
+                data.data?.waba_id ?? prev.wabaId,
+              phoneNumberId:
+                data.data?.phone_number_id ??
+                prev.phoneNumberId,
+              businessId:
+                data.data?.business_id ??
+                prev.businessId,
             }));
           }
         }
       } catch {
-        console.log("[Naseem Labs Onboarding] message event:", event.data);
+        console.log(
+          "[Naseem Labs Onboarding] message event:",
+          event.data
+        );
       }
     };
 
     window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
+
+    return () =>
+      window.removeEventListener("message", handleMessage);
   }, []);
 
   useEffect(() => {
-    console.log("[Naseem Labs Onboarding] captured assets:", assets);
+    console.log(
+      "[Naseem Labs Onboarding] captured assets:",
+      assets
+    );
   }, [assets]);
 
-  const isConnected = Boolean(assets.businessId && assets.wabaId && assets.phoneNumberId);
+  const isConnected = Boolean(
+    assets.businessId &&
+      assets.wabaId &&
+      assets.phoneNumberId
+  );
 
   return (
     <div className="w-full max-w-[460px] mx-auto min-w-0 flex flex-col gap-4">
       <Link
         href="/"
         className="self-start inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-[13px] font-medium border bg-white transition-colors hover:bg-[#fafafa] min-h-[44px]"
-        style={{ borderColor: BORDER, color: TEXT }}
+        style={{
+          borderColor: BORDER,
+          color: TEXT,
+        }}
       >
         ← Back to Naseem Labs
       </Link>
@@ -194,36 +284,50 @@ export default function OnboardingSignup() {
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.1em] uppercase mb-5"
-            style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+            style={{
+              backgroundColor: `${GREEN}12`,
+              color: GREEN,
+              border: `1px solid ${GREEN}30`,
+            }}
           >
-            <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2} />
+            <CheckCircle2
+              className="w-3.5 h-3.5"
+              strokeWidth={2}
+            />
             Connected
           </div>
 
           <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
             ✅ WhatsApp Connected Successfully
           </h1>
+
           <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
             Your clinic has successfully connected to Naseem Labs.
           </p>
 
           <dl className="mt-7 space-y-4 text-[14px] sm:text-[15px] leading-[1.65]">
             <div>
-              <dt className="font-medium text-[#111]">Business ID:</dt>
+              <dt className="font-medium text-[#111]">
+                Business ID:
+              </dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
                 {assets.businessId}
               </dd>
             </div>
 
             <div>
-              <dt className="font-medium text-[#111]">WhatsApp Business Account ID:</dt>
+              <dt className="font-medium text-[#111]">
+                WhatsApp Business Account ID:
+              </dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
                 {assets.wabaId}
               </dd>
             </div>
 
             <div>
-              <dt className="font-medium text-[#111]">Phone Number ID:</dt>
+              <dt className="font-medium text-[#111]">
+                Phone Number ID:
+              </dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
                 {assets.phoneNumberId}
               </dd>
@@ -231,17 +335,35 @@ export default function OnboardingSignup() {
 
             {/* ONLY ADDED: Authorization Code */}
             <div>
-              <dt className="font-medium text-[#111]">Authorization Code:</dt>
+              <dt className="font-medium text-[#111]">
+                Authorization Code:
+              </dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
                 {assets.authorizationCode}
               </dd>
             </div>
 
+            {/* ONLY ADDED: Access Token */}
             <div>
-              <dt className="font-medium text-[#111]">Status:</dt>
+              <dt className="font-medium text-[#111]">
+                Access Token:
+              </dt>
+              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
+                {assets.accessToken}
+              </dd>
+            </div>
+
+            <div>
+              <dt className="font-medium text-[#111]">
+                Status:
+              </dt>
               <dd
                 className="mt-1.5 inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-semibold"
-                style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+                style={{
+                  backgroundColor: `${GREEN}12`,
+                  color: GREEN,
+                  border: `1px solid ${GREEN}30`,
+                }}
               >
                 Ready for AI Automation
               </dd>
@@ -255,15 +377,23 @@ export default function OnboardingSignup() {
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.1em] uppercase mb-5"
-            style={{ backgroundColor: `${GREEN}12`, color: GREEN, border: `1px solid ${GREEN}30` }}
+            style={{
+              backgroundColor: `${GREEN}12`,
+              color: GREEN,
+              border: `1px solid ${GREEN}30`,
+            }}
           >
-            <Shield className="w-3.5 h-3.5" strokeWidth={2} />
+            <Shield
+              className="w-3.5 h-3.5"
+              strokeWidth={2}
+            />
             Embedded signup
           </div>
 
           <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
             Welcome to Naseem Labs AI Onboarding
           </h1>
+
           <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
             Connect your WhatsApp Business Account to deploy your AI Agent.
           </p>
@@ -272,25 +402,38 @@ export default function OnboardingSignup() {
             type="button"
             onClick={launchWhatsAppSignup}
             className="mt-7 w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl text-[15px] font-semibold text-white transition-colors min-h-[48px]"
-            style={{ backgroundColor: FB_BLUE }}
+            style={{
+              backgroundColor: FB_BLUE,
+            }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = FB_BLUE_HOVER;
+              e.currentTarget.style.backgroundColor =
+                FB_BLUE_HOVER;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = FB_BLUE;
+              e.currentTarget.style.backgroundColor =
+                FB_BLUE;
             }}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden
+            >
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
             </svg>
+
             Login with Facebook
           </button>
 
           <p className="mt-6 text-[12px] sm:text-[13px] leading-[1.6] text-[#888] text-center">
             By continuing, you authorize Naseem Labs to access the permissions required for
             WhatsApp Business onboarding. This page must be opened over{" "}
-            <strong className="font-semibold text-[#555]">HTTPS</strong> on a domain allowed in
-            your Meta app settings for Login to work.
+            <strong className="font-semibold text-[#555]">
+              HTTPS
+            </strong>{" "}
+            on a domain allowed in your Meta app settings for Login to work.
           </p>
         </article>
       )}
