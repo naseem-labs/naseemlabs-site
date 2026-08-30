@@ -3,9 +3,24 @@ import { NextResponse } from "next/server";
 const FB_APP_ID = "1441438130621249";
 const FB_VERSION = "v25.0";
 
+type ExchangeRequestBody = {
+  code?: unknown;
+};
+
 export async function POST(request: Request) {
   try {
-    const { code } = await request.json();
+    let body: ExchangeRequestBody;
+
+    try {
+      body = (await request.json()) as ExchangeRequestBody;
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid request body." },
+        { status: 400 }
+      );
+    }
+
+    const code = typeof body.code === "string" ? body.code.trim() : "";
 
     if (!code) {
       return NextResponse.json(
@@ -38,20 +53,24 @@ export async function POST(request: Request) {
       }
     );
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      access_token?: string;
+      token_type?: string;
+    };
 
-    if (!response.ok) {
+    if (!response.ok || !data.access_token) {
       console.error("Meta token exchange failed:", data);
 
       return NextResponse.json(
         { error: "Meta token exchange failed.", details: data },
-        { status: response.status }
+        { status: response.ok ? 502 : response.status }
       );
     }
 
     return NextResponse.json({
       success: true,
       accessToken: data.access_token,
+      access_token: data.access_token,
       tokenType: data.token_type,
     });
   } catch (error) {

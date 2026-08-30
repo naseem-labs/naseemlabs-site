@@ -35,14 +35,26 @@ type OnboardingAssets = {
   businessId: string | null;
 };
 
+type FbLoginResponse = {
+  authResponse?: { code?: string };
+  status?: string;
+};
+
+type TokenExchangeResponse = {
+  success?: boolean;
+  accessToken?: string;
+  access_token?: string;
+  error?: string;
+};
+
+type FlowStatus = "idle" | "launching" | "exchanging" | "error";
+
 declare global {
   interface Window {
     FB?: {
       init: (params: Record<string, unknown>) => void;
       login: (
-        callback: (response: {
-          authResponse?: { code?: string };
-        }) => void,
+        callback: (response: FbLoginResponse) => void,
         options: Record<string, unknown>
       ) => void;
     };
@@ -100,9 +112,77 @@ export default function OnboardingSignup() {
     phoneNumberId: null,
     businessId: null,
   });
+  const [flowStatus, setFlowStatus] = useState<FlowStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const exchangeAuthorizationCode = useCallback((code: string) => {
+    setFlowStatus("exchanging");
+    setErrorMessage(null);
+
+    void (async () => {
+      try {
+        const exchangeResponse = await fetch("/api/whatsapp/exchange", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+          }),
+        });
+
+        const exchangeData =
+          (await exchangeResponse.json()) as TokenExchangeResponse;
+
+        console.log(
+          "[Naseem Labs Onboarding] token exchange response:",
+          exchangeData
+        );
+
+        if (!exchangeResponse.ok) {
+          console.error(
+            "[Naseem Labs Onboarding] token exchange failed:",
+            exchangeData
+          );
+          setFlowStatus("error");
+          setErrorMessage(
+            exchangeData.error ??
+              "Token exchange failed. Please try connecting again."
+          );
+          return;
+        }
+
+        const accessToken =
+          exchangeData.accessToken ?? exchangeData.access_token ?? null;
+
+        if (!accessToken) {
+          setFlowStatus("error");
+          setErrorMessage(
+            "Token exchange succeeded but no access token was returned."
+          );
+          return;
+        }
+
+        setAssets((prev) => ({
+          ...prev,
+          accessToken,
+        }));
+        setFlowStatus("idle");
+      } catch (err) {
+        console.error(
+          "[Naseem Labs Onboarding] token exchange request failed:",
+          err
+        );
+        setFlowStatus("error");
+        setErrorMessage(
+          "Could not reach the token exchange service. Please try again."
+        );
+      }
+    })();
+  }, []);
 
   const fbLoginCallback = useCallback(
-    async (response: { authResponse?: { code?: string } }) => {
+    (response: FbLoginResponse) => {
       if (response.authResponse) {
         const code = response.authResponse.code;
 
@@ -117,51 +197,24 @@ export default function OnboardingSignup() {
         }));
 
         if (code) {
-          try {
-            const exchangeResponse = await fetch("/api/whatsapp/exchange", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                code,
-              }),
-            });
-
-            const exchangeData = await exchangeResponse.json();
-
-            console.log(
-              "[Naseem Labs Onboarding] token exchange response:",
-              exchangeData
-            );
-
-            if (!exchangeResponse.ok) {
-              console.error(
-                "[Naseem Labs Onboarding] token exchange failed:",
-                exchangeData
-              );
-              return;
-            }
-
-            setAssets((prev) => ({
-              ...prev,
-              accessToken: exchangeData.access_token ?? null,
-            }));
-          } catch (err) {
-            console.error(
-              "[Naseem Labs Onboarding] token exchange request failed:",
-              err
-            );
-          }
+          exchangeAuthorizationCode(code);
+          return;
         }
-      } else {
-        console.log(
-          "[Naseem Labs Onboarding] response:",
-          response
+
+        setFlowStatus("error");
+        setErrorMessage(
+          "Facebook Login succeeded but no authorization code was returned."
         );
+        return;
       }
+
+      console.log("[Naseem Labs Onboarding] response:", response);
+      setFlowStatus("idle");
+      setErrorMessage(
+        "Facebook Login was cancelled or did not complete. Please try again."
+      );
     },
-    []
+    [exchangeAuthorizationCode]
   );
 
   const launchWhatsAppSignup = useCallback(() => {
@@ -169,13 +222,18 @@ export default function OnboardingSignup() {
       console.error(
         "[Naseem Labs Onboarding] Facebook SDK is not loaded yet."
       );
-      alert("Facebook SDK is loading... please try again in 2 seconds.");
+      setErrorMessage(
+        "Facebook SDK is loading... please try again in 2 seconds."
+      );
       return;
     }
 
     if (!FB_CONFIG_ID) {
       console.error(
         "[Naseem Labs Onboarding] Missing configuration ID. Set NEXT_PUBLIC_FB_CONFIG_ID to your Facebook Login for Business configuration ID."
+      );
+      setErrorMessage(
+        "Missing Facebook Login configuration. Please contact support."
       );
       return;
     }
@@ -184,12 +242,16 @@ export default function OnboardingSignup() {
       "[Naseem Labs Onboarding] Launching Embedded Signup v4..."
     );
 
+    setErrorMessage(null);
+    setFlowStatus("launching");
+
     window.FB.login(fbLoginCallback, {
       config_id: FB_CONFIG_ID,
       response_type: "code",
       override_default_response_type: true,
       extras: {
         setup: {},
+        sessionInfoVersion: "3",
       },
     });
   }, [fbLoginCallback]);
@@ -209,8 +271,10 @@ export default function OnboardingSignup() {
       if (!event.origin.endsWith("facebook.com")) return;
 
       try {
-        const data = JSON.parse(
-          event.data as string
+        const data = (
+          typeof event.data === "string"
+            ? JSON.parse(event.data)
+            : event.data
         ) as EmbeddedSignupMessage;
 
         if (data.type === "WA_EMBEDDED_SIGNUP") {
@@ -263,6 +327,8 @@ export default function OnboardingSignup() {
       assets.wabaId &&
       assets.phoneNumberId
   );
+  const isBusy =
+    flowStatus === "launching" || flowStatus === "exchanging";
 
   return (
     <div className="w-full max-w-[460px] mx-auto min-w-0 flex flex-col gap-4">
@@ -339,7 +405,10 @@ export default function OnboardingSignup() {
                 Authorization Code:
               </dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.authorizationCode}
+                {assets.authorizationCode ??
+                  (flowStatus === "launching"
+                    ? "Waiting for Facebook Login…"
+                    : "—")}
               </dd>
             </div>
 
@@ -349,7 +418,10 @@ export default function OnboardingSignup() {
                 Access Token:
               </dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.accessToken}
+                {assets.accessToken ??
+                  (flowStatus === "exchanging"
+                    ? "Exchanging authorization code…"
+                    : errorMessage ?? "—")}
               </dd>
             </div>
 
@@ -401,11 +473,13 @@ export default function OnboardingSignup() {
           <button
             type="button"
             onClick={launchWhatsAppSignup}
-            className="mt-7 w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl text-[15px] font-semibold text-white transition-colors min-h-[48px]"
+            disabled={isBusy}
+            className="mt-7 w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl text-[15px] font-semibold text-white transition-colors min-h-[48px] disabled:opacity-70 disabled:cursor-not-allowed"
             style={{
               backgroundColor: FB_BLUE,
             }}
             onMouseEnter={(e) => {
+              if (isBusy) return;
               e.currentTarget.style.backgroundColor =
                 FB_BLUE_HOVER;
             }}
@@ -424,8 +498,14 @@ export default function OnboardingSignup() {
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
             </svg>
 
-            Login with Facebook
+            {isBusy ? "Connecting…" : "Login with Facebook"}
           </button>
+
+          {errorMessage ? (
+            <p className="mt-4 text-[13px] leading-[1.6] text-[#dc2626] text-center">
+              {errorMessage}
+            </p>
+          ) : null}
 
           <p className="mt-6 text-[12px] sm:text-[13px] leading-[1.6] text-[#888] text-center">
             By continuing, you authorize Naseem Labs to access the permissions required for
