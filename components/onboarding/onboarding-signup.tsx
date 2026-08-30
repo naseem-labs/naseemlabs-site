@@ -214,18 +214,29 @@ export default function OnboardingSignup() {
                 {assets.businessId}
               </dd>
             </div>
+
             <div>
               <dt className="font-medium text-[#111]">WhatsApp Business Account ID:</dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
                 {assets.wabaId}
               </dd>
             </div>
+
             <div>
               <dt className="font-medium text-[#111]">Phone Number ID:</dt>
               <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
                 {assets.phoneNumberId}
               </dd>
             </div>
+
+            {/* ONLY ADDED: Authorization Code */}
+            <div>
+              <dt className="font-medium text-[#111]">Authorization Code:</dt>
+              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
+                {assets.authorizationCode}
+              </dd>
+            </div>
+
             <div>
               <dt className="font-medium text-[#111]">Status:</dt>
               <dd
