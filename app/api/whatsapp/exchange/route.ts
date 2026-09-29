@@ -80,37 +80,106 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabaseResponse = await fetch(
-      `${supabaseUrl}/rest/v1/whatsapp_connections`,
+    const phoneResponse = await fetch(
+      `https://graph.facebook.com/${FB_VERSION}/${encodeURIComponent(
+        phoneNumberId
+      )}?fields=display_phone_number`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
-          apikey: supabaseServiceRoleKey,
-          Authorization: `Bearer ${supabaseServiceRoleKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal",
+          Authorization: `Bearer ${data.access_token}`,
         },
-        body: JSON.stringify({
-          business_id: businessId,
-          waba_id: wabaId,
-          phone_number_id: phoneNumberId,
-          phone_number: null,
-          access_token: data.access_token,
-          status: "connected",
-          connected_at: new Date().toISOString(),
-        }),
+        cache: "no-store",
       }
     );
 
-    if (!supabaseResponse.ok) {
+    const phoneData = (await phoneResponse.json()) as {
+      display_phone_number?: unknown;
+    };
+    const phoneNumber =
+      typeof phoneData.display_phone_number === "string"
+        ? phoneData.display_phone_number.trim()
+        : "";
+
+    if (!phoneResponse.ok || !phoneNumber) {
+      console.error("Meta phone number lookup failed:", {
+        status: phoneResponse.status,
+        hasPhoneNumber: Boolean(phoneNumber),
+      });
+      return NextResponse.json(
+        {
+          error:
+            "Could not retrieve the WhatsApp phone number. Please try again.",
+        },
+        { status: 502 }
+      );
+    }
+
+    const connectionPayload = {
+      business_id: businessId,
+      waba_id: wabaId,
+      phone_number_id: phoneNumberId,
+      phone_number: phoneNumber,
+      access_token: data.access_token,
+      status: "connected",
+      connected_at: new Date().toISOString(),
+    };
+
+    const supabaseHeaders = {
+      apikey: supabaseServiceRoleKey,
+      Authorization: `Bearer ${supabaseServiceRoleKey}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    };
+
+    const existingConnectionResponse = await fetch(
+      `${supabaseUrl}/rest/v1/whatsapp_connections?phone_number_id=eq.${encodeURIComponent(
+        phoneNumberId
+      )}`,
+      {
+        method: "PATCH",
+        headers: supabaseHeaders,
+        body: JSON.stringify(connectionPayload),
+      }
+    );
+
+    if (!existingConnectionResponse.ok) {
       console.error(
-        "Supabase WhatsApp connection insert failed:",
-        await supabaseResponse.text()
+        "Supabase WhatsApp connection update failed:",
+        await existingConnectionResponse.text()
       );
       return NextResponse.json(
         { error: "Could not save the WhatsApp connection. Please try again." },
         { status: 502 }
       );
+    }
+
+    const updatedConnections =
+      (await existingConnectionResponse.json()) as unknown[];
+
+    if (updatedConnections.length === 0) {
+      const insertResponse = await fetch(
+        `${supabaseUrl}/rest/v1/whatsapp_connections`,
+        {
+          method: "POST",
+          headers: {
+            ...supabaseHeaders,
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(connectionPayload),
+        }
+      );
+
+      if (!insertResponse.ok) {
+        console.error(
+          "Supabase WhatsApp connection insert failed:",
+          await insertResponse.text()
+        );
+        return NextResponse.json(
+          { error: "Could not save the WhatsApp connection. Please try again." },
+          { status: 502 }
+        );
+      }
     }
 
     return NextResponse.json({ success: true });
