@@ -5,8 +5,8 @@ import Link from "next/link";
 import { CheckCircle2, Shield } from "lucide-react";
 
 const TEXT = "#111111";
-const GREEN = "#16a34a";
-const BORDER = "rgba(0,0,0,0.06)";
+const GREEN = "#1a3c34";
+const BORDER = "rgba(26,28,24,0.10)";
 const FB_BLUE = "#0866ff";
 const FB_BLUE_HOVER = "#0654d4";
 
@@ -29,7 +29,6 @@ type EmbeddedSignupMessage = {
 
 type OnboardingAssets = {
   authorizationCode: string | null;
-  accessToken: string | null;
   wabaId: string | null;
   phoneNumberId: string | null;
   businessId: string | null;
@@ -42,8 +41,6 @@ type FbLoginResponse = {
 
 type TokenExchangeResponse = {
   success?: boolean;
-  accessToken?: string;
-  access_token?: string;
   error?: string;
 };
 
@@ -104,18 +101,28 @@ function loadFacebookSdk() {
   document.body.appendChild(script);
 }
 
-export default function OnboardingSignup() {
+export default function OnboardingSignup({
+  serifClassName = "",
+}: {
+  serifClassName?: string;
+}) {
   const [assets, setAssets] = useState<OnboardingAssets>({
     authorizationCode: null,
-    accessToken: null,
     wabaId: null,
     phoneNumberId: null,
     businessId: null,
   });
   const [flowStatus, setFlowStatus] = useState<FlowStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [connectionSaved, setConnectionSaved] = useState(false);
 
-  const exchangeAuthorizationCode = useCallback((code: string) => {
+  const exchangeAuthorizationCode = useCallback(
+    (
+      code: string,
+      businessId: string,
+      wabaId: string,
+      phoneNumberId: string
+    ) => {
     setFlowStatus("exchanging");
     setErrorMessage(null);
 
@@ -128,45 +135,31 @@ export default function OnboardingSignup() {
           },
           body: JSON.stringify({
             code,
+            business_id: businessId,
+            waba_id: wabaId,
+            phone_number_id: phoneNumberId,
           }),
         });
 
         const exchangeData =
           (await exchangeResponse.json()) as TokenExchangeResponse;
 
-        console.log(
-          "[Naseem Labs Onboarding] token exchange response:",
-          exchangeData
-        );
-
-        if (!exchangeResponse.ok) {
-          console.error(
-            "[Naseem Labs Onboarding] token exchange failed:",
-            exchangeData
-          );
+        if (!exchangeResponse.ok || !exchangeData.success) {
           setFlowStatus("error");
           setErrorMessage(
             exchangeData.error ??
-              "Token exchange failed. Please try connecting again."
+              "Could not save the WhatsApp connection. Please try again."
           );
           return;
         }
 
-        const accessToken =
-          exchangeData.accessToken ?? exchangeData.access_token ?? null;
-
-        if (!accessToken) {
-          setFlowStatus("error");
-          setErrorMessage(
-            "Token exchange succeeded but no access token was returned."
-          );
-          return;
-        }
-
-        setAssets((prev) => ({
-          ...prev,
-          accessToken,
-        }));
+        setAssets({
+          authorizationCode: null,
+          wabaId: null,
+          phoneNumberId: null,
+          businessId: null,
+        });
+        setConnectionSaved(true);
         setFlowStatus("idle");
       } catch (err) {
         console.error(
@@ -179,27 +172,21 @@ export default function OnboardingSignup() {
         );
       }
     })();
-  }, []);
+    },
+    []
+  );
 
   const fbLoginCallback = useCallback(
     (response: FbLoginResponse) => {
       if (response.authResponse) {
         const code = response.authResponse.code;
 
-        console.log(
-          "[Naseem Labs Onboarding] response (authorization code):",
-          code
-        );
-
         setAssets((prev) => ({
           ...prev,
           authorizationCode: code ?? null,
         }));
 
-        if (code) {
-          exchangeAuthorizationCode(code);
-          return;
-        }
+        if (code) return;
 
         setFlowStatus("error");
         setErrorMessage(
@@ -208,13 +195,12 @@ export default function OnboardingSignup() {
         return;
       }
 
-      console.log("[Naseem Labs Onboarding] response:", response);
       setFlowStatus("idle");
       setErrorMessage(
         "Facebook Login was cancelled or did not complete. Please try again."
       );
     },
-    [exchangeAuthorizationCode]
+    []
   );
 
   const launchWhatsAppSignup = useCallback(() => {
@@ -243,6 +229,14 @@ export default function OnboardingSignup() {
     );
 
     setErrorMessage(null);
+    setConnectionSaved(false);
+    setAssets((prev) => ({
+      ...prev,
+      authorizationCode: null,
+      wabaId: null,
+      phoneNumberId: null,
+      businessId: null,
+    }));
     setFlowStatus("launching");
 
     window.FB.login(fbLoginCallback, {
@@ -278,11 +272,6 @@ export default function OnboardingSignup() {
         ) as EmbeddedSignupMessage;
 
         if (data.type === "WA_EMBEDDED_SIGNUP") {
-          console.log(
-            "[Naseem Labs Onboarding] message event:",
-            data
-          );
-
           if (
             data.data?.waba_id ||
             data.data?.phone_number_id ||
@@ -302,10 +291,7 @@ export default function OnboardingSignup() {
           }
         }
       } catch {
-        console.log(
-          "[Naseem Labs Onboarding] message event:",
-          event.data
-        );
+        console.error("[Naseem Labs Onboarding] invalid signup message.");
       }
     };
 
@@ -316,25 +302,34 @@ export default function OnboardingSignup() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "[Naseem Labs Onboarding] captured assets:",
-      assets
-    );
-  }, [assets]);
+    if (
+      connectionSaved ||
+      (flowStatus !== "idle" && flowStatus !== "launching") ||
+      !assets.authorizationCode ||
+      !assets.businessId ||
+      !assets.wabaId ||
+      !assets.phoneNumberId
+    ) {
+      return;
+    }
 
-  const isConnected = Boolean(
-    assets.businessId &&
-      assets.wabaId &&
+    exchangeAuthorizationCode(
+      assets.authorizationCode,
+      assets.businessId,
+      assets.wabaId,
       assets.phoneNumberId
-  );
+    );
+  }, [assets, connectionSaved, exchangeAuthorizationCode, flowStatus]);
+
+  const isConnected = connectionSaved;
   const isBusy =
     flowStatus === "launching" || flowStatus === "exchanging";
 
   return (
-    <div className="w-full max-w-[460px] mx-auto min-w-0 flex flex-col gap-4">
+    <div className="w-full max-w-[520px] mx-auto min-w-0 flex flex-col gap-5">
       <Link
         href="/"
-        className="self-start inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-[13px] font-medium border bg-white transition-colors hover:bg-[#fafafa] min-h-[44px]"
+        className="self-start inline-flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-medium border bg-white transition-colors hover:bg-[#fafafa] min-h-[46px]"
         style={{
           borderColor: BORDER,
           color: TEXT,
@@ -345,7 +340,7 @@ export default function OnboardingSignup() {
 
       {isConnected ? (
         <article
-          className="rounded-2xl border bg-white px-5 py-7 sm:px-8 sm:py-9 shadow-[0_2px_20px_rgba(0,0,0,0.06)] min-w-0"
+          className="rounded-[16px] border bg-white px-6 py-8 sm:px-9 sm:py-10 shadow-[0_12px_40px_rgba(26,28,24,0.08)] min-w-0"
           style={{ borderColor: BORDER }}
         >
           <div
@@ -363,88 +358,28 @@ export default function OnboardingSignup() {
             Connected
           </div>
 
-          <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
-            ✅ WhatsApp Connected Successfully
+          <h1 className={`${serifClassName} text-[30px] sm:text-[38px] font-medium tracking-[-0.03em] leading-[1.08] text-[#111]`}>
+            Your clinic is connected.
           </h1>
 
           <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
-            Your clinic has successfully connected to Naseem Labs.
+            Everything is set up successfully. We&apos;re preparing the next step for your clinic.
           </p>
 
-          <dl className="mt-7 space-y-4 text-[14px] sm:text-[15px] leading-[1.65]">
-            <div>
-              <dt className="font-medium text-[#111]">
-                Business ID:
-              </dt>
-              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.businessId}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="font-medium text-[#111]">
-                WhatsApp Business Account ID:
-              </dt>
-              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.wabaId}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="font-medium text-[#111]">
-                Phone Number ID:
-              </dt>
-              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.phoneNumberId}
-              </dd>
-            </div>
-
-            {/* ONLY ADDED: Authorization Code */}
-            <div>
-              <dt className="font-medium text-[#111]">
-                Authorization Code:
-              </dt>
-              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.authorizationCode ??
-                  (flowStatus === "launching"
-                    ? "Waiting for Facebook Login…"
-                    : "—")}
-              </dd>
-            </div>
-
-            {/* ONLY ADDED: Access Token */}
-            <div>
-              <dt className="font-medium text-[#111]">
-                Access Token:
-              </dt>
-              <dd className="mt-1 font-mono text-[13px] sm:text-[14px] text-[#555] break-all">
-                {assets.accessToken ??
-                  (flowStatus === "exchanging"
-                    ? "Exchanging authorization code…"
-                    : errorMessage ?? "—")}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="font-medium text-[#111]">
-                Status:
-              </dt>
-              <dd
-                className="mt-1.5 inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-semibold"
-                style={{
-                  backgroundColor: `${GREEN}12`,
-                  color: GREEN,
-                  border: `1px solid ${GREEN}30`,
-                }}
-              >
-                Ready for AI Automation
-              </dd>
-            </div>
-          </dl>
+          <div
+            className="mt-7 inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-semibold"
+            style={{
+              backgroundColor: `${GREEN}12`,
+              color: GREEN,
+              border: `1px solid ${GREEN}30`,
+            }}
+          >
+            Connection complete
+          </div>
         </article>
       ) : (
         <article
-          className="rounded-2xl border bg-white px-5 py-7 sm:px-8 sm:py-9 shadow-[0_2px_20px_rgba(0,0,0,0.06)] min-w-0"
+          className="rounded-[16px] border bg-white px-6 py-8 sm:px-9 sm:py-10 shadow-[0_12px_40px_rgba(26,28,24,0.08)] min-w-0"
           style={{ borderColor: BORDER }}
         >
           <div
@@ -459,15 +394,15 @@ export default function OnboardingSignup() {
               className="w-3.5 h-3.5"
               strokeWidth={2}
             />
-            Embedded signup
+            EMBEDDED SIGNUP
           </div>
 
-          <h1 className="text-[22px] sm:text-[26px] font-medium tracking-[-0.02em] leading-[1.2] text-[#111]">
-            Welcome to Naseem Labs AI Onboarding
+          <h1 className={`${serifClassName} text-[30px] sm:text-[38px] font-medium tracking-[-0.03em] leading-[1.08] text-[#111]`}>
+            Welcome. Let’s connect your clinic.
           </h1>
 
           <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
-            Connect your WhatsApp Business Account to deploy your AI Agent.
+            Connect your WhatsApp Business Account to securely set up your clinic on PREET.
           </p>
 
           <button
@@ -498,7 +433,7 @@ export default function OnboardingSignup() {
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
             </svg>
 
-            {isBusy ? "Connecting…" : "Login with Facebook"}
+            {isBusy ? "Connecting your WhatsApp Business Account…" : "Connect WhatsApp Business"}
           </button>
 
           {errorMessage ? (
@@ -508,12 +443,9 @@ export default function OnboardingSignup() {
           ) : null}
 
           <p className="mt-6 text-[12px] sm:text-[13px] leading-[1.6] text-[#888] text-center">
-            By continuing, you authorize Naseem Labs to access the permissions required for
-            WhatsApp Business onboarding. This page must be opened over{" "}
-            <strong className="font-semibold text-[#555]">
-              HTTPS
-            </strong>{" "}
-            on a domain allowed in your Meta app settings for Login to work.
+            By continuing, you authorize NaseemLabs to access the permissions required for
+            WhatsApp Business onboarding. This page must be opened over HTTPS on a domain allowed
+            in your Meta app settings.
           </p>
         </article>
       )}

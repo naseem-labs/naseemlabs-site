@@ -1,549 +1,788 @@
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, CheckCircle2, ChevronRight, Phone } from "lucide-react";
 import WhatsAppLink from "@/components/whatsapp-link";
 import { DEMO_PATH } from "@/lib/site-config";
-import {
-  ArrowRight,
-  Calendar,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  DollarSign,
-  HelpCircle,
-  MessageCircle,
-  Plane,
-  User,
-  X,
-} from "lucide-react";
 
-const GREEN = "#16a34a";
-const RED = "#dc2626";
-const BORDER = "rgba(0,0,0,0.06)";
-const WA_GREEN = "#dcf8c6";
+const GREEN = "#1a3c34";
+const DARK = "#1a3c34";
+const PAGE = "#f7f6f2";
+const WHITE = "#ffffff";
+const BORDER = "rgba(16,23,23,0.09)";
 const CHAT_BG = "#efeae2";
+const CHAT_GREEN = "#d9fdd3";
 
-const LABEL = "text-[10px] font-semibold tracking-[0.1em] uppercase";
-const H2 = "text-[22px] sm:text-[26px] lg:text-[28px] font-medium tracking-[-0.02em] leading-[1.25] text-[#111]";
-const BODY = "text-[13px] sm:text-[14px] leading-[1.6] text-[#555]";
-
-function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
+function WhatsAppIcon({ className = "h-4 w-4" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.099-.497-.099-.198-.05-.371-.025-.52.075-.149.669-1.612.916-2.207.242-.579.487-.5.669-.51.173-.008.371-.01.57-.01.198 0 .52.074.792.372.272.297 1.04 1.016 1.04 2.479 0 1.462-1.065 2.875-1.213 3.074-.149.198-2.096 3.2-5.077 4.487-.709.306-1.262.489-1.694.625-.712.227-1.36.195-1.871.118-.571-.085-1.758-.719-2.006-1.413-.248-.694-.248-1.289-.173-1.413.074-.124.272-.198.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
     </svg>
   );
 }
 
-function WaTicks() {
-  return (
-    <svg width="12" height="9" viewBox="0 0 16 11" className="text-[#53bdeb] shrink-0" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M11.071.653a.457.457 0 0 0-.304-.102.493.493 0 0 0-.381.178l-5.19 6.76-2.226-2.226a.463.463 0 0 0-.336-.14.47.47 0 0 0-.347.147.457.457 0 0 0 .102.659l2.75 2.75a.46.46 0 0 0 .347.14.47.47 0 0 0 .336-.178l5.483-7.15a.457.457 0 0 0-.094-.617zm3.23 0a.457.457 0 0 0-.304-.102.493.493 0 0 0-.381.178l-7.34 9.57-1.12-1.12a.463.463 0 0 0-.336-.14.47.47 0 0 0-.347.147.457.457 0 0 0 .102.659l1.644 1.644a.46.46 0 0 0 .347.14.47.47 0 0 0 .336-.178l7.633-9.97a.457.457 0 0 0-.094-.617z"
-      />
-    </svg>
-  );
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className={LABEL} style={{ color: GREEN }}>
-      {children}
-    </span>
-  );
-}
-
-function WaBubble({
-  side,
-  time,
-  ticks,
+function Eyebrow({
   children,
+  dark = false,
 }: {
-  side: "left" | "right";
-  time: string;
-  ticks?: boolean;
   children: React.ReactNode;
+  dark?: boolean;
 }) {
-  const right = side === "right";
   return (
-    <div className={`flex ${right ? "justify-end" : "justify-start"} mb-[2px]`}>
-      <div
-        className={`relative max-w-[92%] px-2 py-1 text-[10px] leading-[14px] ${
-          right
-            ? "rounded-tl-md rounded-tr-md rounded-bl-md rounded-br-sm"
-            : "rounded-tl-md rounded-tr-md rounded-br-md rounded-bl-sm bg-white"
-        }`}
-        style={{ backgroundColor: right ? WA_GREEN : "#fff", color: "#111b21" }}
-      >
-        <span className="block pr-9 whitespace-pre-wrap break-words">{children}</span>
-        <span className="absolute bottom-[2px] right-[5px] flex items-center gap-0.5 text-[8px] text-[#667781]">
-          {time}
-          {ticks && <WaTicks />}
-        </span>
-      </div>
-    </div>
+    <p
+      className={`text-[9px] font-bold uppercase tracking-[0.16em] ${
+        dark ? "text-white/70" : "text-[#1a3c34]/80"
+      }`}
+    >
+      {children}
+    </p>
   );
 }
 
-function MiniWaHeader() {
-  return (
-    <div className="flex items-center gap-1.5 bg-[#f0f2f5] border-b border-black/[0.06] px-2 py-1 shrink-0">
-      <ChevronLeft className="w-3 h-3 text-[#54656f]" strokeWidth={2} />
-      <div className="w-5 h-5 rounded-full bg-[#dfe5e7] flex items-center justify-center text-[7px] font-semibold text-[#54656f]">
-        HT
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[9px] font-medium text-[#111b21] truncate">Hair Transplant Clinic</p>
-        <p className="text-[7.5px] text-[#667781]">online</p>
-      </div>
-    </div>
-  );
-}
-
-function StepChatCard({
+function PhoneMockup({
   messages,
 }: {
-  messages: { side: "left" | "right"; text: string; time: string; ticks?: boolean }[];
+  messages: {
+    side: "left" | "right";
+    text: string;
+    time?: string;
+  }[];
 }) {
   return (
-    <div
-      className="rounded-xl border bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)] w-full min-w-0"
-      style={{ borderColor: BORDER }}
-    >
-      <MiniWaHeader />
-      <div className="px-1.5 py-1.5 min-h-[100px]" style={{ backgroundColor: CHAT_BG }}>
-        {messages.map((m, i) => (
-          <WaBubble key={i} side={m.side} time={m.time} ticks={m.ticks}>
-            {m.text}
-          </WaBubble>
-        ))}
-      </div>
-    </div>
-  );
-}
+    <div className="mx-auto w-full max-w-[275px] rounded-[27px] border-[5px] border-[#171b1b] bg-[#111] p-[3px] shadow-[0_18px_40px_rgba(0,0,0,0.14)]">
+      <div className="overflow-hidden rounded-[20px] bg-white">
+        <div className="flex items-center gap-2 bg-white px-3 py-2.5">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1a3c34] text-[9px] font-bold text-white">
+            P
+          </div>
 
-function DashedArrow({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex items-center justify-center shrink-0 ${className}`} aria-hidden>
-      <div className="flex items-center gap-0.5 text-[#d4d4d4]">
-        <span className="w-3 sm:w-5 border-t border-dashed border-[#d4d4d4]" />
-        <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.5} />
-      </div>
-    </div>
-  );
-}
-
-const WORKFLOW_STEPS = [
-  {
-    title: "Ads / Social",
-    desc: "Patient sees ad and shows interest",
-    icon: (
-      <div className="flex gap-0.5">
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="#E1306C" strokeWidth="2">
-          <rect x="2" y="2" width="20" height="20" rx="5" />
-          <circle cx="12" cy="12" r="4" />
-        </svg>
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#1877F2">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-        </svg>
-      </div>
-    ),
-  },
-  {
-    title: "WhatsApp Inquiry",
-    desc: "They message your clinic on WhatsApp",
-    icon: <WhatsAppIcon className="w-5 h-5 text-[#25D366]" />,
-  },
-  {
-    title: "Patient Qualification",
-    desc: "We understand needs, goals and situation",
-    icon: <User className="w-5 h-5" style={{ color: GREEN }} strokeWidth={1.5} />,
-  },
-  {
-    title: "Consultation Movement",
-    desc: "Interested patients moved to consultation",
-    icon: <Calendar className="w-5 h-5" style={{ color: GREEN }} strokeWidth={1.5} />,
-  },
-  {
-    title: "Follow-up & Nurture",
-    desc: "Smart follow-ups until they decide",
-    icon: <MessageCircle className="w-5 h-5" style={{ color: GREEN }} strokeWidth={1.5} />,
-  },
-];
-
-const FLOW_STEPS = [
-  {
-    num: 1,
-    title: "Patient reaches out",
-    desc: "First message on WhatsApp",
-    messages: [
-      { side: "left" as const, text: "Hi, I'm interested in a hair transplant", time: "9:12 PM" },
-      { side: "right" as const, text: "Hi! Thanks for reaching out. Happy to help.", time: "9:12 PM", ticks: true },
-    ],
-  },
-  {
-    num: 2,
-    title: "We understand their needs",
-    desc: "Goals, area & expectations",
-    messages: [
-      { side: "right" as const, text: "Which area are you looking to treat?", time: "9:14 PM", ticks: true },
-      { side: "left" as const, text: "Mainly the front hairline and crown", time: "9:15 PM" },
-    ],
-  },
-  {
-    num: 3,
-    title: "Provide accurate info",
-    desc: "Grafts, procedure & pricing",
-    messages: [
-      { side: "left" as const, text: "How many grafts would I need?", time: "9:18 PM" },
-      { side: "right" as const, text: "Usually 2000–2800 for your case. Photos help us confirm.", time: "9:19 PM", ticks: true },
-    ],
-  },
-  {
-    num: 4,
-    title: "Move to consultation",
-    desc: "Booking the right slot",
-    messages: [
-      { side: "right" as const, text: "Saturday 11 AM is available. Should I book it?", time: "9:22 PM", ticks: true },
-      { side: "left" as const, text: "Yes, that works for me", time: "9:23 PM" },
-    ],
-  },
-  {
-    num: 5,
-    title: "Follow up & nurture",
-    desc: "Until they're ready",
-    messages: [
-      { side: "right" as const, text: "Just checking in — any questions before your visit?", time: "2 days later", ticks: true },
-      { side: "left" as const, text: "All clear, thank you!", time: "2 days later" },
-    ],
-  },
-];
-
-const SCENARIOS = [
-  {
-    icon: <DollarSign className="w-4 h-4" strokeWidth={1.5} />,
-    title: "Cost & Pricing Inquiries",
-    desc: "Transparent graft-based pricing conversations without pressure.",
-  },
-  {
-    icon: <HelpCircle className="w-4 h-4" strokeWidth={1.5} />,
-    title: "Graft & Results Questions",
-    desc: "Density, hairline design, and realistic outcome expectations.",
-  },
-  {
-    icon: <Clock className="w-4 h-4" strokeWidth={1.5} />,
-    title: "Recovery & Aftercare Concerns",
-    desc: "Healing timeline, shedding phase, and post-op care guidance.",
-  },
-  {
-    icon: <Plane className="w-4 h-4" strokeWidth={1.5} />,
-    title: "Travel & International Patients",
-    desc: "Stay duration, airport pickup, and consultation scheduling abroad.",
-  },
-  {
-    icon: <MessageCircle className="w-4 h-4" strokeWidth={1.5} />,
-    title: "Hesitation & Objections Handling",
-    desc: "Pain, scars, and trust concerns answered calmly and clearly.",
-  },
-];
-
-const FAIL_POINTS = [
-  "Rigid scripted replies",
-  "No memory of previous messages",
-  "Robotic and unnatural responses",
-  "Misses context and patient intent",
-  "Poor follow-ups and drop-offs",
-  "Not built for hair transplant inquiries",
-];
-
-const WIN_POINTS = [
-  "Natural, human-like conversations",
-  "Remembers full conversation context",
-  "Understands patient intent deeply",
-  "Built specifically for hair transplant inquiries",
-  "Smart follow-ups that convert",
-  "Handles complex questions with ease",
-];
-
-export default function HowItWorksSection() {
-  return (
-    <div className="border-t" style={{ borderColor: BORDER }}>
-      {/* Section 1 — Hero Workflow */}
-      <section className="px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
-        <div className="mx-auto max-w-[1100px] grid lg:grid-cols-2 gap-6 lg:gap-10 items-start">
-          <div className="text-center lg:text-left">
-            <SectionLabel>How It Works</SectionLabel>
-            <h2 className={`mt-2 ${H2}`}>
-              Built around real clinic{" "}
-              <span style={{ color: GREEN }}>inquiry flow.</span>
-            </h2>
-            <p className={`mt-3 ${BODY} max-w-md mx-auto lg:mx-0`}>
-              From the first message to booked consultation and beyond — we handle every step
-              naturally.
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold text-[#18201f]">PREET</p>
+            <p className="text-[6px] text-[#7b8381]">
+              Hair Transplant Clinic
             </p>
-            <Link
-              href={DEMO_PATH}
-              className="mt-5 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full text-[13px] font-medium text-white transition-opacity hover:opacity-90 min-h-[44px]"
-              style={{ backgroundColor: GREEN }}
-            >
-              View Demo Conversations
-            </Link>
           </div>
 
-          <div
-            className="rounded-2xl border bg-white p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
-            style={{ borderColor: BORDER }}
-          >
-            <div className="hidden lg:flex items-start justify-between gap-0">
-              {WORKFLOW_STEPS.map((step, i) => (
-                <div key={step.title} className="flex items-start flex-1 min-w-0">
-                  <div className="flex flex-col items-center text-center flex-1 px-0.5">
-                    <div
-                      className="w-10 h-10 rounded-lg border flex items-center justify-center mb-2"
-                      style={{ borderColor: BORDER }}
-                    >
-                      {step.icon}
-                    </div>
-                    <p className="text-[11px] font-semibold text-[#111] leading-tight">{step.title}</p>
-                    <p className="mt-1 text-[9px] text-[#888] leading-snug max-w-[100px]">{step.desc}</p>
-                  </div>
-                  {i < WORKFLOW_STEPS.length - 1 && <DashedArrow className="mt-3" />}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex lg:hidden flex-col gap-0">
-              {WORKFLOW_STEPS.map((step, i) => (
-                <div key={step.title}>
-                  <div className="flex items-start gap-3 py-2">
-                    <div
-                      className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0"
-                      style={{ borderColor: BORDER }}
-                    >
-                      {step.icon}
-                    </div>
-                    <div>
-                      <p className="text-[13px] font-semibold text-[#111]">{step.title}</p>
-                      <p className="text-[11px] text-[#888] mt-0.5">{step.desc}</p>
-                    </div>
-                  </div>
-                  {i < WORKFLOW_STEPS.length - 1 && (
-                    <div className="flex justify-center py-1">
-                      <ArrowRight className="w-4 h-4 text-[#ccc] rotate-90" strokeWidth={1.5} />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 2 — Step by Step */}
-      <section id="step-by-step" className="px-4 sm:px-6 lg:px-8 py-8 sm:py-10 border-t" style={{ borderColor: BORDER }}>
-        <div className="mx-auto max-w-[1100px] text-center">
-          <SectionLabel>Step by Step</SectionLabel>
-          <h2 className={`mt-2 ${H2}`}>
-            How conversations <span style={{ color: GREEN }}>flow.</span>
-          </h2>
-          <p className={`mt-3 ${BODY} max-w-lg mx-auto`}>
-            Natural, human-like conversations that qualify, inform and move patients forward.
-          </p>
+          <Phone className="h-3 w-3 text-[#69716f]" />
         </div>
 
-        <div className="mx-auto max-w-[1100px] mt-6 sm:mt-8">
-          <div className="hidden xl:flex items-start gap-0.5">
-            {FLOW_STEPS.map((step, i) => (
-              <div key={step.num} className="flex items-start flex-1 min-w-0">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className="w-5 h-5 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: GREEN }}
-                    >
-                      {step.num}
-                    </span>
-                    <div className="text-left min-w-0">
-                      <p className="text-[11px] font-semibold text-[#111] leading-tight">{step.title}</p>
-                      <p className="text-[9px] text-[#888]">{step.desc}</p>
-                    </div>
-                  </div>
-                  <StepChatCard messages={step.messages} />
-                </div>
-                {i < FLOW_STEPS.length - 1 && <DashedArrow className="mt-14 mx-0.5" />}
-              </div>
-            ))}
-          </div>
-
-          <div className="xl:hidden flex flex-col gap-6">
-            {FLOW_STEPS.map((step, i) => (
-              <div key={step.num}>
-                <div className="flex items-center gap-2 mb-2">
-                  <span
-                    className="w-5 h-5 rounded-full text-[10px] font-semibold text-white flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: GREEN }}
-                  >
-                    {step.num}
-                  </span>
-                  <div>
-                    <p className="text-[12px] font-semibold text-[#111]">{step.title}</p>
-                    <p className="text-[10px] text-[#888]">{step.desc}</p>
-                  </div>
-                </div>
-                <StepChatCard messages={step.messages} />
-                {i < FLOW_STEPS.length - 1 && (
-                  <div className="flex justify-center mt-4">
-                    <ArrowRight className="w-4 h-4 text-[#ccc] rotate-90" strokeWidth={1.5} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3 — Real Scenarios */}
-      <section className="px-4 sm:px-6 lg:px-8 py-8 sm:py-10 border-t" style={{ borderColor: BORDER }}>
-        <div className="mx-auto max-w-[1100px] text-center">
-          <SectionLabel>In Action</SectionLabel>
-          <h2 className={`mt-2 ${H2}`}>
-            Real scenarios we handle <span style={{ color: GREEN }}>every day.</span>
-          </h2>
-          <p className={`mt-3 ${BODY} max-w-lg mx-auto`}>
-            From simple questions to complex concerns — handled naturally.
-          </p>
+        <div className="flex items-center gap-2 bg-[#f0f2f3] px-3 py-1.5 text-[6px] text-[#7a8380]">
+          <span>Today</span>
         </div>
 
-        <div className="mx-auto max-w-[1100px] mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
-          {SCENARIOS.map((card) => (
+        <div
+          className="min-h-[235px] space-y-2 p-2.5"
+          style={{ backgroundColor: CHAT_BG }}
+        >
+          {messages.map((message, index) => (
             <div
-              key={card.title}
-              className="flex flex-col items-center text-center rounded-xl border bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
-              style={{ borderColor: BORDER }}
+              key={index}
+              className={`flex ${
+                message.side === "right"
+                  ? "justify-end"
+                  : "justify-start"
+              }`}
             >
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center mb-3"
-                style={{ backgroundColor: `${GREEN}12`, color: GREEN }}
+                className={`max-w-[84%] rounded-[9px] px-2.5 py-2 text-[8px] leading-[1.4] text-[#27302e] ${
+                  message.side === "right"
+                    ? "rounded-br-[3px]"
+                    : "rounded-bl-[3px] bg-white"
+                }`}
+                style={{
+                  backgroundColor:
+                    message.side === "right" ? CHAT_GREEN : WHITE,
+                }}
               >
-                {card.icon}
+                {message.text}
+
+                {message.time && (
+                  <span className="ml-1.5 whitespace-nowrap text-[5px] text-[#7d8582]">
+                    {message.time}
+                  </span>
+                )}
               </div>
-              <h3 className="text-[13px] font-semibold text-[#111] leading-snug">{card.title}</h3>
-              <p className="mt-2 text-[11px] leading-relaxed text-[#777] flex-1">{card.desc}</p>
-              <button
-                type="button"
-                className="mt-3 w-full px-3 py-1.5 rounded-full text-[11px] font-medium border bg-white transition-colors hover:bg-[#fafafa]"
-                style={{ borderColor: BORDER, color: "#444" }}
-              >
-                See Example Chat
-              </button>
             </div>
           ))}
         </div>
-      </section>
 
-      {/* Section 4 — Comparison */}
-      <section className="px-4 sm:px-6 lg:px-8 py-8 sm:py-10 border-t" style={{ borderColor: BORDER }}>
-        <div className="mx-auto max-w-[1100px]">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_1.1fr] gap-4 lg:gap-5 items-stretch">
-            <div
-              className="rounded-xl border bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-              style={{ borderColor: BORDER }}
-            >
-              <h3 className="text-[17px] sm:text-[18px] font-medium text-[#111] mb-4">
-                Why regular bots <span style={{ color: RED }}>fail.</span>
-              </h3>
-              <ul className="space-y-2.5">
-                {FAIL_POINTS.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-[12px] sm:text-[13px] text-[#555]">
-                    <X className="w-4 h-4 shrink-0 mt-0.5" style={{ color: RED }} strokeWidth={2} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="flex items-center gap-1.5 border-t border-[#e3e5e5] bg-white px-2 py-2">
+          <div className="flex-1 rounded-full bg-[#f2f4f4] px-2.5 py-1.5 text-[6px] text-[#9aa09e]">
+            Type a message...
+          </div>
 
-            <div className="flex items-center justify-center py-0.5 lg:py-0">
-              <span
-                className="w-9 h-9 rounded-full border flex items-center justify-center text-[11px] font-bold text-[#999] bg-[#fafafa]"
-                style={{ borderColor: BORDER }}
-              >
-                VS
-              </span>
-            </div>
-
-            <div
-              className="rounded-xl border bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-              style={{ borderColor: BORDER }}
-            >
-              <h3 className="text-[17px] sm:text-[18px] font-medium text-[#111] mb-4">
-                Why NaseemLabs is <span style={{ color: GREEN }}>different.</span>
-              </h3>
-              <ul className="space-y-2.5">
-                {WIN_POINTS.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-[12px] sm:text-[13px] text-[#555]">
-                    <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: GREEN }} strokeWidth={2.5} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div
-              className="rounded-xl border bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)] lg:row-span-1"
-              style={{ borderColor: BORDER }}
-            >
-              <MiniWaHeader />
-              <div className="px-2 py-2" style={{ backgroundColor: CHAT_BG }}>
-                <WaBubble side="left" time="8:30 PM">
-                  Will there be visible scars after the procedure?
-                </WaBubble>
-                <WaBubble side="right" time="8:31 PM" ticks>
-                  {`With FUE, scarring is minimal — tiny dots\nthat are hard to see once healed.`}
-                </WaBubble>
-                <WaBubble side="left" time="8:32 PM">
-                  How long is the recovery?
-                </WaBubble>
-                <WaBubble side="right" time="8:32 PM" ticks>
-                  Most patients return to desk work in 3–5 days. Full results take 9–12 months.
-                </WaBubble>
-              </div>
-            </div>
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1a3c34] text-white">
+            <WhatsAppIcon className="h-3 w-3" />
           </div>
         </div>
-      </section>
-
-      {/* Section 5 — CTA Strip */}
-      <section className="px-4 sm:px-6 lg:px-8 pb-8 sm:pb-10">
-        <div
-          className="mx-auto max-w-[1100px] rounded-2xl px-5 sm:px-8 py-6 sm:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-5"
-          style={{
-            background: "linear-gradient(135deg, #1a1a1a 0%, #252525 50%, #1e241c 100%)",
-          }}
-        >
-          <div className="text-center md:text-left">
-            <span className={`${LABEL} text-[#4ade80]`}>See It In Action</span>
-            <h2 className="mt-1.5 text-[20px] sm:text-[22px] font-medium text-white tracking-[-0.02em]">
-              See real conversations.
-            </h2>
-            <p className="mt-2 text-[13px] leading-relaxed text-[#a3a3a3] max-w-md mx-auto md:mx-0">
-              Explore how we handle real patient inquiries just like your clinic does.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2.5 justify-center md:justify-end shrink-0">
-            <Link
-              href={DEMO_PATH}
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full text-[13px] font-medium text-white transition-opacity hover:opacity-90 min-h-[44px]"
-              style={{ backgroundColor: GREEN }}
-            >
-              Explore Demo
-            </Link>
-            <WhatsAppLink className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full text-[13px] font-medium bg-white text-[#111] transition-opacity hover:opacity-95 min-h-[44px]">
-              <WhatsAppIcon className="w-4 h-4" />
-              Chat on WhatsApp
-            </WhatsAppLink>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
+  );
+}
+
+function StepBar() {
+  const steps = [
+    ["01", "Inquiry", "Patient reaches out"],
+    ["02", "Understand", "Learn their situation"],
+    ["03", "Identify", "Concerns or blockers"],
+    ["04", "Explain", "Clear why + how"],
+    ["05", "Collect", "Information + photos"],
+    ["06", "Progress", "Offer consultation"],
+    ["07", "Handover", "Your team takes over"],
+  ];
+
+  return (
+    <section
+      className="border-y bg-white"
+      style={{ borderColor: BORDER }}
+    >
+      <div className="mx-auto flex max-w-[1180px] overflow-x-auto px-4 py-3.5 sm:px-6 lg:px-8">
+        {steps.map(([number, title, description], index) => (
+          <div
+            key={number}
+            className="flex min-w-[118px] flex-1 items-center"
+          >
+            <div className="min-w-0 flex-1 text-center">
+              <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-[#1a3c34] text-[9px] font-bold text-white">
+                {number}
+              </div>
+
+              <p className="mt-1.5 text-[9px] font-bold text-[#1a2422]">
+                {title}
+              </p>
+
+              <p className="mt-0.5 whitespace-nowrap text-[6px] text-[#818886]">
+                {description}
+              </p>
+            </div>
+
+            {index < steps.length - 1 && (
+              <ChevronRight className="h-3 w-3 shrink-0 text-[#c4ccca]" />
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function InfoCard({
+  title,
+  items,
+  dark = false,
+}: {
+  title: string;
+  items: string[];
+  dark?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-[4px] border p-4 sm:p-5 ${
+        dark
+          ? "border-white/10 bg-white/[0.025]"
+          : "border-black/[0.07] bg-white/80"
+      }`}
+    >
+      <p
+        className={`text-[10px] font-bold ${
+          dark ? "text-white" : "text-[#17201e]"
+        }`}
+      >
+        {title}
+      </p>
+
+      <ul className="mt-3.5 space-y-2.5">
+        {items.map((item) => (
+          <li
+            key={item}
+            className={`flex gap-2 text-[8px] leading-[1.45] sm:text-[9px] ${
+              dark ? "text-white/72" : "text-[#59615f]"
+            }`}
+          >
+            <CheckCircle2
+              className={`mt-[1px] h-3 w-3 shrink-0 ${
+                dark ? "text-[#5de0c6]" : "text-[#1a3c34]"
+              }`}
+              strokeWidth={2.1}
+            />
+
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function WorkflowRow({
+  number,
+  eyebrow,
+  title,
+  description,
+  dark = false,
+  center,
+  rightTitle,
+  rightItems,
+}: {
+  number: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  dark?: boolean;
+  center: React.ReactNode;
+  rightTitle: string;
+  rightItems: string[];
+}) {
+  return (
+    <section
+      className={dark
+        ? "bg-[#1a3c34] text-white"
+        : "bg-[#f7f6f2] text-[#121212]"}
+    >
+      <div
+        className="mx-auto grid max-w-[1180px] items-center gap-7 border-b px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[0.92fr_1.12fr_0.9fr] lg:gap-8 lg:px-8 lg:py-11"
+        style={{
+          borderColor: dark
+            ? "rgba(255,255,255,0.08)"
+            : BORDER,
+        }}
+      >
+        <div className="relative pl-9 sm:pl-10">
+          <div
+            className={`absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-full text-[9px] font-semibold ${
+              dark
+                ? "bg-white/10 text-[#5de0c6]"
+                : "bg-[#eef3ee] text-[#1a3c34]"
+            }`}
+          >
+            {number}
+          </div>
+
+          <Eyebrow dark={dark}>{eyebrow}</Eyebrow>
+
+          <h2 className="mt-2 max-w-[350px] font-serif text-[24px] leading-[1.04] tracking-[-0.025em] sm:text-[30px]">
+            {title}
+          </h2>
+
+          <p
+            className={`mt-3 max-w-[350px] text-[9px] leading-[1.65] sm:text-[10px] ${
+              dark ? "text-white/68" : "text-[#68706e]"
+            }`}
+          >
+            {description}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center">
+          {center}
+        </div>
+
+        <InfoCard
+          title={rightTitle}
+          items={rightItems}
+          dark={dark}
+        />
+      </div>
+    </section>
+  );
+}
+
+function AssessmentPanel() {
+  return (
+    <div className="w-full max-w-[450px] space-y-2.5">
+      <div className="grid grid-cols-3 gap-2">
+        <div className="overflow-hidden rounded-[5px] border border-black/[0.06] bg-white">
+          <Image
+            src="/homepage/scalp-front.jpg"
+            alt="Front scalp assessment"
+            width={220}
+            height={160}
+            className="aspect-[4/3] w-full object-cover"
+          />
+        </div>
+
+        <div className="overflow-hidden rounded-[5px] border border-black/[0.06] bg-white">
+          <Image
+            src="/homepage/scalp-top.jpg"
+            alt="Top scalp assessment"
+            width={220}
+            height={160}
+            className="aspect-[4/3] w-full object-cover"
+          />
+        </div>
+
+        <div className="overflow-hidden rounded-[5px] border border-black/[0.06] bg-white">
+          <Image
+            src="/homepage/scalp-side.jpg"
+            alt="Side scalp assessment"
+            width={220}
+            height={160}
+            className="aspect-[4/3] w-full object-cover"
+          />
+        </div>
+      </div>
+
+      <div className="rounded-[5px] border border-black/[0.07] bg-white p-3.5">
+        <div className="flex items-center justify-between border-b border-black/[0.06] pb-2.5">
+          <p className="text-[9px] font-bold text-[#1b2523]">
+            Preliminary Assessment (Example)
+          </p>
+
+          <span className="rounded-full bg-[#eef3ee] px-2 py-1 text-[6px] font-bold text-[#1a3c34]">
+            PRELIMINARY
+          </span>
+        </div>
+
+        <div className="mt-2.5 grid grid-cols-2 gap-x-5 gap-y-2 text-[7px] sm:text-[8px]">
+          <div>
+            <span className="text-[#8b9290]">Norwood Stage</span>
+            <p className="mt-0.5 font-semibold">III</p>
+          </div>
+
+          <div>
+            <span className="text-[#8b9290]">Estimated Grafts</span>
+            <p className="mt-0.5 font-semibold">2,500 – 3,000</p>
+          </div>
+
+          <div>
+            <span className="text-[#8b9290]">Estimated Price</span>
+            <p className="mt-0.5 font-semibold">£4,000 – £6,000</p>
+          </div>
+
+          <div>
+            <span className="text-[#8b9290]">Affected Area</span>
+            <p className="mt-0.5 font-semibold">Front + Mid Scalp</p>
+          </div>
+
+          <div>
+            <span className="text-[#8b9290]">Donor Area</span>
+            <p className="mt-0.5 font-semibold">Good coverage</p>
+          </div>
+
+          <div>
+            <span className="text-[#8b9290]">Assessment</span>
+            <p className="mt-0.5 font-semibold">Preliminary only</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HandoverPanel() {
+  return (
+    <div className="w-full max-w-[450px] rounded-[5px] border border-black/[0.08] bg-white p-3 shadow-[0_12px_30px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center justify-between border-b border-black/[0.06] pb-2.5">
+        <div>
+          <p className="text-[9px] font-bold text-[#18211f]">
+            NaseemLabs
+          </p>
+          <p className="text-[6px] text-[#8a918f]">
+            Clinic workspace
+          </p>
+        </div>
+
+        <span className="rounded-full bg-[#eef3ee] px-2 py-1 text-[6px] font-bold text-[#1a3c34]">
+          Consultation Booked
+        </span>
+      </div>
+
+      <div className="mt-2.5 grid grid-cols-[70px_1fr] gap-2.5">
+        <div className="space-y-1.5 border-r border-black/[0.06] pr-2 text-[6px] text-[#7c8481]">
+          <p className="rounded bg-[#eef3ee] px-1.5 py-1 font-semibold text-[#1a3c34]">
+            Conversations
+          </p>
+          <p>Patients</p>
+          <p>Consultations</p>
+          <p>Follow-ups</p>
+          <p>Staff Notes</p>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between">
+            <p className="text-[8px] font-bold text-[#17201e]">
+              john doe
+            </p>
+
+            <span className="text-[6px] text-[#1a3c34]">
+              ● Consultation Booked
+            </span>
+          </div>
+
+          <div className="mt-2 grid grid-cols-2 gap-1.5">
+            <div className="rounded bg-[#f5f7f6] p-1.5">
+              <p className="text-[5px] text-[#8a918f]">Concern</p>
+              <p className="mt-0.5 text-[6px] font-semibold">
+                Grafts, cost, recovery
+              </p>
+            </div>
+
+            <div className="rounded bg-[#f5f7f6] p-1.5">
+              <p className="text-[5px] text-[#8a918f]">
+                Estimated Price
+              </p>
+              <p className="mt-0.5 text-[6px] font-semibold">
+                £4,000 – £6,000
+              </p>
+            </div>
+
+            <div className="rounded bg-[#f5f7f6] p-1.5">
+              <p className="text-[5px] text-[#8a918f]">
+                Estimated Grafts
+              </p>
+              <p className="mt-0.5 text-[6px] font-semibold">
+                2,500 – 3,000
+              </p>
+            </div>
+
+            <div className="rounded bg-[#f5f7f6] p-1.5">
+              <p className="text-[5px] text-[#8a918f]">Status</p>
+              <p className="mt-0.5 text-[6px] font-semibold">
+                Consultation accepted
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2 rounded bg-[#e8f5ef] px-2 py-1.5 text-[6px] text-[#36554d]">
+            Next action: Clinic to contact patient
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function HowItWorksSection() {
+  return (
+    <main
+      className="overflow-hidden"
+      style={{ backgroundColor: PAGE }}
+    >
+      {/* HERO */}
+
+      <section className="relative overflow-hidden bg-[#f7f6f2]">
+        <div className="mx-auto grid max-w-[1180px] lg:grid-cols-[0.88fr_1.12fr]">
+          <div className="relative z-10 flex flex-col justify-center px-5 py-10 sm:px-8 sm:py-14 lg:px-8 lg:py-16">
+            <Eyebrow>How It Works</Eyebrow>
+
+            <h1 className="mt-3 max-w-[540px] font-serif text-[40px] leading-[0.96] tracking-[-0.04em] text-[#111b1a] sm:text-[53px] lg:text-[57px]">
+              From first message
+              <br />
+              to consultation.
+            </h1>
+
+            <p className="mt-4 max-w-[470px] text-[11px] leading-[1.65] text-[#586461] sm:text-[12px]">
+              See exactly how PREET keeps a patient inquiry moving,
+              handles concerns, collects the right information and gets
+              the patient to the point where your team can take over.
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              <Link
+                href={DEMO_PATH}
+                className="inline-flex min-h-[46px] items-center gap-2 rounded-full bg-[#1a3c34] px-5 py-3 text-[14px] font-medium text-white"
+              >
+                <WhatsAppIcon className="h-3.5 w-3.5" />
+                See a Real Conversation
+                <ArrowRight className="h-3 w-3" />
+              </Link>
+
+              <WhatsAppLink
+                className="inline-flex min-h-[38px] items-center rounded-[5px] border border-black/[0.08] bg-white px-4 py-2.5 text-[9px] font-bold text-[#26302e]"
+              >
+                Test PREET Yourself
+              </WhatsAppLink>
+            </div>
+          </div>
+
+          <div className="relative min-h-[320px] sm:min-h-[400px] lg:min-h-[455px]">
+            <Image
+              src="/homepage/final-hero-image.png"
+              alt="Hair restoration consultation"
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="(max-width: 1024px) 100vw, 60vw"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-r from-[#f7f6f2] via-transparent to-black/10" />
+
+            <div className="absolute bottom-[-2px] left-[8%] w-[185px] sm:left-[16%] sm:w-[215px] lg:left-[12%] lg:w-[235px]">
+              <PhoneMockup
+                messages={[
+                  {
+                    side: "left",
+                    text: "Hi, I'm interested in a hair transplant. How much does it cost?",
+                    time: "10:21",
+                  },
+                  {
+                    side: "right",
+                    text: "I'd be happy to help. To give you an accurate estimate, could you tell me a bit about your current hair condition?",
+                    time: "10:22",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <StepBar />
+
+      {/* STEP 01 */}
+
+      <WorkflowRow
+        number="01"
+        eyebrow="INQUIRY"
+        title="A patient reaches out on WhatsApp."
+        description="The conversation starts with a simple question. This could be about cost, procedure, recovery, or just general information."
+        rightTitle="What PREET is doing here"
+        rightItems={[
+          "Recognizes a new inquiry",
+          "Understands the initial intent",
+          "Starts a natural conversation",
+          "Avoids a generic one-line response",
+        ]}
+        center={
+          <PhoneMockup
+            messages={[
+              {
+                side: "left",
+                text: "Hi, I'm interested in a hair transplant. How much does it cost?",
+                time: "10:21",
+              },
+              {
+                side: "right",
+                text: "I'd be happy to help. To give you an accurate estimate, could you tell me a bit about your current hair condition?",
+                time: "10:22",
+              },
+            ]}
+          />
+        }
+      />
+
+      {/* STEP 02 */}
+
+      <WorkflowRow
+        number="02"
+        eyebrow="UNDERSTAND"
+        title="Understands the patient’s situation."
+        description="PREET asks relevant questions to understand the patient’s goals, hair loss pattern, timeline and expectations."
+        dark
+        rightTitle="What PREET is doing here"
+        rightItems={[
+          "Understands the patient's situation",
+          "Identifies relevant information",
+          "Asks structured questions",
+          "Builds a clear picture before giving estimates",
+        ]}
+        center={
+          <PhoneMockup
+            messages={[
+              {
+                side: "left",
+                text: "I've been losing hair for about 5 years. Mainly the front and crown.",
+                time: "10:23",
+              },
+              {
+                side: "right",
+                text: "Thanks for sharing. Could you also tell me: • When did you first notice hair loss? • Is it still progressing? • Have you had any previous treatments?",
+                time: "10:24",
+              },
+            ]}
+          />
+        }
+      />
+
+      {/* STEP 03 */}
+
+      <WorkflowRow
+        number="03"
+        eyebrow="IDENTIFY CONCERN"
+        title="Finds out what is holding the patient back."
+        description="Every patient has specific concerns. PREET identifies what matters most for this patient so the conversation goes in the right direction."
+        rightTitle="Common patient concerns"
+        rightItems={[
+          "Number of grafts",
+          "Cost and budget",
+          "Pain and recovery",
+          "Results and natural look",
+          "Trust and safety",
+          "Travel and stay (international patients)",
+        ]}
+        center={
+          <PhoneMockup
+            messages={[
+              {
+                side: "left",
+                text: "I'm mainly worried about how many grafts I'll need and the total cost.",
+                time: "10:28",
+              },
+              {
+                side: "right",
+                text: "That's completely understandable. Let me explain how we estimate grafts and what affects the cost.",
+                time: "10:29",
+              },
+            ]}
+          />
+        }
+      />
+
+      {/* STEP 04 */}
+
+      <WorkflowRow
+        number="04"
+        eyebrow="EXPLAIN WHY + HOW"
+        title="Gives clear explanations, not just quick answers."
+        description="PREET explains reasoning in simple terms — the WHY and HOW behind the recommendations, based on the clinic’s configured information."
+        dark
+        rightTitle="Clear and educational responses"
+        rightItems={[
+          "Explains the reasoning (WHY)",
+          "Explains the process (HOW)",
+          "Uses clinic-specific information",
+          "Helps the patient make an informed decision",
+        ]}
+        center={
+          <PhoneMockup
+            messages={[
+              {
+                side: "left",
+                text: "I'm mainly worried about how many grafts?",
+                time: "10:30",
+              },
+              {
+                side: "right",
+                text: "The number of grafts depends on: • The areas affected (front, crown, etc.) • The size of the area • The density you want to achieve. A closer look at your scalp photos gives a much more accurate estimate than a generic number.",
+                time: "10:31",
+              },
+            ]}
+          />
+        }
+      />
+
+      {/* STEP 05 */}
+
+      <WorkflowRow
+        number="05"
+        eyebrow="COLLECT INFORMATION"
+        title="Requests and analyzes scalp photos."
+        description="When needed, PREET asks for scalp images, analyzes them and provides a preliminary explanation to help the patient understand their situation."
+        rightTitle="Preliminary Assessment (Example)"
+        rightItems={[
+          "Norwood Stage — III",
+          "Estimated Grafts — 2,500 – 3,000",
+          "Estimated Price — £4,000 – £6,000",
+          "Affected Area — Front + Mid Scalp",
+          "Donor Area — Good coverage",
+        ]}
+        center={<AssessmentPanel />}
+      />
+
+      {/* STEP 06 */}
+
+      <WorkflowRow
+        number="06"
+        eyebrow="PROGRESS"
+        title="Handles objections and moves the conversation."
+        description="If the patient has concerns or hesitates, PREET identifies the blocker, provides relevant information and continues the conversation until the patient is ready."
+        dark
+        rightTitle="The progression loop"
+        rightItems={[
+          "Identify the concern",
+          "Explain and clarify",
+          "Offer consultation",
+          "If not ready → handle the blocker",
+          "Continue until accepted or handover",
+        ]}
+        center={
+          <PhoneMockup
+            messages={[
+              {
+                side: "left",
+                text: "That's more expensive than I expected.",
+                time: "10:34",
+              },
+              {
+                side: "right",
+                text: "I understand. The total cost depends on the number of grafts and the technique used. Many patients choose to start with a smaller area or discuss options with our doctor to find the right plan for their budget.",
+                time: "10:35",
+              },
+            ]}
+          />
+        }
+      />
+
+      {/* STEP 07 */}
+
+      <WorkflowRow
+        number="07"
+        eyebrow="CONSULTATION + HANDOVER"
+        title="When the patient is ready, your team takes over."
+        description="Once the patient accepts a consultation, your clinic receives a notification with a full conversation, summary and next steps."
+        rightTitle="Clinic receives"
+        rightItems={[
+          "Full patient conversation",
+          "Conversation summary",
+          "Patient intent and concerns",
+          "Relevant assessment information",
+          "Consultation status",
+          "Human handover notification",
+        ]}
+        center={<HandoverPanel />}
+      />
+
+      {/* CTA */}
+
+      <section className="relative overflow-hidden">
+        <div className="relative min-h-[330px] sm:min-h-[370px]">
+          <Image
+            src="/homepage/final-hero-image.png"
+            alt="Hair restoration clinic"
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+
+          <div className="absolute inset-0 bg-[#002c28]/80" />
+
+          <div className="relative mx-auto flex min-h-[330px] max-w-[850px] flex-col items-center justify-center px-5 text-center text-white sm:min-h-[370px]">
+            <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#5de0c6]">
+              See It In Action
+            </p>
+
+            <h2 className="mt-3 font-serif text-[34px] leading-none tracking-[-0.03em] sm:text-[45px]">
+              Try a real patient scenario.
+            </h2>
+
+            <p className="mt-3 max-w-[580px] text-[10px] leading-[1.6] text-white/72 sm:text-[11px]">
+              Ask the questions your patients actually ask. Raise concerns.
+              Share photos. See how the conversation moves.
+            </p>
+
+            <div className="mt-5 flex flex-wrap justify-center gap-2.5">
+            <WhatsAppLink
+              className="inline-flex min-h-[46px] items-center gap-2 rounded-full bg-[#1a3c34] px-5 py-3 text-[14px] font-medium text-white"
+            >
+                <WhatsAppIcon className="h-3.5 w-3.5" />
+                Test PREET Yourself
+                <ArrowRight className="h-3 w-3" />
+            </WhatsAppLink>
+
+              <Link
+                href={DEMO_PATH}
+                className="inline-flex min-h-[38px] items-center rounded-[5px] border border-white/25 bg-black/10 px-4 py-2.5 text-[9px] font-bold text-white"
+              >
+                See a Complete Journey
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

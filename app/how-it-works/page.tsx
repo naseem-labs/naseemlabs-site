@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "See how NaseemLabs handles hair transplant clinic inquiries from first WhatsApp message to consultation booking.",
 };
 
-const BG = "#f7f7f5";
+const BG = "#f7f6f2";
 const TEXT = "#111111";
 export default function HowItWorksPage() {
   return (

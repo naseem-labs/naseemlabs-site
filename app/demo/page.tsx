@@ -1,171 +1,445 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import {
-  Brain,
-  Check,
-  Globe,
-  MessageCircle,
-  Sparkles,
-  Target,
-  Users,
-  Zap,
-} from "lucide-react";
-import DemoWorkspace from "@/components/demo/demo-workspace";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Play } from "lucide-react";
+import { Inter, Newsreader } from "next/font/google";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import WhatsAppLink from "@/components/whatsapp-link";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 
 export const metadata: Metadata = {
   title: "Live Demo — NaseemLabs",
   description:
-    "Experience real hair transplant clinic conversations — premium conversational inquiry simulator.",
+    "See a real patient journey and experience how PREET moves a hair restoration inquiry toward consultation.",
 };
 
-const GREEN = "#16a34a";
-const BG = "#f7f7f5";
+const GREEN = "#087f6b";
+const DARK = "#062823";
+const IVORY = "#f7f6f2";
 const TEXT = "#111111";
-const BORDER = "rgba(0,0,0,0.06)";
-const SECTION = "px-4 sm:px-6 lg:px-8";
+const BORDER = "rgba(26,28,24,0.10)";
 
-function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
+const DEMO_VIDEO = "/demo/demo.mp4";
+
+function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.099-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
     </svg>
   );
 }
 
-const BENEFITS = [
-  { icon: Brain, title: "Understands Context", desc: "Remembers what the patient already shared." },
-  { icon: MessageCircle, title: "Human-like Replies", desc: "Natural pacing, not scripted blocks." },
-  { icon: Target, title: "Clinic Specific", desc: "Built for hair transplant inquiry flow." },
-  { icon: Globe, title: "Multilingual", desc: "Handles mixed-language patient messages." },
-  { icon: Zap, title: "Smart Follow-ups", desc: "Keeps leads warm without pressure." },
-  { icon: Sparkles, title: "Conversion Focused", desc: "Moves patients toward consultation." },
-];
+function JourneyCard({
+  number,
+  title,
+  description,
+  side = "left",
+}: {
+  number: string;
+  title: string;
+  description: string;
+  side?: "left" | "right";
+}) {
+  return (
+    <div
+      className={`relative flex gap-3 rounded-lg border border-white/10 bg-white/[0.035] p-3.5 backdrop-blur-sm sm:p-4 ${
+        side === "right" ? "lg:translate-x-1" : "lg:-translate-x-1"
+      }`}
+    >
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#087f6b] text-[11px] font-semibold text-white shadow-[0_0_0_4px_rgba(8,127,107,0.10)]">
+        {number}
+      </div>
+
+      <div>
+        <h3 className="text-[13px] font-semibold leading-tight text-white">
+          {title}
+        </h3>
+
+        <p className="mt-1.5 text-[10px] leading-[1.55] text-white/65 sm:text-[11px]">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function PhoneVideo() {
+  return (
+    <div className="relative mx-auto w-[270px] sm:w-[290px]">
+      <div className="relative rounded-[38px] border-[7px] border-[#151515] bg-[#080808] p-[3px] shadow-[0_30px_70px_rgba(0,0,0,0.45)]">
+        <div className="absolute left-1/2 top-[9px] z-20 h-[22px] w-[92px] -translate-x-1/2 rounded-full bg-black" />
+
+        <div className="relative overflow-hidden rounded-[29px] bg-black">
+          <video
+            className="block aspect-[9/19.5] w-full object-cover"
+            src={DEMO_VIDEO}
+            controls
+            playsInline
+            preload="metadata"
+          />
+
+          <div className="pointer-events-none absolute inset-0 rounded-[29px] ring-1 ring-white/10" />
+        </div>
+      </div>
+
+      <div className="pointer-events-none absolute -bottom-3 left-1/2 h-1 w-20 -translate-x-1/2 rounded-full bg-black/70" />
+    </div>
+  );
+}
+
+function ScenarioCard({
+  title,
+  description,
+  time,
+}: {
+  title: string;
+  description: string;
+  time: string;
+}) {
+  return (
+    <div className="group">
+      <div className="relative aspect-video overflow-hidden rounded-lg border border-black/[0.08] bg-[#0a2723] shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
+        <video
+          src={DEMO_VIDEO}
+          muted
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-cover opacity-85 transition duration-300 group-hover:scale-[1.02]"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/5" />
+
+        <div className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#111] shadow-lg">
+          <Play className="ml-0.5 h-4 w-4 fill-current" />
+        </div>
+
+        <div className="absolute bottom-3 right-3 rounded bg-black/55 px-2 py-1 text-[8px] font-medium text-white backdrop-blur">
+          {time}
+        </div>
+      </div>
+
+      <h3 className="mt-3 text-[14px] font-semibold text-[#111]">
+        {title}
+      </h3>
+
+      <p className="mt-1 text-[11px] leading-[1.55] text-[#666b68]">
+        {description}
+      </p>
+    </div>
+  );
+}
 
 export default function DemoPage() {
   return (
     <div
-      className={`${inter.className} min-h-screen antialiased overflow-x-hidden`}
-      style={{ backgroundColor: BG, color: TEXT }}
+      className={`${inter.className} min-h-screen overflow-x-hidden antialiased`}
+      style={{
+        backgroundColor: IVORY,
+        color: TEXT,
+      }}
     >
       <SiteHeader activePage="demo" />
 
       <main>
-        {/* Hero */}
-        <section className={`${SECTION} pt-6 pb-6 sm:pt-8 sm:pb-8`}>
-          <div className="mx-auto max-w-[1280px] grid lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-            <div>
-              <span
-                className="text-[10px] font-semibold tracking-[0.1em] uppercase"
-                style={{ color: GREEN }}
-              >
+        {/* ========================================================= */}
+        {/* HERO / LIVE DEMO                                         */}
+        {/* ========================================================= */}
+
+        <section className="relative overflow-hidden bg-[#071d1b] text-white">
+          <div className="absolute inset-0">
+            <Image
+              src="/homepage/final-hero-image.png"
+              alt=""
+              fill
+              priority
+              className="object-cover object-center opacity-45"
+              sizes="100vw"
+            />
+
+            <div className="absolute inset-0 bg-[#061b19]/85" />
+
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(18,130,111,0.16),transparent_50%)]" />
+          </div>
+
+          <div className="relative mx-auto max-w-[1180px] px-4 pb-8 pt-10 sm:px-6 sm:pb-12 sm:pt-12 lg:px-8 lg:pt-14">
+            {/* Heading */}
+
+            <div className="text-center">
+              <span className="inline-flex rounded-full border border-[#1c8c7a] px-3 py-1 text-[9px] font-semibold uppercase tracking-[0.13em] text-[#6fe1ca]">
                 Live Demo
               </span>
-              <h1 className="mt-2 text-[26px] sm:text-[30px] lg:text-[34px] font-medium leading-[1.25] tracking-[-0.02em]">
-                See real conversations.{" "}
-                <span style={{ color: GREEN }}>Feel the difference.</span>
-              </h1>
-              <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-lg">
-                Explore how our conversational system handles real patient inquiries — naturally,
-                intelligently, and effectively.
-              </p>
-              <div
-                className="mt-5 rounded-xl border px-4 py-3 flex items-start gap-3 max-w-md"
-                style={{ borderColor: BORDER, backgroundColor: "#fff" }}
+
+              <h1
+                className={`${newsreader.className} mt-4 text-[42px] leading-[0.98] tracking-[-0.035em] sm:text-[54px] lg:text-[62px]`}
               >
-                <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: GREEN }} strokeWidth={2.5} />
-                <p className="text-[12px] leading-relaxed text-[#666]">
-                  Type below or upload a scalp photo — responses use the same flow your clinic would
-                  run on WhatsApp.
-                </p>
+                See the Infrastructure in Action.
+              </h1>
+
+              <p className="mx-auto mt-3 max-w-[620px] text-[13px] leading-[1.6] text-white/70 sm:text-[15px]">
+                Watch a real patient journey and then test it yourself on
+                WhatsApp.
+              </p>
+            </div>
+
+            {/* Main journey */}
+
+            <div className="mx-auto mt-9 grid max-w-[1080px] items-center gap-6 lg:grid-cols-[1fr_320px_1fr] lg:gap-8">
+              {/* LEFT */}
+
+              <div className="order-2 space-y-3 lg:order-1">
+                <JourneyCard
+                  number="1"
+                  title="Inquiry at 11:17 PM"
+                  description="A new patient reaches out with a simple question."
+                />
+
+                <JourneyCard
+                  number="2"
+                  title="Understands & Asks"
+                  description="PREET asks relevant questions to understand the patient's situation."
+                />
+
+                <JourneyCard
+                  number="3"
+                  title="Requests Photos"
+                  description="Patient shares scalp photos from the front, top and back."
+                />
+
+                <JourneyCard
+                  number="4"
+                  title="Provides Assessment"
+                  description="Preliminary Norwood stage, graft range and estimated pricing based on clinic information."
+                />
+              </div>
+
+              {/* PHONE */}
+
+              <div className="order-1 flex justify-center lg:order-2">
+                <PhoneVideo />
+              </div>
+
+              {/* RIGHT */}
+
+              <div className="order-3 space-y-3">
+                <JourneyCard
+                  number="5"
+                  title="Handles Concerns"
+                  description="Patient raises a price objection. PREET explains the why and how."
+                  side="right"
+                />
+
+                <JourneyCard
+                  number="6"
+                  title="Moves Towards Consultation"
+                  description="Once the patient is ready, a consultation is offered."
+                  side="right"
+                />
+
+                <JourneyCard
+                  number="7"
+                  title="Consultation Booked"
+                  description="Patient accepts and your team is notified with the relevant context."
+                  side="right"
+                />
+
+                <div className="rounded-lg border border-white/10 bg-white/[0.035] p-3.5 backdrop-blur-sm sm:p-4">
+                  <div className="flex gap-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg">
+                      ◐
+                    </div>
+
+                    <div>
+                      <h3 className="text-[13px] font-semibold">
+                        Works 24/7
+                      </h3>
+
+                      <p className="mt-1.5 text-[10px] leading-[1.55] text-white/65 sm:text-[11px]">
+                        Handles inquiries even when your team is unavailable.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-2.5">
-              {[
-                { icon: MessageCircle, title: "Real Scenarios", desc: "Actual patient questions from clinics." },
-                { icon: Brain, title: "Human-like Flow", desc: "Natural responses with context & memory." },
-                { icon: Target, title: "Built for Results", desc: "Designed to move patients towards consultation." },
-              ].map((card) => (
-                <div
-                  key={card.title}
-                  className="rounded-xl border bg-white px-3 py-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
-                  style={{ borderColor: BORDER }}
-                >
-                  <card.icon className="w-4 h-4 mb-2" style={{ color: GREEN }} strokeWidth={1.5} />
-                  <p className="text-[12px] font-semibold text-[#111]">{card.title}</p>
-                  <p className="text-[10px] text-[#888] mt-1 leading-snug">{card.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+            {/* CTA */}
 
-        <DemoWorkspace />
-
-        {/* Benefits */}
-        <section className={`${SECTION} py-8 sm:py-10 border-t`} style={{ borderColor: BORDER }}>
-          <div className="mx-auto max-w-[1280px] text-center">
-            <h2 className="text-[20px] sm:text-[24px] font-medium tracking-[-0.02em]">
-              Not a bot. A conversational expert for your clinic.
-            </h2>
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {BENEFITS.map((b) => (
-                <div
-                  key={b.title}
-                  className="rounded-xl border bg-white p-3 text-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
-                  style={{ borderColor: BORDER }}
-                >
-                  <b.icon className="w-4 h-4 mx-auto mb-2" style={{ color: GREEN }} strokeWidth={1.5} />
-                  <p className="text-[11px] font-semibold text-[#111]">{b.title}</p>
-                  <p className="text-[9px] text-[#888] mt-1 leading-snug">{b.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className={`${SECTION} pb-8 sm:pb-10`}>
-          <div
-            className="mx-auto max-w-[1280px] rounded-2xl px-5 sm:px-8 py-6 sm:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-5"
-            style={{
-              background: "linear-gradient(135deg, #1a1a1a 0%, #252525 50%, #1e241c 100%)",
-            }}
-          >
-            <div className="text-center md:text-left">
-              <span className="text-[10px] font-semibold tracking-[0.1em] uppercase text-[#4ade80]">
-                Experience it yourself
-              </span>
-              <h2 className="mt-1.5 text-[20px] sm:text-[22px] font-medium text-white tracking-[-0.02em]">
-                Try more conversations in real-time.
-              </h2>
-              <p className="mt-2 text-[13px] text-[#a3a3a3]">Switch scenarios and see how each inquiry type is handled.</p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2.5 justify-center md:justify-end">
-              <WhatsAppLink
-                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full text-[13px] font-medium text-white min-h-[44px]"
-                style={{ backgroundColor: GREEN }}
-              >
-                <WhatsAppIcon className="w-4 h-4" />
-                Chat on WhatsApp
+            <div className="mt-7 text-center">
+              <WhatsAppLink className="mx-auto inline-flex min-h-[48px] items-center justify-center gap-2 rounded-md border border-white/30 bg-[#0ab394] px-6 py-3 text-[13px] font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition hover:bg-[#0d9e86]">
+                <WhatsAppIcon className="h-5 w-5" />
+                Test PREET Yourself – WhatsApp Us
+                <ArrowRight className="h-4 w-4" />
               </WhatsAppLink>
-              <a
-                href="#demo-workspace"
-                className="inline-flex items-center justify-center px-4 py-3 rounded-full text-[13px] font-medium bg-white text-[#111] min-h-[44px]"
-              >
-                Explore More Scenarios
-              </a>
+
+              <p className="mt-2 text-[9px] text-white/45">
+                Click to open WhatsApp with &quot;TEST&quot; message pre-filled.
+              </p>
             </div>
+          </div>
+        </section>
+
+        {/* ========================================================= */}
+        {/* SCENARIOS                                                 */}
+        {/* ========================================================= */}
+
+        <section className="bg-[#f7f6f2] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-[1180px]">
+            <div className="text-center">
+              <span className="inline-flex rounded-full bg-[#e4efec] px-3 py-1 text-[8px] font-bold uppercase tracking-[0.12em] text-[#087f6b]">
+                Watch Specific Scenarios
+              </span>
+
+              <h2
+                className={`${newsreader.className} mt-3 text-[34px] leading-[1] tracking-[-0.03em] text-[#111] sm:text-[44px]`}
+              >
+                Explore More Patient Journeys
+              </h2>
+
+              <p className="mx-auto mt-3 max-w-[620px] text-[12px] leading-[1.65] text-[#666b68] sm:text-[13px]">
+                See how PREET handles different types of inquiries, concerns
+                and situations.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <ScenarioCard
+                title="Cost Inquiry"
+                description="See how PREET provides accurate pricing based on the patient's situation."
+                time="1:08"
+              />
+
+              <ScenarioCard
+                title="Pain & Recovery"
+                description="See how PREET explains the procedure, recovery timeline and what to expect."
+                time="1:12"
+              />
+
+              <ScenarioCard
+                title="Photo Assessment"
+                description="See how PREET analyses scalp photos and provides preliminary information."
+                time="1:14"
+              />
+
+              <ScenarioCard
+                title="Objection Handling"
+                description="See how PREET identifies concerns, explains clearly and moves the conversation forward."
+                time="1:16"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================= */}
+        {/* HOW THE JOURNEY WORKS                                     */}
+        {/* ========================================================= */}
+
+        <section className="border-y bg-white px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <div className="mx-auto max-w-[1050px]">
+            <div className="text-center">
+              <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-[#087f6b]">
+                The Patient Journey
+              </p>
+
+              <h2
+                className={`${newsreader.className} mt-3 text-[31px] leading-[1] tracking-[-0.03em] sm:text-[40px]`}
+              >
+                From first message to consultation.
+              </h2>
+            </div>
+
+            <div className="mt-8 grid gap-3 md:grid-cols-4">
+              {[
+                ["01", "Understand", "Learn what the patient needs."],
+                ["02", "Identify", "Find concerns and missing information."],
+                ["03", "Explain", "Give relevant context and answers."],
+                ["04", "Progress", "Move toward consultation."],
+              ].map(([number, title, description]) => (
+                <div
+                  key={number}
+                  className="relative rounded-lg border border-black/[0.07] bg-[#f7f6f2] p-4"
+                >
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#087f6b] text-[8px] font-bold text-white">
+                    {number}
+                  </div>
+
+                  <h3 className="mt-3 text-[12px] font-semibold">
+                    {title}
+                  </h3>
+
+                  <p className="mt-1 text-[9px] leading-[1.5] text-[#707673]">
+                    {description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================= */}
+        {/* FINAL CTA                                                 */}
+        {/* ========================================================= */}
+
+        <section className="relative overflow-hidden bg-[#062823] text-white">
+          <div className="absolute inset-0">
+            <Image
+              src="/homepage/final-hero-image.png"
+              alt=""
+              fill
+              className="object-cover opacity-20"
+              sizes="100vw"
+            />
+
+            <div className="absolute inset-0 bg-[#062823]/90" />
+
+            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_30%,#0b8d78_1px,transparent_1px)] [background-size:28px_28px]" />
+          </div>
+
+          <div className="relative mx-auto flex min-h-[350px] max-w-[800px] flex-col items-center justify-center px-5 py-14 text-center">
+            <span className="rounded-full border border-[#287f71] px-3 py-1 text-[8px] font-bold uppercase tracking-[0.13em] text-[#62d5c0]">
+              Experience It Yourself
+            </span>
+
+            <h2
+              className={`${newsreader.className} mt-4 text-[38px] leading-[1] tracking-[-0.03em] sm:text-[48px]`}
+            >
+              Ready to Try It?
+            </h2>
+
+            <p className="mt-4 max-w-[570px] text-[12px] leading-[1.7] text-white/65 sm:text-[13px]">
+              Send a message on WhatsApp and test PREET with your own
+              questions. Ask about cost, procedure, recovery, or share photos.
+            </p>
+
+            <WhatsAppLink className="mt-7 inline-flex min-h-[50px] items-center justify-center gap-2 rounded-md bg-[#0ab394] px-7 py-3.5 text-[13px] font-semibold text-white shadow-[0_12px_35px_rgba(0,0,0,0.2)]">
+              <WhatsAppIcon className="h-5 w-5" />
+              Test PREET Yourself – WhatsApp Us
+              <ArrowRight className="h-4 w-4" />
+            </WhatsAppLink>
+
+            <p className="mt-2 text-[9px] text-white/40">
+              Click to open WhatsApp with &quot;TEST&quot; message pre-filled.
+            </p>
           </div>
         </section>
       </main>
 
-      <SiteFooter maxWidthClass="max-w-[1280px]" />
+      <SiteFooter />
     </div>
   );
 }

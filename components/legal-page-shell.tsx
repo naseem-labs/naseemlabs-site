@@ -5,10 +5,10 @@ import SiteHeader from "@/components/site-header";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
-const BG = "#f7f7f5";
+const BG = "#f7f6f2";
 const TEXT = "#111111";
-const BORDER = "rgba(0,0,0,0.06)";
-const GREEN = "#16a34a";
+const BORDER = "rgba(26,28,24,0.10)";
+const GREEN = "#1a3c34";
 const SECTION = "px-4 sm:px-6 lg:px-8";
 
 type Props = {

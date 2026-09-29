@@ -1,10 +1,6 @@
 import Link from "next/link";
 import WhatsAppLink from "@/components/whatsapp-link";
-import {
-  ONBOARDING_PATH,
-  PRIVACY_PATH,
-  TERMS_PATH,
-} from "@/lib/site-config";
+import { PRIVACY_PATH, TERMS_PATH } from "@/lib/site-config";
 
 const BORDER = "rgba(0,0,0,0.06)";
 const SECTION = "px-4 sm:px-6 lg:px-8";
@@ -12,7 +8,6 @@ const SECTION = "px-4 sm:px-6 lg:px-8";
 const FOOTER_LINKS = [
   { label: "Privacy Policy", href: PRIVACY_PATH },
   { label: "Terms & Conditions", href: TERMS_PATH },
-  { label: "Onboarding", href: ONBOARDING_PATH },
 ] as const;
 
 type Props = {
