@@ -635,16 +635,44 @@ export default async function AccessPage({ config }: AccessPageProps) {
               Master password
             </label>
 
-            <input
-              id="private-access-password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              autoFocus
-              className="h-12 w-full rounded-lg border border-[#d6dde4] bg-white px-4 text-sm text-[#14233d] outline-none transition focus:border-[#6f9dcc] focus:ring-2 focus:ring-[#dceaf8]"
-              placeholder="Enter password"
-            />
+            <div className="relative">
+              <input
+                id="show-private-access-password"
+                type="checkbox"
+                className="peer sr-only"
+                aria-label="Show password"
+              />
+
+              <input
+                id="private-access-password"
+                name="password"
+                type="text"
+                autoComplete="current-password"
+                required
+                autoFocus
+                className="h-12 w-full rounded-lg border border-[#d6dde4] bg-white px-4 pr-12 text-sm text-[#14233d] outline-none transition [-webkit-text-security:disc] focus:border-[#6f9dcc] focus:ring-2 focus:ring-[#dceaf8] peer-checked:[-webkit-text-security:none]"
+                placeholder="Enter password"
+              />
+
+              <label
+                htmlFor="show-private-access-password"
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-[#687587]"
+                aria-label="Show or hide password"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                  <circle cx="12" cy="12" r="2.5" />
+                </svg>
+              </label>
+            </div>
 
             {accessError && (
               <p className="mt-2 text-[11px] font-medium text-[#b42336]">
