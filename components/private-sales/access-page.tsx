@@ -1,4 +1,7 @@
 import type { RegionalConfig } from "@/lib/private-sales/regional-config";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import ImpactCalculator from "./impact-calculator";
 import DeploymentOptions from "./deployment-options";
@@ -6,6 +9,88 @@ import DeploymentOptions from "./deployment-options";
 type AccessPageProps = {
   config: RegionalConfig;
 };
+
+const ACCESS_COOKIE_NAME = "naseemlabs_private_access";
+const ACCESS_ERROR_COOKIE_NAME = "naseemlabs_private_access_error";
+const ACCESS_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+
+function getAccessCookieValue() {
+  const password = process.env.ACCESS_PASSWORD;
+
+  if (!password) {
+    return null;
+  }
+
+  return createHmac("sha256", password)
+    .update("naseemlabs-private-sales-access")
+    .digest("hex");
+}
+
+function passwordsMatch(input: string, configured: string) {
+  const inputHash = createHmac("sha256", "naseemlabs-password-check")
+    .update(input)
+    .digest();
+
+  const configuredHash = createHmac(
+    "sha256",
+    "naseemlabs-password-check"
+  )
+    .update(configured)
+    .digest();
+
+  return timingSafeEqual(inputHash, configuredHash);
+}
+
+async function unlockPrivateAccess(formData: FormData) {
+  "use server";
+
+  const configuredPassword = process.env.ACCESS_PASSWORD;
+  const submittedPassword = formData.get("password");
+  const returnPath = formData.get("returnPath");
+
+  const allowedPaths = ["/access-in", "/access-uk", "/access-ae"];
+
+  const safeReturnPath =
+    typeof returnPath === "string" && allowedPaths.includes(returnPath)
+      ? returnPath
+      : "/access-in";
+
+  const cookieStore = await cookies();
+
+  if (
+    !configuredPassword ||
+    typeof submittedPassword !== "string" ||
+    !passwordsMatch(submittedPassword, configuredPassword)
+  ) {
+    cookieStore.set(ACCESS_ERROR_COOKIE_NAME, "1", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 5,
+    });
+
+    redirect(safeReturnPath);
+  }
+
+  const accessCookieValue = getAccessCookieValue();
+
+  if (!accessCookieValue) {
+    redirect(safeReturnPath);
+  }
+
+  cookieStore.set(ACCESS_COOKIE_NAME, accessCookieValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: ACCESS_COOKIE_MAX_AGE,
+  });
+
+  cookieStore.delete(ACCESS_ERROR_COOKIE_NAME);
+
+  redirect(safeReturnPath);
+}
 
 function Icon({
   type,
@@ -477,7 +562,119 @@ function DeploymentArrow() {
   );
 }
 
-export default function AccessPage({ config }: AccessPageProps) {
+export default async function AccessPage({ config }: AccessPageProps) {
+  const cookieStore = await cookies();
+  const accessCookie = cookieStore.get(ACCESS_COOKIE_NAME)?.value;
+  const accessCookieValue = getAccessCookieValue();
+
+  const hasAccess =
+    Boolean(accessCookieValue) && accessCookie === accessCookieValue;
+
+  const accessError = cookieStore.has(ACCESS_ERROR_COOKIE_NAME);
+
+  if (!hasAccess) {
+    const returnPath =
+      config.region === "uk"
+        ? "/access-uk"
+        : config.region === "ae"
+          ? "/access-ae"
+          : "/access-in";
+
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f8fafb] px-5 py-10 text-[#14233d]">
+        <div className="w-full max-w-[430px] rounded-2xl border border-[#dce3e9] bg-white p-7 shadow-[0_12px_40px_rgba(15,23,42,0.06)] md:p-9">
+          <div className="mb-7 flex items-center justify-between">
+            <span className="text-[16px] font-extrabold tracking-[-0.03em] text-[#14233d]">
+              NaseemLabs
+            </span>
+
+            <span className="rounded-full border border-[#dce3e9] bg-[#f8fafb] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[#687587]">
+              Private Access
+            </span>
+          </div>
+
+          <div className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl bg-[#edf4ff] text-[#3478b5]">
+            <svg
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="5" y="10" width="14" height="10" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </div>
+
+          <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#7f8b99]">
+            Confidential — Clinic Deployment Brief
+          </p>
+
+          <h1 className="mt-3 text-[27px] font-bold tracking-[-0.04em] text-[#14233d]">
+            Private access
+          </h1>
+
+          <p className="mt-2 text-[12px] leading-[1.6] text-[#687587]">
+            Enter the master password to access this private deployment brief.
+          </p>
+
+          <form action={unlockPrivateAccess} className="mt-7">
+            <input
+              type="hidden"
+              name="returnPath"
+              value={returnPath}
+            />
+
+            <label
+              htmlFor="private-access-password"
+              className="mb-2 block text-[10px] font-bold uppercase tracking-[0.12em] text-[#536477]"
+            >
+              Master password
+            </label>
+
+            <input
+              id="private-access-password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              autoFocus
+              className="h-12 w-full rounded-lg border border-[#d6dde4] bg-white px-4 text-sm text-[#14233d] outline-none transition focus:border-[#6f9dcc] focus:ring-2 focus:ring-[#dceaf8]"
+              placeholder="Enter password"
+            />
+
+            {accessError && (
+              <p className="mt-2 text-[11px] font-medium text-[#b42336]">
+                Incorrect password. Please try again.
+              </p>
+            )}
+
+            {!process.env.ACCESS_PASSWORD && (
+              <p className="mt-2 text-[11px] font-medium text-[#b42336]">
+                Access protection is not configured on this deployment.
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-[#14233d] text-[12px] font-bold text-white transition hover:bg-[#1c304a]"
+            >
+              Enter Private Brief
+              <span className="ml-2 text-[16px]">→</span>
+            </button>
+          </form>
+
+          <p className="mt-6 text-center text-[9px] leading-[1.5] text-[#98a2ae]">
+            Authorized clinic deployment access only.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#f8fafb] text-[#14233d]">
       {/* Top bar */}
