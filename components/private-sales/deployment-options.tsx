@@ -62,12 +62,12 @@ export default function DeploymentOptions({
             <Feature text="Review the workflow before committing" />
           </div>
 
-          <button
-            type="button"
+          <a
+            href={`/pilot-${config.region}`}
             className="mt-8 w-full rounded-full border border-[#173b32]/20 bg-white px-5 py-3.5 text-sm font-semibold text-[#173b32] transition hover:bg-[#edf5ef]"
           >
             Deploy 14-Day Pilot
-          </button>
+          </a>
         </div>
 
         {/* Monthly */}
@@ -108,12 +108,12 @@ export default function DeploymentOptions({
               <Feature dark text="Ongoing infrastructure support" />
             </div>
 
-            <button
-              type="button"
-              className="mt-8 w-full rounded-full bg-[#f4f1e8] px-5 py-3.5 text-sm font-semibold text-[#173b32] transition hover:bg-white"
+            <a
+              href={`/monthly-${config.region}`}
+              className="mt-8 block w-full rounded-full bg-[#f4f1e8] px-5 py-3.5 text-center text-sm font-semibold text-[#173b32] transition hover:bg-white"
             >
               Start Monthly Deployment
-            </button>
+            </a>
           </div>
         </div>
       </div>
