@@ -30,7 +30,7 @@ const IVORY = "#f7f6f2";
 const TEXT = "#111111";
 const BORDER = "rgba(26,28,24,0.10)";
 
-const DEMO_VIDEO = "/demo/demo.mp4";
+const DEMO_VIDEO_ID = "VwP7TXbx7Mo";
 
 function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -86,12 +86,13 @@ function PhoneVideo() {
         <div className="absolute left-1/2 top-[9px] z-20 h-[22px] w-[92px] -translate-x-1/2 rounded-full bg-black" />
 
         <div className="relative overflow-hidden rounded-[29px] bg-black">
-          <video
-            className="block aspect-[9/19.5] w-full object-cover"
-            src={DEMO_VIDEO}
-            controls
-            playsInline
-            preload="metadata"
+          <iframe
+            src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}?origin=http://localhost:3000`}
+            title="NaseemLabs PREET patient journey"
+            className="block aspect-[9/19.5] w-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
           />
 
           <div className="pointer-events-none absolute inset-0 rounded-[29px] ring-1 ring-white/10" />
@@ -115,12 +116,11 @@ function ScenarioCard({
   return (
     <div className="group">
       <div className="relative aspect-video overflow-hidden rounded-lg border border-black/[0.08] bg-[#0a2723] shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
-        <video
-          src={DEMO_VIDEO}
-          muted
-          playsInline
-          preload="metadata"
-          className="h-full w-full object-cover opacity-85 transition duration-300 group-hover:scale-[1.02]"
+        <div
+          className="h-full w-full bg-cover bg-center opacity-85 transition duration-300 group-hover:scale-[1.02]"
+          style={{
+            backgroundImage: `url(https://i.ytimg.com/vi/${DEMO_VIDEO_ID}/hqdefault.jpg)`,
+          }}
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/5" />
@@ -295,52 +295,195 @@ export default function DemoPage() {
         </section>
 
         {/* ========================================================= */}
-        {/* SCENARIOS                                                 */}
+        {/* PREET MECHANISM                                          */}
         {/* ========================================================= */}
 
-        <section className="bg-[#f7f6f2] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <section className="bg-[#f7f6f2] px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
           <div className="mx-auto max-w-[1180px]">
             <div className="text-center">
               <span className="inline-flex rounded-full bg-[#e4efec] px-3 py-1 text-[8px] font-bold uppercase tracking-[0.12em] text-[#087f6b]">
-                Watch Specific Scenarios
+                The PREET Mechanism
               </span>
 
               <h2
-                className={`${newsreader.className} mt-3 text-[34px] leading-[1] tracking-[-0.03em] text-[#111] sm:text-[44px]`}
+                className={`${newsreader.className} mx-auto mt-4 max-w-[820px] text-[34px] leading-[1.02] tracking-[-0.03em] text-[#111] sm:text-[46px]`}
               >
-                Explore More Patient Journeys
+                A patient doesn’t just get an answer.
+                <br className="hidden sm:block" />
+                The conversation moves somewhere.
               </h2>
 
-              <p className="mx-auto mt-3 max-w-[620px] text-[12px] leading-[1.65] text-[#666b68] sm:text-[13px]">
-                See how PREET handles different types of inquiries, concerns
-                and situations.
+              <p className="mx-auto mt-4 max-w-[680px] text-[12px] leading-[1.7] text-[#666b68] sm:text-[13px]">
+                PREET understands what the patient is trying to figure out,
+                identifies what may be holding them back, addresses the
+                relevant concern, and keeps the conversation moving toward
+                consultation.
               </p>
             </div>
 
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              <ScenarioCard
-                title="Cost Inquiry"
-                description="See how PREET provides accurate pricing based on the patient's situation."
-                time="1:08"
-              />
+            <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* CARD 01 */}
 
-              <ScenarioCard
-                title="Pain & Recovery"
-                description="See how PREET explains the procedure, recovery timeline and what to expect."
-                time="1:12"
-              />
+              <div className="rounded-xl border border-black/[0.08] bg-white p-5 shadow-[0_8px_25px_rgba(0,0,0,0.035)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#087f6b] text-[9px] font-bold text-white shadow-[0_0_0_5px_rgba(8,127,107,0.08)]">
+                  01
+                </div>
 
-              <ScenarioCard
-                title="Photo Assessment"
-                description="See how PREET analyses scalp photos and provides preliminary information."
-                time="1:14"
-              />
+                <div className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-[#e7f1ee] text-[#087f6b]">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="8" r="3.2" />
+                    <path d="M5.5 20c.7-3.3 2.9-5.2 6.5-5.2s5.8 1.9 6.5 5.2" />
+                  </svg>
+                </div>
 
-              <ScenarioCard
-                title="Objection Handling"
-                description="See how PREET identifies concerns, explains clearly and moves the conversation forward."
-                time="1:16"
-              />
+                <h3
+                  className={`${newsreader.className} mt-4 text-[22px] leading-[1.05] text-[#111]`}
+                >
+                  Understand
+                  <br />
+                  the Patient
+                </h3>
+
+                <p className="mt-3 text-[11px] leading-[1.65] text-[#666b68]">
+                  Not just the question. The situation behind it.
+                </p>
+
+                <p className="mt-2.5 text-[11px] leading-[1.65] text-[#666b68]">
+                  PREET keeps track of what the patient has asked, what they
+                  have shared, what they want, and what still needs to be
+                  understood.
+                </p>
+              </div>
+
+              {/* CARD 02 */}
+
+              <div className="rounded-xl border border-black/[0.08] bg-white p-5 shadow-[0_8px_25px_rgba(0,0,0,0.035)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#087f6b] text-[9px] font-bold text-white shadow-[0_0_0_5px_rgba(8,127,107,0.08)]">
+                  02
+                </div>
+
+                <div className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-[#e7f1ee] text-[#087f6b]">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 6.5h14v9H9l-4 3v-12z" />
+                    <path d="M8 10h8M8 13h5" />
+                  </svg>
+                </div>
+
+                <h3
+                  className={`${newsreader.className} mt-4 text-[22px] leading-[1.05] text-[#111]`}
+                >
+                  Find What Is
+                  <br />
+                  Holding Them Back
+                </h3>
+
+                <p className="mt-3 text-[11px] leading-[1.65] text-[#666b68]">
+                  Concerns become part of the conversation.
+                </p>
+
+                <p className="mt-2.5 text-[11px] leading-[1.65] text-[#666b68]">
+                  Price, pain, results, timing, trust, missing photos or
+                  uncertainty are identified instead of being treated as
+                  unrelated questions.
+                </p>
+              </div>
+
+              {/* CARD 03 */}
+
+              <div className="rounded-xl border border-black/[0.08] bg-white p-5 shadow-[0_8px_25px_rgba(0,0,0,0.035)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#087f6b] text-[9px] font-bold text-white shadow-[0_0_0_5px_rgba(8,127,107,0.08)]">
+                  03
+                </div>
+
+                <div className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-[#e7f1ee] text-[#087f6b]">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    aria-hidden="true"
+                  >
+                    <path d="M6 4.5h12v15H6z" />
+                    <path d="M9 8h6M9 11.5h6M9 15h4" />
+                  </svg>
+                </div>
+
+                <h3
+                  className={`${newsreader.className} mt-4 text-[22px] leading-[1.05] text-[#111]`}
+                >
+                  Explain.
+                  <br />
+                  Don’t Just Reply.
+                </h3>
+
+                <p className="mt-3 text-[11px] leading-[1.65] text-[#666b68]">
+                  Give the patient the WHY + HOW they need.
+                </p>
+
+                <p className="mt-2.5 text-[11px] leading-[1.65] text-[#666b68]">
+                  The response is based on the patient’s situation and the
+                  clinic’s information — so the conversation can actually
+                  resolve uncertainty rather than endlessly answering isolated
+                  questions.
+                </p>
+              </div>
+
+              {/* CARD 04 */}
+
+              <div className="rounded-xl border border-black/[0.08] bg-white p-5 shadow-[0_8px_25px_rgba(0,0,0,0.035)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#087f6b] text-[9px] font-bold text-white shadow-[0_0_0_5px_rgba(8,127,107,0.08)]">
+                  04
+                </div>
+
+                <div className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-[#e7f1ee] text-[#087f6b]">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    aria-hidden="true"
+                  >
+                    <rect x="4.5" y="5" width="15" height="14" rx="1.5" />
+                    <path d="M8 3.5v3M16 3.5v3M4.5 9h15" />
+                    <path d="M8 13h2M12 13h2M8 16h2" />
+                  </svg>
+                </div>
+
+                <h3
+                  className={`${newsreader.className} mt-4 text-[22px] leading-[1.05] text-[#111]`}
+                >
+                  Progress to
+                  <br />
+                  Consultation
+                </h3>
+
+                <p className="mt-3 text-[11px] leading-[1.65] text-[#666b68]">
+                  When the patient is ready, move forward.
+                </p>
+
+                <p className="mt-2.5 text-[11px] leading-[1.65] text-[#666b68]">
+                  Once the relevant information and concerns have been
+                  handled, a consultation is offered at the appropriate point
+                  — and the clinic team can take over with the conversation
+                  context intact.
+                </p>
+              </div>
             </div>
           </div>
         </section>
