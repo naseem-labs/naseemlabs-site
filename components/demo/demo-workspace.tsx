@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   DollarSign,
   Globe,
@@ -11,14 +11,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import ChatSimulator from "@/components/demo/chat-simulator";
-import {
-  DEMO_SCENARIOS,
-  cloneInitialMessages,
-  getScenario,
-  type ChatMessage,
-  type DemoScenario,
-} from "@/lib/demo-scenarios";
+import { DEMO_SCENARIOS, getScenario, type DemoScenario } from "@/lib/demo-scenarios";
 
 const GREEN = "#16a34a";
 const BORDER = "rgba(0,0,0,0.06)";
@@ -39,20 +32,12 @@ function ScenarioIcon({ id }: { id: string }) {
 
 export default function DemoWorkspace() {
   const [activeId, setActiveId] = useState(DEMO_SCENARIOS[0].id);
-  const [messages, setMessages] = useState<ChatMessage[]>(() =>
-    cloneInitialMessages(DEMO_SCENARIOS[0])
-  );
 
   const scenario = getScenario(activeId);
 
-  const selectScenario = useCallback((s: DemoScenario) => {
+  const selectScenario = (s: DemoScenario) => {
     setActiveId(s.id);
-    setMessages(cloneInitialMessages(s));
-  }, []);
-
-  const resetChat = useCallback(() => {
-    setMessages(cloneInitialMessages(getScenario(activeId)));
-  }, [activeId]);
+  };
 
   return (
     <section id="demo-workspace" className="px-4 sm:px-6 lg:px-8 pb-8 sm:pb-10 scroll-mt-24 overflow-x-hidden">
@@ -133,14 +118,30 @@ export default function DemoWorkspace() {
             </div>
           </aside>
 
-          {/* Center — chat */}
-          <div className="min-h-[420px] lg:min-h-[560px] flex flex-col">
-            <ChatSimulator
-              messages={messages}
-              setMessages={setMessages}
-              scenarioId={activeId}
-              onReset={resetChat}
-            />
+          {/* Center — video inside phone */}
+          <div className="min-h-[420px] lg:min-h-[560px] flex items-center justify-center">
+            <div className="relative w-[280px] sm:w-[300px] lg:w-[320px]">
+              {/* Phone frame */}
+              <div className="relative rounded-[42px] bg-[#111] p-[9px] shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
+                {/* Screen */}
+                <div className="relative aspect-[430/765] overflow-hidden rounded-[34px] bg-black">
+                  <iframe
+                    width={430}
+                    height={765}
+                    src="https://www.youtube.com/embed/VwP7TXbx7Mo"
+                    title="for the website"
+                    frameBorder={0}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+
+                  {/* Dynamic Island */}
+                  <div className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-6 w-[92px] -translate-x-1/2 rounded-full bg-black" />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right — details */}

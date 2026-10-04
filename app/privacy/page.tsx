@@ -16,7 +16,6 @@ import {
   Mail,
   MessageCircle,
   Scale,
-  Server,
   ShieldCheck,
   UserRound,
   UsersRound,
@@ -52,7 +51,6 @@ const DARK = "#062823";
 const INK = "#17211f";
 const MUTED = "#68736f";
 const BORDER = "#e3e9e6";
-const SOFT = "#f2f7f5";
 
 function SectionHeading({
   number,
@@ -210,7 +208,7 @@ export default function PrivacyPage() {
               Demo
             </Link>
             <Link
-              href="/clinic-workflow"
+              href="/benefits"
               className="text-sm text-[#59635f] transition hover:text-[#087f6b]"
             >
               Clinic Workflow
@@ -258,7 +256,7 @@ export default function PrivacyPage() {
                   fontFamily: "var(--font-newsreader), Georgia, serif",
                 }}
               >
-                Your Patients'
+                Your Patients&apos;
                 <br />
                 Information.
                 <br />
@@ -389,7 +387,7 @@ export default function PrivacyPage() {
                   ["Patient Confidentiality", "Patient information handled carefully"],
                   ["Compliance Focused", "Designed around applicable requirements"],
                   ["Human-Centred", "Clear clinical boundaries"],
-                ].map(([title, text], i) => (
+                ].map(([title, text]) => (
                   <div
                     key={title}
                     className="border-r border-white/10 px-4 py-4 last:border-r-0"
@@ -488,7 +486,7 @@ export default function PrivacyPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  NaseemLabs ("we", "us" or "our") provides PREET, a
+                  NaseemLabs (&quot;we&quot;, &quot;us&quot; or &quot;our&quot;) provides PREET, a
                   patient-progression infrastructure designed for hair
                   restoration clinics. This Privacy Policy explains how
                   information is collected, used, stored, protected and deleted
@@ -505,7 +503,7 @@ export default function PrivacyPage() {
 
                 <p>
                   Because hair-restoration conversations can contain information
-                  about a person's health, hair loss, scalp condition,
+                  about a person&apos;s health, hair loss, scalp condition,
                   treatment history or photographs, some information processed
                   through PREET may constitute health or other sensitive
                   personal data under applicable law.
@@ -513,7 +511,7 @@ export default function PrivacyPage() {
 
                 <p>
                   This policy is intended to explain our processing clearly. It
-                  does not replace the clinic's own privacy notice, patient
+                  does not replace the clinic&apos;s own privacy notice, patient
                   consent process, data-processing agreement or other legal
                   obligations.
                 </p>
@@ -559,7 +557,7 @@ export default function PrivacyPage() {
                 </DataCard>
 
                 <DataCard icon={<HeartPulse size={19} />} title="Health Information">
-                  Information relating to an individual's health or healthcare,
+                  Information relating to an individual&apos;s health or healthcare,
                   including information concerning hair loss, scalp condition,
                   treatment history or other health-related information.
                 </DataCard>
@@ -569,7 +567,7 @@ export default function PrivacyPage() {
                 Depending on the applicable law and the contractual
                 arrangement, a clinic may act as the controller of patient
                 information while NaseemLabs processes information on the
-                clinic's behalf. The precise legal roles must be determined from
+                clinic&apos;s behalf. The precise legal roles must be determined from
                 the actual processing activities, jurisdiction and agreements
                 in place. Meta/WhatsApp is a separate third-party platform in
                 the communication chain.
@@ -685,7 +683,7 @@ export default function PrivacyPage() {
 
                 <p>
                   For UK deployments, information concerning health can fall
-                  within the UK GDPR's special-category data rules. Processing
+                  within the UK GDPR&apos;s special-category data rules. Processing
                   such information generally requires both an applicable
                   Article 6 lawful basis and an appropriate Article 9
                   condition, together with any other requirements that apply.
@@ -722,7 +720,7 @@ export default function PrivacyPage() {
                   <h3 className="mb-2 text-lg font-semibold">WhatsApp / Meta is part of the communication chain</h3>
                   <p className="text-[15px] leading-7 text-[#5c6964]">
                     When a clinic uses PREET with WhatsApp, the communication
-                    flow can involve the patient, WhatsApp/Meta's platform,
+                    flow can involve the patient, WhatsApp/Meta&apos;s platform,
                     PREET/NaseemLabs infrastructure and the clinic team.
                   </p>
                 </div>
@@ -773,7 +771,7 @@ export default function PrivacyPage() {
 
                 <p>
                   Automated responses may be used as part of the configured
-                  workflow. Where WhatsApp's policies require a human escalation
+                  workflow. Where WhatsApp&apos;s policies require a human escalation
                   route, the clinic must maintain an appropriate and accessible
                   route to human support.
                 </p>
@@ -811,7 +809,7 @@ export default function PrivacyPage() {
 
                 <p>
                   Scalp photographs can also reveal information relating to a
-                  person's health or physical condition. Such photographs are
+                  person&apos;s health or physical condition. Such photographs are
                   therefore handled as potentially sensitive information where
                   applicable.
                 </p>
@@ -840,7 +838,7 @@ export default function PrivacyPage() {
                 <p>
                   Patients may voluntarily send scalp photographs through the
                   configured communication channel. These images may be
-                  processed by PREET to support the clinic's patient-progression
+                  processed by PREET to support the clinic&apos;s patient-progression
                   workflow.
                 </p>
 
@@ -887,7 +885,7 @@ export default function PrivacyPage() {
 
                 <p>
                   Where a workflow involves a clinically meaningful decision,
-                  the clinic's qualified professionals remain responsible for
+                  the clinic&apos;s qualified professionals remain responsible for
                   reviewing the relevant information and making the final
                   decision.
                 </p>
@@ -957,7 +955,7 @@ export default function PrivacyPage() {
 
                 <p>
                   We do not sell patient information. We also do not disclose
-                  one patient's conversation to another patient.
+                  one patient&apos;s conversation to another patient.
                 </p>
               </div>
 
@@ -966,7 +964,7 @@ export default function PrivacyPage() {
                 of PREET, information may be transmitted to that service as
                 necessary to provide the configured functionality. NaseemLabs
                 does not represent that every third-party provider operates
-                exclusively within the clinic's hosting jurisdiction. Relevant
+                exclusively within the clinic&apos;s hosting jurisdiction. Relevant
                 providers and contractual arrangements should be assessed for
                 the particular deployment.
               </InfoBox>
@@ -1057,7 +1055,7 @@ export default function PrivacyPage() {
                 <p>
                   Patient and clinic information is retained only for as long as
                   reasonably necessary for the purposes described in this policy,
-                  the clinic's configured requirements, contractual obligations,
+                  the clinic&apos;s configured requirements, contractual obligations,
                   security needs and applicable legal obligations.
                 </p>
 
@@ -1189,7 +1187,7 @@ export default function PrivacyPage() {
                 <p>
                   Because WhatsApp/Meta and other third-party services can form
                   part of the communication chain, incidents occurring within a
-                  third-party platform may also be subject to that provider's
+                  third-party platform may also be subject to that provider&apos;s
                   incident-management and notification processes.
                 </p>
               </div>
@@ -1208,7 +1206,7 @@ export default function PrivacyPage() {
 
                 <p>
                   Material changes will be communicated through appropriate
-                  channels where required. The "Last updated" date at the top
+                  channels where required. The &quot;Last updated&quot; date at the top
                   of this page identifies the current version.
                 </p>
 

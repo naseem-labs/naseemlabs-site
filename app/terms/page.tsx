@@ -249,7 +249,7 @@ export default function TermsPage() {
             </Link>
 
             <Link
-              href="/clinic-workflow"
+              href="/benefits"
               className="text-sm text-[#59635f] transition hover:text-[#087f6b]"
             >
               Clinic Workflow
@@ -380,19 +380,19 @@ export default function TermsPage() {
                 <div className="space-y-3">
                   {[
                     [
-                      <ShieldCheck size={18} />,
+                      <ShieldCheck key="secure" size={18} />,
                       "SECURE INFRASTRUCTURE",
                     ],
                     [
-                      <Workflow size={18} />,
+                      <Workflow key="workflow" size={18} />,
                       "CLINIC WORKFLOW",
                     ],
                     [
-                      <LockKeyhole size={18} />,
+                      <LockKeyhole key="privacy" size={18} />,
                       "PATIENT PRIVACY",
                     ],
                     [
-                      <UsersRound size={18} />,
+                      <UsersRound key="oversight" size={18} />,
                       "HUMAN OVERSIGHT",
                     ],
                   ].map(([icon, label]) => (
@@ -419,26 +419,26 @@ export default function TermsPage() {
         <div className="mx-auto grid max-w-[1380px] md:grid-cols-4">
           {[
             [
-              <FileText size={20} />,
+              <FileText key="scope" size={20} />,
               "Service Scope",
               "Defined platform and support for clinic workflows",
             ],
             [
-              <UsersRound size={20} />,
+              <UsersRound key="responsibility" size={20} />,
               "Clinical Responsibility",
               "Final clinical decisions remain with the clinic",
             ],
             [
-              <ShieldCheck size={20} />,
+              <ShieldCheck key="protection" size={20} />,
               "Data Protection",
               "Handled under applicable laws and agreements",
             ],
             [
-              <LockKeyhole size={20} />,
+              <LockKeyhole key="availability" size={20} />,
               "Security & Availability",
               "Built with appropriate security practices",
             ],
-          ].map(([icon, title, text], index) => (
+          ].map(([icon, title, text]) => (
             <div
               key={title as string}
               className="flex gap-4 border-r border-[#e4ebe8] p-6 last:border-r-0"
@@ -519,23 +519,23 @@ export default function TermsPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  These Terms of Service ("Terms") govern your use of the
+                  These Terms of Service (&quot;Terms&quot;) govern your use of the
                   NaseemLabs platform, including PREET, our patient-progression
                   infrastructure for hair restoration clinics, and associated
                   features, tools, integrations, support and services
-                  (collectively, the "Services").
+                  (collectively, the &quot;Services&quot;).
                 </p>
 
                 <p>
-                  By accessing or using the Services, you ("Clinic",
-                  "Customer", "you" or "your") agree to these Terms and our
+                  By accessing or using the Services, you (&quot;Clinic&quot;,
+                  &quot;Customer&quot;, &quot;you&quot; or &quot;your&quot;) agree to these Terms and our
                   Privacy Policy.
                 </p>
 
                 <p>
                   If you are using PREET on behalf of a clinic or other
                   organisation, you confirm that you have authority to accept
-                  these Terms on that organisation's behalf.
+                  these Terms on that organisation&apos;s behalf.
                 </p>
               </div>
 
@@ -544,7 +544,7 @@ export default function TermsPage() {
                 title="Separate patient relationship"
               >
                 These Terms primarily govern the relationship between
-                NaseemLabs and the clinic using PREET. A patient's use of
+                  NaseemLabs and the clinic using PREET. A patient&apos;s use of
                 WhatsApp and communication with the clinic does not itself make
                 the patient a customer of NaseemLabs. Patient privacy and
                 processing are addressed in our Privacy Policy and the
@@ -607,7 +607,7 @@ export default function TermsPage() {
                 icon={<CircleAlert size={21} />}
                 title="PREET is infrastructure"
               >
-                PREET is designed to support a clinic's patient-progression
+                PREET is designed to support a clinic&apos;s patient-progression
                 workflow. It is not a medical practice, healthcare provider,
                 emergency service or substitute for qualified clinical staff.
               </InfoBox>
@@ -627,7 +627,7 @@ export default function TermsPage() {
                 <p>
                   PREET may receive patient messages and information through
                   configured communication channels and use that information to
-                  progress the inquiry according to the clinic's workflow.
+                  progress the inquiry according to the clinic&apos;s workflow.
                 </p>
 
                 <p>
@@ -776,7 +776,7 @@ export default function TermsPage() {
 
                 <p>
                   Final assessment and treatment decisions remain with the
-                  clinic's qualified professionals.
+                  clinic&apos;s qualified professionals.
                 </p>
               </div>
 
@@ -804,7 +804,7 @@ export default function TermsPage() {
                 <p>
                   Patient information processed through the Services is
                   governed by our Privacy Policy and, where applicable, a Data
-                  Processing Agreement ("DPA") with the clinic.
+                  Processing Agreement (&quot;DPA&quot;) with the clinic.
                 </p>
 
                 <p>
@@ -905,7 +905,7 @@ export default function TermsPage() {
 
                     <p className="text-[15px] leading-7 text-[#5c6964]">
                       When PREET is connected to WhatsApp Business Platform,
-                      communications can pass through WhatsApp and Meta's
+                      communications can pass through WhatsApp and Meta&apos;s
                       systems before being processed by PREET and delivered to
                       the clinic workflow.
                     </p>
@@ -983,11 +983,11 @@ export default function TermsPage() {
                   Business-initiated WhatsApp conversations may require
                   approved message templates. Within the applicable customer
                   service window, automated responses may be used subject to
-                  WhatsApp's rules.
+                  WhatsApp&apos;s rules.
                 </p>
 
                 <p>
-                  Where required by WhatsApp's policies, the clinic must
+                  Where required by WhatsApp&apos;s policies, the clinic must
                   provide a clear and accessible route to human support.
                 </p>
 
@@ -1002,7 +1002,7 @@ export default function TermsPage() {
                 icon={<XCircle size={21} />}
                 title="WhatsApp policy remains separate from these Terms"
               >
-                These Terms do not replace Meta or WhatsApp's own terms and
+                These Terms do not replace Meta or WhatsApp&apos;s own terms and
                 policies. If a clinic uses WhatsApp through PREET, the clinic
                 must comply with both its agreement with NaseemLabs and the
                 applicable requirements of WhatsApp/Meta.
@@ -1192,7 +1192,7 @@ export default function TermsPage() {
 
                 <p>
                   Taxes, duties or other government charges applicable to the
-                  clinic's purchase may be the responsibility of the clinic.
+                  clinic&apos;s purchase may be the responsibility of the clinic.
                 </p>
               </div>
             </section>
@@ -1222,7 +1222,7 @@ export default function TermsPage() {
 
                 <p>
                   A WhatsApp/Meta suspension can occur independently of
-                  NaseemLabs if the clinic's WhatsApp Business account or
+                  NaseemLabs if the clinic&apos;s WhatsApp Business account or
                   activity violates applicable Meta policies.
                 </p>
 
@@ -1272,7 +1272,7 @@ export default function TermsPage() {
                 Termination of the NaseemLabs service does not automatically
                 delete information held independently by WhatsApp/Meta or
                 another third-party provider. Such information is subject to
-                the relevant provider's own policies and controls.
+                  the relevant provider&apos;s own policies and controls.
               </InfoBox>
             </section>
 
@@ -1383,7 +1383,7 @@ export default function TermsPage() {
               >
                 PREET and NaseemLabs do not provide medical diagnosis,
                 treatment or emergency medical services. Clinical decisions
-                remain with the clinic's qualified professionals.
+                remain with the clinic&apos;s qualified professionals.
               </InfoBox>
             </section>
 
@@ -1446,7 +1446,7 @@ export default function TermsPage() {
 
                 <p>
                   This provision does not apply to the extent a claim results
-                  from NaseemLabs' own breach of its contractual obligations or
+                  from NaseemLabs&apos; own breach of its contractual obligations or
                   applicable law.
                 </p>
               </div>
@@ -1465,7 +1465,7 @@ export default function TermsPage() {
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
                   The governing law and dispute-resolution procedure applicable
-                  to a clinic's use of the Services should be specified in the
+                  to a clinic&apos;s use of the Services should be specified in the
                   applicable commercial agreement or order form.
                 </p>
 

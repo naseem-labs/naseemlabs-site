@@ -70,30 +70,6 @@ function WhatsAppIcon() {
   );
 }
 
-function InquiryIcon() {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      className="h-7 w-7 text-[#18815f]"
-      fill="none"
-    >
-      <circle
-        cx="24"
-        cy="24"
-        r="12"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <circle
-        cx="24"
-        cy="24"
-        r="6"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
 function DocumentIcon() {
   return (
     <svg

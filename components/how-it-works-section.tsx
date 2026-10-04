@@ -4,8 +4,6 @@ import { ArrowRight, CheckCircle2, ChevronRight, Phone } from "lucide-react";
 import WhatsAppLink from "@/components/whatsapp-link";
 import { DEMO_PATH } from "@/lib/site-config";
 
-const GREEN = "#1a3c34";
-const DARK = "#1a3c34";
 const PAGE = "#f7f6f2";
 const WHITE = "#ffffff";
 const BORDER = "rgba(16,23,23,0.09)";

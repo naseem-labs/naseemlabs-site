@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
-import { DEMO_PATH } from "@/lib/site-config";
 import WhatsAppLink from "@/components/whatsapp-link";
 
 const inter = Inter({
@@ -31,7 +30,6 @@ export const metadata: Metadata = {
     "See how PREET moves hair restoration inquiries from conversation to consultation and clinic handover.",
 };
 
-const GREEN = "#1a3c34";
 const PAGE = "#f7f6f2";
 const TEXT = "#111111";
 const BORDER = "rgba(26,28,24,0.10)";
@@ -310,7 +308,12 @@ function ConsultationDashboard() {
               {status}
             </span>
 
-            <button className="rounded border border-black/[0.08] px-1.5 py-1 text-[5px] font-semibold">
+            <button
+              type="button"
+              aria-disabled="true"
+              tabIndex={-1}
+              className="pointer-events-none rounded border border-black/[0.08] px-1.5 py-1 text-[5px] font-semibold"
+            >
               Contact
             </button>
           </div>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { CheckCircle2, MessageSquare, Settings, Users } from "lucide-react";
 import { Inter, Newsreader } from "next/font/google";
 import SiteFooter from "@/components/site-footer";
@@ -24,8 +23,6 @@ export const metadata: Metadata = {
     "NaseemLabs builds patient-progression infrastructure for hair restoration clinics.",
 };
 
-const GREEN = "#087f6b";
-const DARK = "#062823";
 const IVORY = "#f7f6f2";
 const TEXT = "#111111";
 const BORDER = "rgba(26,28,24,0.10)";

@@ -534,34 +534,6 @@ function TimelineItem({
   );
 }
 
-function DeploymentStep({
-  number,
-  label,
-}: {
-  number: string;
-  label: string;
-}) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#edf4ff] text-[9px] font-bold text-[#3478b5]">
-        {number}
-      </span>
-
-      <span className="text-[8.5px] font-medium text-[#536477]">
-        {label}
-      </span>
-    </div>
-  );
-}
-
-function DeploymentArrow() {
-  return (
-    <span className="hidden text-[#aab6c2] md:inline-block">
-      →
-    </span>
-  );
-}
-
 export default async function AccessPage({ config }: AccessPageProps) {
   const cookieStore = await cookies();
   const accessCookie = cookieStore.get(ACCESS_COOKIE_NAME)?.value;

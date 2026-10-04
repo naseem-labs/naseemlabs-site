@@ -231,7 +231,7 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
         inputRef.current?.focus();
       }
     },
-    [appendMessage, input, playIncomingReplies, scenarioId, sending]
+    [appendMessage, input, playIncomingReplies, scenarioId, sending, showConnectionError]
   );
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

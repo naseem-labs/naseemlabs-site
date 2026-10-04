@@ -313,12 +313,21 @@ export default function OnboardingSignup({
       return;
     }
 
-    exchangeAuthorizationCode(
-      assets.authorizationCode,
-      assets.businessId,
-      assets.wabaId,
-      assets.phoneNumberId
-    );
+    const {
+      authorizationCode,
+      businessId,
+      wabaId,
+      phoneNumberId,
+    } = assets;
+
+    queueMicrotask(() => {
+      void exchangeAuthorizationCode(
+        authorizationCode,
+        businessId,
+        wabaId,
+        phoneNumberId
+      );
+    });
   }, [assets, connectionSaved, exchangeAuthorizationCode, flowStatus]);
 
   const isConnected = connectionSaved;

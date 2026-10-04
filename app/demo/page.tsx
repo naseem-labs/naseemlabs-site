@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, CheckCircle2, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Inter, Newsreader } from "next/font/google";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
@@ -24,11 +23,8 @@ export const metadata: Metadata = {
     "See a real patient journey and experience how PREET moves a hair restoration inquiry toward consultation.",
 };
 
-const GREEN = "#087f6b";
-const DARK = "#062823";
 const IVORY = "#f7f6f2";
 const TEXT = "#111111";
-const BORDER = "rgba(26,28,24,0.10)";
 
 const DEMO_VIDEO_ID = "VwP7TXbx7Mo";
 
@@ -87,9 +83,10 @@ function PhoneVideo() {
 
         <div className="relative overflow-hidden rounded-[29px] bg-black">
           <iframe
-            src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}?origin=http://localhost:3000`}
+            src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}`}
             title="NaseemLabs PREET patient journey"
             className="block aspect-[9/19.5] w-full border-0"
+            loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
@@ -100,47 +97,6 @@ function PhoneVideo() {
       </div>
 
       <div className="pointer-events-none absolute -bottom-3 left-1/2 h-1 w-20 -translate-x-1/2 rounded-full bg-black/70" />
-    </div>
-  );
-}
-
-function ScenarioCard({
-  title,
-  description,
-  time,
-}: {
-  title: string;
-  description: string;
-  time: string;
-}) {
-  return (
-    <div className="group">
-      <div className="relative aspect-video overflow-hidden rounded-lg border border-black/[0.08] bg-[#0a2723] shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
-        <div
-          className="h-full w-full bg-cover bg-center opacity-85 transition duration-300 group-hover:scale-[1.02]"
-          style={{
-            backgroundImage: `url(https://i.ytimg.com/vi/${DEMO_VIDEO_ID}/hqdefault.jpg)`,
-          }}
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/5" />
-
-        <div className="absolute bottom-3 left-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#111] shadow-lg">
-          <Play className="ml-0.5 h-4 w-4 fill-current" />
-        </div>
-
-        <div className="absolute bottom-3 right-3 rounded bg-black/55 px-2 py-1 text-[8px] font-medium text-white backdrop-blur">
-          {time}
-        </div>
-      </div>
-
-      <h3 className="mt-3 text-[14px] font-semibold text-[#111]">
-        {title}
-      </h3>
-
-      <p className="mt-1 text-[11px] leading-[1.55] text-[#666b68]">
-        {description}
-      </p>
     </div>
   );
 }
