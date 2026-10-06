@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
+import { WHATSAPP_PHONE } from "@/lib/site-config";
 
 type MonthlyRegion = "in" | "uk" | "ae";
 
@@ -30,12 +30,15 @@ const PRICING = {
   },
 } as const;
 
-/* INDIA RAZORPAY PAYMENT LINKS */
-const INDIA_STANDARD_RAZORPAY_LINK =
-  "https://rzp.io/rzp/OGCkKU9g";
+const STANDARD_WHATSAPP_LINK =
+  `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+    "Hi NaseemLabs, I'd like to discuss the Standard Plan for my clinic."
+  )}`;
 
-const INDIA_GROWTH_RAZORPAY_LINK =
-  "https://rzp.io/rzp/ZhuVXm6Y";
+const GROWTH_WHATSAPP_LINK =
+  `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+    "Hi NaseemLabs, I'd like to discuss the Growth Plan for my clinic."
+  )}`;
 
 function formatPrice(value: number, region: MonthlyRegion) {
   const pricing = PRICING[region];
@@ -563,8 +566,6 @@ export default function MonthlyPage({
     config.region,
   );
 
-  const isIndia = config.region === "in";
-
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#fbfbf8] text-[#17312b]">
       {/* HERO */}
@@ -678,25 +679,15 @@ export default function MonthlyPage({
             </div>
 
             <div className="mt-3">
-              {isIndia ? (
-                <a
-                  href={INDIA_STANDARD_RAZORPAY_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-[43px] w-full items-center justify-center rounded-full border border-[#263d36] bg-white text-[13px] font-bold text-[#263d36] transition hover:bg-[#f5f8f6]"
-                >
-                  Deploy Standard Plan
-                  <span className="ml-2 text-[17px]">→</span>
-                </a>
-              ) : (
-                <Link
-                  href="#billing"
-                  className="flex h-[43px] w-full items-center justify-center rounded-full border border-[#263d36] bg-white text-[13px] font-bold text-[#263d36] transition hover:bg-[#f5f8f6]"
-                >
-                  Deploy Standard Plan
-                  <span className="ml-2 text-[17px]">→</span>
-                </Link>
-              )}
+              <a
+                href={STANDARD_WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-[43px] w-full items-center justify-center rounded-full border border-[#263d36] bg-white text-[13px] font-bold text-[#263d36] transition hover:bg-[#f5f8f6]"
+              >
+                Deploy Standard Plan
+                <span className="ml-2 text-[17px]">→</span>
+              </a>
             </div>
           </article>
 
@@ -828,25 +819,15 @@ export default function MonthlyPage({
             </div>
 
             <div className="mt-3">
-              {isIndia ? (
-                <a
-                  href={INDIA_GROWTH_RAZORPAY_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-[43px] w-full items-center justify-center rounded-full bg-[#075c48] text-[13px] font-bold text-white transition hover:bg-[#064d3d]"
-                >
-                  Deploy Growth Plan
-                  <span className="ml-2 text-[17px]">→</span>
-                </a>
-              ) : (
-                <Link
-                  href="#billing"
-                  className="flex h-[43px] w-full items-center justify-center rounded-full bg-[#075c48] text-[13px] font-bold text-white transition hover:bg-[#064d3d]"
-                >
-                  Deploy Growth Plan
-                  <span className="ml-2 text-[17px]">→</span>
-                </Link>
-              )}
+              <a
+                href={GROWTH_WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-[43px] w-full items-center justify-center rounded-full bg-[#075c48] text-[13px] font-bold text-white transition hover:bg-[#064d3d]"
+              >
+                Deploy Growth Plan
+                <span className="ml-2 text-[17px]">→</span>
+              </a>
             </div>
           </article>
         </div>

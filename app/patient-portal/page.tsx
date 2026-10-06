@@ -1,17 +1,293 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { WHATSAPP_PHONE } from "@/lib/site-config";
 
-const MOCK_PHONE = "+44 7810 119214";
+const DISCUSS_WHATSAPP_URL =
+  `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+    "Hi NaseemLabs, I'd like to discuss my clinic and book a private call.\nPreferred date:\nPreferred time:"
+  )}`;
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+type Lead = {
+  id: string;
+  clinic_id: string;
+  name: string | null;
+  phone: string | null;
+  city: string | null;
+  stage: string | null;
+  followup_active: boolean | null;
+  source: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+type LeadProfile = {
+  lead_id: string;
+  age: number | null;
+  hair_loss_duration: string | null;
+  affected_area: string | null;
+  hair_type: string | null;
+  previous_treatment: string | null;
+  previous_transplant: string | null;
+  location: string | null;
+  occupation: string | null;
+  budget_range: string | null;
+  goal: string | null;
+  patient_concern: string | null;
+  ai_summary: string | null;
+  lead_context: string | null;
+  next_action: string | null;
+  consultation_booking_requested: boolean | null;
+};
+
+type LeadPhoto = {
+  id: string;
+  lead_id: string;
+  photo_type: string | null;
+  storage_path: string | null;
+  uploaded_at: string | null;
+  signedUrl: string | null;
+};
+
+type Followup = {
+  followup_type: string | null;
+  followup_reason: string | null;
+  scheduled_for: string | null;
+  created_at: string | null;
+};
+
+type LeadAction = {
+  id: string;
+  lead_id: string;
+  action_type: string | null;
+  created_at: string | null;
+};
+
+type PortalData = {
+  lead: Lead;
+  profile: LeadProfile | null;
+  photos: LeadPhoto[];
+  followup: Followup | null;
+  actions: LeadAction[];
+  region: "in" | "uk" | "ae";
+};
+
+type PortalApiResponse = {
+  success: boolean;
+  error?: string;
+  data?: {
+    lead: Lead;
+    profile: LeadProfile | null;
+    photos: LeadPhoto[];
+    followup: Followup | null;
+    actions: LeadAction[];
+    region: "in" | "uk" | "ae";
+    summaryPending: boolean;
+  };
+};
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function displayValue(value: unknown) {
+  if (value === null || value === undefined) {
+    return "Not available";
+  }
+
+  const stringValue = String(value).trim();
+
+  return stringValue || "Not available";
+}
+
+function splitPatientName(name: string | null) {
+  const cleanName = name?.trim() || "Patient Inquiry";
+
+  const parts = cleanName.split(/\s+/);
+
+  if (parts.length === 1) {
+    return {
+      firstName: parts[0],
+      lastName: "",
+      initials: parts[0].slice(0, 1).toUpperCase(),
+    };
+  }
+
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(" "),
+    initials:
+      `${parts[0][0] ?? ""}${
+        parts[parts.length - 1]?.[0] ?? ""
+      }`.toUpperCase(),
+  };
+}
+
+function formatPhoneForDisplay(phone: string | null) {
+  return phone || "Not available";
+}
+
+function formatDateTime(value: string | null) {
+  if (!value) {
+    return "Not available";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function formatDateOnly(value: string | null) {
+  if (!value) {
+    return "Not available";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
+function parseAffectedArea(value: string | null) {
+  const result = {
+    norwood: null as string | null,
+    donor: null as string | null,
+    thinning: null as string | null,
+    grafts: null as string | null,
+    zones: [] as string[],
+  };
+
+  if (!value) {
+    return result;
+  }
+
+  const segments = value
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  for (const segment of segments) {
+    const separatorIndex = segment.indexOf(":");
+
+    if (separatorIndex === -1) {
+      result.zones.push(segment);
+      continue;
+    }
+
+    const label = segment
+      .slice(0, separatorIndex)
+      .trim()
+      .toLowerCase();
+
+    const content = segment
+      .slice(separatorIndex + 1)
+      .trim();
+
+    if (!content) {
+      continue;
+    }
+
+    if (label === "norwood") {
+      result.norwood = content;
+      continue;
+    }
+
+    if (label === "donor") {
+      result.donor = content;
+      continue;
+    }
+
+    if (label === "thinning") {
+      result.thinning = content;
+      continue;
+    }
+
+    if (label === "grafts") {
+      result.grafts = content;
+      continue;
+    }
+
+    if (
+      label === "zones" ||
+      label === "affected zones" ||
+      label === "affected_area"
+    ) {
+      result.zones.push(
+        ...content
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      );
+
+      continue;
+    }
+
+    result.zones.push(segment);
+  }
+
+  return result;
+}
+
+function humanizeStage(stage: string | null) {
+  if (!stage) {
+    return "Inquiry";
+  }
+
+  return stage
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function getPhotoLabel(photo: LeadPhoto, index: number) {
+  if (photo.photo_type?.trim()) {
+    return photo.photo_type;
+  }
+
+  return `Photo ${index + 1}`;
+}
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
 
 export default function PatientPortalPage() {
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
+  const [portalRegion, setPortalRegion] = useState<
+    "in" | "uk" | "ae" | null
+  >(null);
   const [showDossier, setShowDossier] = useState(false);
 
   function openDossier() {
-    const input = phone.trim() || MOCK_PHONE;
+    const input = phone.trim();
+
+    if (!input) {
+      return;
+    }
 
     setPhone(input);
+    setPortalRegion(null);
     setShowDossier(true);
 
     window.scrollTo({
@@ -21,6 +297,7 @@ export default function PatientPortalPage() {
   }
 
   function backToGate() {
+    setPortalRegion(null);
     setShowDossier(false);
 
     window.scrollTo({
@@ -37,16 +314,20 @@ export default function PatientPortalPage() {
         <AccessScreen
           phone={phone}
           setPhone={setPhone}
+          countryCode={countryCode}
+          setCountryCode={setCountryCode}
           openDossier={openDossier}
         />
       ) : (
         <div>
           <PatientDossier
             phone={phone}
+            countryCode={countryCode}
+            onRegionChange={setPortalRegion}
             backToGate={backToGate}
           />
 
-          <NextDecision />
+          <NextDecision region={portalRegion} />
         </div>
       )}
 
@@ -69,8 +350,13 @@ function TopNavigation() {
 
         <div className="min-w-0">
           <h1 className="flex items-center gap-1.5 text-sm font-bold text-slate-900">
-            <span className="truncate">Good Afternoon, Doctor</span>
-            <span className="hidden text-base sm:inline">👋</span>
+            <span className="truncate">
+              Good Afternoon, Doctor
+            </span>
+
+            <span className="hidden text-base sm:inline">
+              👋
+            </span>
           </h1>
 
           <p className="hidden text-[11px] font-medium text-slate-500 sm:block">
@@ -79,7 +365,7 @@ function TopNavigation() {
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center space-x-2 sm:space-x-3 text-xs">
+      <div className="flex shrink-0 items-center space-x-2 text-xs sm:space-x-3">
         <div className="hidden items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-600 md:flex">
           <CalendarIcon />
 
@@ -115,10 +401,14 @@ function TopNavigation() {
 function AccessScreen({
   phone,
   setPhone,
+  countryCode,
+  setCountryCode,
   openDossier,
 }: {
   phone: string;
   setPhone: (value: string) => void;
+  countryCode: string;
+  setCountryCode: (value: string) => void;
   openDossier: () => void;
 }) {
   return (
@@ -138,18 +428,31 @@ function AccessScreen({
         </p>
 
         <div className="space-y-4">
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                openDossier();
-              }
-            }}
-            placeholder="e.g. +44 7810 119214"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-mono text-sm text-slate-800 transition focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-base"
-          />
+          <div className="flex gap-2">
+            <select
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+              aria-label="Country code"
+              className="w-[92px] shrink-0 rounded-xl border border-slate-200 bg-slate-50 px-2 py-3 text-center font-mono text-sm text-slate-800 transition focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            >
+              <option value="+91">IN +91</option>
+              <option value="+44">UK +44</option>
+              <option value="+971">UAE +971</option>
+            </select>
+
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  openDossier();
+                }
+              }}
+              placeholder="e.g. 7810 119214"
+              className="min-w-0 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-mono text-sm text-slate-800 transition focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-base"
+            />
+          </div>
 
           <button
             type="button"
@@ -174,11 +477,300 @@ function AccessScreen({
 
 function PatientDossier({
   phone,
+  countryCode,
+  onRegionChange,
   backToGate,
 }: {
   phone: string;
+  countryCode: string;
+  onRegionChange: (region: "in" | "uk" | "ae") => void;
   backToGate: () => void;
 }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [portalData, setPortalData] =
+    useState<PortalData | null>(null);
+  const [summaryPending, setSummaryPending] = useState(false);
+
+  const loadPortalData = useCallback(async (
+    currentPhone: string,
+    signal?: AbortSignal
+  ) => {
+    const response = await fetch(
+      `/api/patient-portal?phone=${encodeURIComponent(
+        currentPhone
+      )}&countryCode=${encodeURIComponent(countryCode)}`,
+      {
+        method: "GET",
+        cache: "no-store",
+        signal,
+      }
+    );
+
+    const result =
+      (await response.json()) as PortalApiResponse;
+
+    if (!response.ok || !result.success || !result.data) {
+      throw new Error(
+        result.error ||
+          "We could not load this patient inquiry."
+      );
+    }
+
+    return result.data;
+  }, [countryCode]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await loadPortalData(
+          phone,
+          controller.signal
+        );
+
+        if (!active) {
+          return;
+        }
+
+        setPortalData({
+          lead: data.lead,
+          profile: data.profile,
+          photos: data.photos ?? [],
+          followup: data.followup ?? null,
+          actions: data.actions ?? [],
+          region: data.region,
+        });
+        onRegionChange(data.region);
+
+        setSummaryPending(Boolean(data.summaryPending));
+        setLoading(false);
+      } catch (loadError) {
+        if (
+          loadError instanceof DOMException &&
+          loadError.name === "AbortError"
+        ) {
+          return;
+        }
+
+        console.error(
+          "Patient portal load error:",
+          loadError
+        );
+
+        if (!active) {
+          return;
+        }
+
+        setPortalData(null);
+        setLoading(false);
+
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "We could not load this patient inquiry. Please try again."
+        );
+      }
+    }
+
+    void load();
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [loadPortalData, onRegionChange, phone]);
+
+  /*
+   * ---------------------------------------------------------
+   * SUMMARY REFRESH
+   *
+   * The existing summary processor updates lead_profile.ai_summary.
+   * While the summary is pending, check the API periodically.
+   *
+   * No Supabase client is exposed in the browser.
+   * ---------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (!summaryPending || !portalData?.lead.id) {
+      return;
+    }
+
+    let active = true;
+
+    const interval = window.setInterval(async () => {
+      try {
+        const data = await loadPortalData(phone);
+
+        if (!active) {
+          return;
+        }
+
+        setPortalData({
+          lead: data.lead,
+          profile: data.profile,
+          photos: data.photos ?? [],
+          followup: data.followup ?? null,
+          actions: data.actions ?? [],
+          region: data.region,
+        });
+        onRegionChange(data.region);
+
+        setSummaryPending(Boolean(data.summaryPending));
+      } catch (refreshError) {
+        console.warn(
+          "Patient portal summary refresh failed:",
+          refreshError
+        );
+      }
+    }, 5000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, [
+    loadPortalData,
+    onRegionChange,
+    summaryPending,
+    portalData?.lead.id,
+    phone,
+  ]);
+
+  /* =========================================================
+     REAL DATA MAPPING
+  ========================================================= */
+
+  const patient = useMemo(() => {
+    return splitPatientName(
+      portalData?.lead.name ?? null
+    );
+  }, [portalData?.lead.name]);
+
+  const profile = portalData?.profile ?? null;
+
+  const affected = useMemo(() => {
+    return parseAffectedArea(
+      profile?.affected_area ?? null
+    );
+  }, [profile?.affected_area]);
+
+  const affectedZones =
+    affected.zones.length > 0
+      ? affected.zones.join(", ")
+      : "Not available";
+
+  const consultationBooked = Boolean(
+    portalData?.lead.stage &&
+      (
+        portalData.lead.stage
+          .toLowerCase()
+          .includes("book") ||
+        portalData.lead.stage
+          .toLowerCase()
+          .includes("consult")
+      )
+  );
+
+  const consultationStatus = consultationBooked
+    ? "Consultation Booked"
+    : humanizeStage(
+        portalData?.lead.stage ?? null
+      );
+
+  const photoCount =
+    portalData?.photos.length ?? 0;
+
+  const createdDate = formatDateOnly(
+    portalData?.lead.created_at ?? null
+  );
+
+  const latestAction =
+    portalData?.actions &&
+    portalData.actions.length > 0
+      ? portalData.actions[0]
+      : null;
+
+  const patientInformationDate =
+    latestAction?.created_at ??
+    portalData?.lead.updated_at ??
+    portalData?.lead.created_at ??
+    null;
+
+  /* =========================================================
+     LOADING
+  ========================================================= */
+
+  if (loading) {
+    return (
+      <main className="mx-auto max-w-6xl space-y-6 px-3 py-4 sm:space-y-8 sm:px-4 sm:py-6">
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 animate-pulse rounded-full bg-slate-100" />
+
+            <div className="space-y-2">
+              <div className="h-4 w-40 animate-pulse rounded bg-slate-100" />
+              <div className="h-3 w-56 animate-pulse rounded bg-slate-100" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-5">
+            <LoadingCard />
+            <LoadingCard />
+          </div>
+
+          <div className="space-y-4 lg:col-span-7">
+            <LoadingCard />
+            <LoadingCard />
+            <LoadingCard />
+            <LoadingCard />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  /* =========================================================
+     ERROR / NO PATIENT
+  ========================================================= */
+
+  if (error || !portalData) {
+    return (
+      <main className="mx-auto flex min-h-[calc(100vh-64px)] max-w-md items-center px-4 py-12">
+        <div className="w-full rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-red-100 bg-red-50 text-lg">
+            !
+          </div>
+
+          <h2 className="text-lg font-bold text-slate-900">
+            Patient Inquiry Not Found
+          </h2>
+
+          <p className="mt-2 text-xs leading-relaxed text-slate-500">
+            {error ??
+              "No patient inquiry was found for this number."}
+          </p>
+
+          <button
+            type="button"
+            onClick={backToGate}
+            className="mt-5 rounded-xl bg-blue-600 px-5 py-3 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700"
+          >
+            Try Another Number
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto max-w-6xl space-y-6 px-3 py-4 sm:space-y-8 sm:px-4 sm:py-6">
 
@@ -197,42 +789,63 @@ function PatientDossier({
             </button>
 
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
-              A
+              {patient.initials || "P"}
             </div>
 
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <h2 className="text-sm font-bold leading-5 text-slate-900 sm:text-base">
-                  Amit Sharma (Test Session)
+                  {portalData.lead.name ||
+                    "Patient Inquiry"}
                 </h2>
 
                 <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 sm:text-[10px]">
-                  Consultation Booked
+                  {consultationStatus}
                 </span>
 
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-medium text-slate-600 sm:text-[10px]">
-                  Source: WhatsApp
+                  Source:{" "}
+                  {displayValue(
+                    portalData.lead.source
+                  )}
                 </span>
               </div>
 
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-medium text-slate-400 sm:text-[11px]">
-                <span>31 yrs</span>
+                <span>
+                  {profile?.age
+                    ? `${profile.age} yrs`
+                    : "Age not available"}
+                </span>
+
                 <span>•</span>
-                <span>London / Visitor</span>
+
+                <span>
+                  {displayValue(
+                    profile?.location ??
+                      portalData.lead.city
+                  )}
+                </span>
+
                 <span>•</span>
 
                 <span className="break-all font-mono font-semibold text-slate-700">
-                  {phone}
+                  {formatPhoneForDisplay(
+                    portalData.lead.phone
+                  )}
                 </span>
 
-                <span className="hidden sm:inline">•</span>
                 <span className="hidden sm:inline">
-                  Created: Just now
+                  •
+                </span>
+
+                <span className="hidden sm:inline">
+                  Created: {createdDate}
                 </span>
               </div>
 
               <div className="mt-1 text-[10px] font-medium text-slate-400 sm:hidden">
-                Created: Just now
+                Created: {createdDate}
               </div>
             </div>
           </div>
@@ -259,20 +872,50 @@ function PatientDossier({
               </span>
 
               <span className="text-[10px] font-medium text-blue-600 sm:text-xs">
-                Photo 1 of 4 • Scalp Vertex
+                {photoCount > 0
+                  ? `Photo 1 of ${photoCount} • ${getPhotoLabel(
+                      portalData.photos[0],
+                      0
+                    )}`
+                  : "No photos available"}
               </span>
             </div>
 
-            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-900">
-              <img
-                src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=800&q=80"
-                alt="Patient scalp"
-                className="h-48 w-full object-cover sm:h-56"
-              />
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-900">
+              <div className="flex snap-x snap-mandatory gap-2 p-1">
+                {portalData.photos.some((photo) => photo.signedUrl) ? (
+                  portalData.photos
+                    .filter((photo) => photo.signedUrl)
+                    .map((photo, index) => (
+                      <div
+                        key={photo.id}
+                        className="relative min-w-full shrink-0 snap-start overflow-hidden rounded-lg sm:min-w-[78%] lg:min-w-[82%]"
+                      >
+                        <img
+                          src={photo.signedUrl!}
+                          alt={`Patient scalp ${getPhotoLabel(photo, index)}`}
+                          className="h-48 w-full object-cover sm:h-56"
+                        />
 
-              <span className="absolute bottom-2 left-2 max-w-[calc(100%-16px)] truncate rounded bg-black/70 px-2 py-0.5 font-mono text-[9px] text-white backdrop-blur sm:text-[10px]">
-                WhatsApp Direct Attachment
-              </span>
+                        <span className="absolute bottom-2 left-2 max-w-[calc(100%-16px)] truncate rounded bg-black/70 px-2 py-0.5 font-mono text-[9px] text-white backdrop-blur sm:text-[10px]">
+                          WhatsApp Direct Attachment
+                        </span>
+                      </div>
+                    ))
+                ) : (
+                  <div className="flex h-48 w-full items-center justify-center bg-slate-100 text-center sm:h-56">
+                    <div>
+                      <div className="text-xs font-semibold text-slate-500">
+                        No patient photo available
+                      </div>
+
+                      <div className="mt-1 text-[10px] text-slate-400">
+                        Photos shared during the inquiry will appear here.
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -291,22 +934,28 @@ function PatientDossier({
             <div className="grid grid-cols-2 gap-x-3 gap-y-4 text-slate-600 sm:gap-3">
               <Detail
                 label="Hair Loss Duration"
-                value="2 to 3 years"
+                value={displayValue(
+                  profile?.hair_loss_duration
+                )}
               />
 
               <Detail
                 label="Previous Treatment"
-                value="None / Minoxidil trial"
+                value={displayValue(
+                  profile?.previous_treatment
+                )}
               />
 
               <Detail
                 label="Previous Transplant"
-                value="No"
+                value={displayValue(
+                  profile?.previous_transplant
+                )}
               />
 
               <Detail
                 label="Target Window"
-                value="Next 30 Days (London)"
+                value={displayValue(profile?.goal)}
               />
             </div>
           </div>
@@ -323,15 +972,29 @@ function PatientDossier({
               </div>
 
               <div className="mt-1 text-sm font-bold leading-5 text-slate-900">
-                06 Oct 2026 at 9:00 am
-                <span className="block text-[11px] font-medium text-slate-500 sm:inline sm:pl-1">
-                  (London GMT)
-                </span>
+                {portalData.followup?.scheduled_for
+                  ? formatDateTime(
+                      portalData.followup.scheduled_for
+                    )
+                  : "Not scheduled"}
+
+                {portalData.followup?.followup_type && (
+                  <span className="block text-[11px] font-medium text-slate-500 sm:inline sm:pl-1">
+                    (
+                    {displayValue(
+                      portalData.followup
+                        .followup_type
+                    )}
+                    )
+                  </span>
+                )}
               </div>
             </div>
 
             <span className="w-fit shrink-0 rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-              Booked
+              {consultationBooked
+                ? "Booked"
+                : "Not booked"}
             </span>
           </div>
 
@@ -344,22 +1007,30 @@ function PatientDossier({
             <div className="mb-4 grid grid-cols-2 gap-2">
               <Assessment
                 label="Norwood Stage"
-                value="Norwood Stage 3"
+                value={displayValue(
+                  affected.norwood
+                )}
               />
 
               <Assessment
                 label="Donor Quality"
-                value="Good (Dense)"
+                value={displayValue(
+                  affected.donor
+                )}
               />
 
               <Assessment
                 label="Thinning Pattern"
-                value="Miniaturization"
+                value={displayValue(
+                  affected.thinning
+                )}
               />
 
               <Assessment
                 label="Estimated Grafts"
-                value="1,500 – 2,500"
+                value={displayValue(
+                  affected.grafts
+                )}
                 blue
               />
             </div>
@@ -371,8 +1042,7 @@ function PatientDossier({
                 </span>
 
                 <span className="ml-1 font-semibold text-slate-700">
-                  Frontal hairline recession, bilateral temporal thinning,
-                  vertex thinning.
+                  {affectedZones}
                 </span>
               </div>
 
@@ -381,9 +1051,15 @@ function PatientDossier({
                   Patient Concern:
                 </span>
 
-                <span className="mt-1 inline-block rounded border border-amber-200/60 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800 sm:ml-1 sm:mt-0 sm:text-[11px]">
-                  recovery time / work schedule
-                </span>
+                {profile?.patient_concern ? (
+                  <span className="mt-1 inline-block rounded border border-amber-200/60 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800 sm:ml-1 sm:mt-0 sm:text-[11px]">
+                    {profile.patient_concern}
+                  </span>
+                ) : (
+                  <span className="ml-1 font-semibold text-slate-700">
+                    Not available
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -395,17 +1071,27 @@ function PatientDossier({
                 Patient Inquiry Summary
               </span>
 
-              <span className="w-fit rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700">
-                Review Complete
+              <span
+                className={`w-fit rounded-md border px-2.5 py-0.5 text-[10px] font-semibold ${
+                  profile?.ai_summary
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : "border-amber-200 bg-amber-50 text-amber-700"
+                }`}
+              >
+                {profile?.ai_summary
+                  ? "Review Complete"
+                  : summaryPending
+                    ? "Summary Processing"
+                    : "Summary Pending"}
               </span>
             </div>
 
             <div className="rounded-lg border border-slate-200/70 bg-slate-50/80 p-3 text-[11px] leading-relaxed text-slate-600">
-              Amit Sharma is a 31-year-old patient experiencing hair thinning
-              around his frontal hairline, temples, and crown. Scalp
-              photographs were shared during the WhatsApp conversation. The
-              inquiry progressed through information gathering and concern
-              handling before moving toward formal consultation.
+              {profile?.ai_summary
+                ? profile.ai_summary
+                : summaryPending
+                  ? "The patient inquiry has been received. The conversation summary is being prepared and will appear here when ready."
+                  : "No conversation summary is currently available."}
             </div>
           </div>
 
@@ -419,17 +1105,27 @@ function PatientDossier({
 
               <AuditRow
                 title="Inquiry Delivered to Clinic Workflow"
-                value="Real-time"
+                value={
+                  portalData.lead.created_at
+                    ? "Recorded"
+                    : "Activity available"
+                }
               />
 
               <AuditRow
                 title="Patient Information Gathered"
-                value="06 Oct 2026 at 12:28 pm"
+                value={formatDateTime(
+                  patientInformationDate
+                )}
               />
 
               <AuditRow
                 title="PREET Initial WhatsApp Engagement"
-                value="Immediate"
+                value={
+                  portalData.lead.created_at
+                    ? "Recorded"
+                    : "Activity available"
+                }
                 green
               />
 
@@ -439,7 +1135,9 @@ function PatientDossier({
                 </span>
 
                 <span className="font-mono text-slate-400">
-                  Completed
+                  {consultationBooked
+                    ? "Completed"
+                    : "Not completed"}
                 </span>
               </div>
             </div>
@@ -460,10 +1158,32 @@ function PatientDossier({
 }
 
 /* =========================================================
+   LOADING CARD
+========================================================= */
+
+function LoadingCard() {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="h-3 w-32 animate-pulse rounded bg-slate-100" />
+
+      <div className="mt-4 space-y-3">
+        <div className="h-4 w-full animate-pulse rounded bg-slate-100" />
+        <div className="h-4 w-5/6 animate-pulse rounded bg-slate-100" />
+        <div className="h-4 w-2/3 animate-pulse rounded bg-slate-100" />
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
    SEPARATE DECISION LAYER
 ========================================================= */
 
-function NextDecision() {
+function NextDecision({
+  region,
+}: {
+  region: "in" | "uk" | "ae" | null;
+}) {
   return (
     <section className="border-t border-slate-300 bg-[#F1F5F9] px-3 py-10 sm:px-6 sm:py-14">
 
@@ -582,7 +1302,20 @@ function NextDecision() {
 
             <div className="relative z-10 pt-2">
               <a
-                href="/economics"
+                href={
+                  region === "uk"
+                    ? "/access-uk"
+                    : region === "ae"
+                      ? "/access-ae"
+                      : region === "in"
+                        ? "/access-in"
+                        : "#"
+                }
+                onClick={(event) => {
+                  if (!region) {
+                    event.preventDefault();
+                  }
+                }}
                 className="flex w-full items-center justify-between rounded-xl border border-blue-500 bg-white px-5 py-3 text-xs font-semibold text-blue-600 shadow-sm transition hover:border-blue-600 hover:bg-blue-50/50 hover:text-blue-700"
               >
                 <span>
@@ -643,7 +1376,7 @@ function NextDecision() {
 
             <div className="pt-2">
               <a
-                href="https://calendly.com/naseemlabs/briefing"
+                href={DISCUSS_WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="flex w-full items-center justify-between rounded-xl bg-blue-600 px-5 py-3 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700"

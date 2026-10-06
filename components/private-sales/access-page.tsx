@@ -2,6 +2,10 @@ import type { RegionalConfig } from "@/lib/private-sales/regional-config";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  hasPatientPortalAccess,
+  PATIENT_PORTAL_ACCESS_COOKIE,
+} from "@/lib/patient-portal-access";
 import Image from "next/image";
 import ImpactCalculator from "./impact-calculator";
 import DeploymentOptions from "./deployment-options";
@@ -538,9 +542,11 @@ export default async function AccessPage({ config }: AccessPageProps) {
   const cookieStore = await cookies();
   const accessCookie = cookieStore.get(ACCESS_COOKIE_NAME)?.value;
   const accessCookieValue = getAccessCookieValue();
+  const portalAccess = cookieStore.get(PATIENT_PORTAL_ACCESS_COOKIE)?.value;
 
   const hasAccess =
-    Boolean(accessCookieValue) && accessCookie === accessCookieValue;
+    (Boolean(accessCookieValue) && accessCookie === accessCookieValue) ||
+    hasPatientPortalAccess(portalAccess, config.region);
 
   const accessError = cookieStore.has(ACCESS_ERROR_COOKIE_NAME);
 
