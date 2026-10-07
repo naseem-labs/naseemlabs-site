@@ -79,7 +79,7 @@ export default function PreetChat({ compact = false }: { compact?: boolean }) {
           P
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[12.5px] font-medium text-white leading-tight">PREET</div>
+          <div className="text-[12.5px] font-medium text-white leading-tight">FolliCore</div>
           <div className="text-[10px] text-white/75 leading-tight">online</div>
         </div>
       </div>

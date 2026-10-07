@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { WHATSAPP_PHONE } from "@/lib/site-config";
 
 const DISCUSS_WHATSAPP_URL =
@@ -89,6 +95,40 @@ type PortalApiResponse = {
     summaryPending: boolean;
   };
 };
+
+const PORTAL_FETCH_TIMEOUT_MS = 12_000;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isPortalApiResponseWithData(
+  value: unknown
+): value is PortalApiResponse & {
+  success: true;
+  data: NonNullable<PortalApiResponse["data"]>;
+} {
+  if (!isRecord(value) || value.success !== true) {
+    return false;
+  }
+
+  const data = value.data;
+
+  if (
+    !isRecord(data) ||
+    !isRecord(data.lead) ||
+    !Array.isArray(data.photos) ||
+    !Array.isArray(data.actions) ||
+    !["in", "uk", "ae"].includes(String(data.region))
+  ) {
+    return false;
+  }
+
+  return (
+    data.profile === null ||
+    isRecord(data.profile)
+  );
+}
 
 /* =========================================================
    HELPERS
@@ -491,33 +531,73 @@ function PatientDossier({
   const [portalData, setPortalData] =
     useState<PortalData | null>(null);
   const [summaryPending, setSummaryPending] = useState(false);
+  const summaryFetchInFlight = useRef(false);
 
   const loadPortalData = useCallback(async (
     currentPhone: string,
     signal?: AbortSignal
   ) => {
-    const response = await fetch(
-      `/api/patient-portal?phone=${encodeURIComponent(
-        currentPhone
-      )}&countryCode=${encodeURIComponent(countryCode)}`,
-      {
-        method: "GET",
-        cache: "no-store",
-        signal,
+    const requestController = new AbortController();
+    let timedOut = false;
+    const timeoutId = window.setTimeout(() => {
+      timedOut = true;
+      requestController.abort();
+    }, PORTAL_FETCH_TIMEOUT_MS);
+
+    const abortRequest = () => requestController.abort();
+
+    if (signal) {
+      if (signal.aborted) {
+        requestController.abort();
+      } else {
+        signal.addEventListener("abort", abortRequest, {
+          once: true,
+        });
       }
-    );
-
-    const result =
-      (await response.json()) as PortalApiResponse;
-
-    if (!response.ok || !result.success || !result.data) {
-      throw new Error(
-        result.error ||
-          "We could not load this patient inquiry."
-      );
     }
 
-    return result.data;
+    try {
+      const response = await fetch(
+        `/api/patient-portal?phone=${encodeURIComponent(
+          currentPhone
+        )}&countryCode=${encodeURIComponent(countryCode)}`,
+        {
+          method: "GET",
+          cache: "no-store",
+          signal: requestController.signal,
+        }
+      );
+
+      const result = (await response.json()) as unknown;
+      const apiError =
+        isRecord(result) &&
+        typeof result.error === "string"
+          ? result.error
+          : null;
+
+      if (
+        !response.ok ||
+        !isPortalApiResponseWithData(result)
+      ) {
+        throw new Error(
+          apiError ||
+            "We could not load this patient inquiry."
+        );
+      }
+
+      return result.data;
+    } catch (error) {
+      if (timedOut) {
+        throw new Error(
+          "The patient portal took too long to respond. Please try again."
+        );
+      }
+
+      throw error;
+    } finally {
+      window.clearTimeout(timeoutId);
+      signal?.removeEventListener("abort", abortRequest);
+    }
   }, [countryCode]);
 
   useEffect(() => {
@@ -605,6 +685,12 @@ function PatientDossier({
     let active = true;
 
     const interval = window.setInterval(async () => {
+      if (summaryFetchInFlight.current) {
+        return;
+      }
+
+      summaryFetchInFlight.current = true;
+
       try {
         const data = await loadPortalData(phone);
 
@@ -628,6 +714,8 @@ function PatientDossier({
           "Patient portal summary refresh failed:",
           refreshError
         );
+      } finally {
+        summaryFetchInFlight.current = false;
       }
     }, 5000);
 
@@ -639,7 +727,7 @@ function PatientDossier({
     loadPortalData,
     onRegionChange,
     summaryPending,
-    portalData?.lead.id,
+    portalData?.lead?.id,
     phone,
   ]);
 
@@ -654,6 +742,12 @@ function PatientDossier({
   }, [portalData?.lead.name]);
 
   const profile = portalData?.profile ?? null;
+  const portalPhotos = Array.isArray(portalData?.photos)
+    ? portalData.photos
+    : [];
+  const portalActions = Array.isArray(portalData?.actions)
+    ? portalData.actions
+    : [];
 
   const affected = useMemo(() => {
     return parseAffectedArea(
@@ -684,17 +778,15 @@ function PatientDossier({
         portalData?.lead.stage ?? null
       );
 
-  const photoCount =
-    portalData?.photos.length ?? 0;
+  const photoCount = portalPhotos.length;
 
   const createdDate = formatDateOnly(
     portalData?.lead.created_at ?? null
   );
 
   const latestAction =
-    portalData?.actions &&
-    portalData.actions.length > 0
-      ? portalData.actions[0]
+    portalActions.length > 0
+      ? portalActions[0]
       : null;
 
   const patientInformationDate =
@@ -795,7 +887,7 @@ function PatientDossier({
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <h2 className="text-sm font-bold leading-5 text-slate-900 sm:text-base">
-                  {portalData.lead.name ||
+                  {portalData.lead?.name ||
                     "Patient Inquiry"}
                 </h2>
 
@@ -852,7 +944,7 @@ function PatientDossier({
 
           <div className="pl-11 md:pl-0">
             <span className="inline-flex rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-medium text-slate-600 sm:text-xs">
-              PREET Inquiry Review
+              FolliCore Inquiry Review
             </span>
           </div>
         </div>
@@ -873,26 +965,33 @@ function PatientDossier({
 
               <span className="text-[10px] font-medium text-blue-600 sm:text-xs">
                 {photoCount > 0
-                  ? `Photo 1 of ${photoCount} • ${getPhotoLabel(
-                      portalData.photos[0],
-                      0
-                    )}`
+                  ? `Photo 1 of ${photoCount} • ${
+                      portalPhotos[0]
+                        ? getPhotoLabel(portalPhotos[0], 0)
+                        : "Photo 1"
+                    }`
                   : "No photos available"}
               </span>
             </div>
 
             <div className="overflow-x-auto rounded-xl border border-slate-200 bg-slate-900">
               <div className="flex snap-x snap-mandatory gap-2 p-1">
-                {portalData.photos.some((photo) => photo.signedUrl) ? (
-                  portalData.photos
-                    .filter((photo) => photo.signedUrl)
+                {portalPhotos.some((photo) => photo.signedUrl) ? (
+                  portalPhotos
+                    .filter(
+                      (
+                        photo
+                      ): photo is LeadPhoto & {
+                        signedUrl: string;
+                      } => Boolean(photo.signedUrl)
+                    )
                     .map((photo, index) => (
                       <div
                         key={photo.id}
                         className="relative min-w-full shrink-0 snap-start overflow-hidden rounded-lg sm:min-w-[78%] lg:min-w-[82%]"
                       >
                         <img
-                          src={photo.signedUrl!}
+                          src={photo.signedUrl}
                           alt={`Patient scalp ${getPhotoLabel(photo, index)}`}
                           className="h-48 w-full object-cover sm:h-56"
                         />
@@ -1120,7 +1219,7 @@ function PatientDossier({
               />
 
               <AuditRow
-                title="PREET Initial WhatsApp Engagement"
+                title="FolliCore Initial WhatsApp Engagement"
                 value={
                   portalData.lead.created_at
                     ? "Recorded"
@@ -1200,7 +1299,7 @@ function NextDecision({
             </div>
 
             <h2 className="text-xl font-extrabold leading-snug tracking-tight text-slate-900 sm:text-2xl">
-              You&apos;ve seen how PREET fits into a hair restoration clinic.
+              You&apos;ve seen how FolliCore fits into a hair restoration clinic.
               <br className="hidden sm:inline" />
               What would you like to do next?
             </h2>
@@ -1267,7 +1366,7 @@ function NextDecision({
               </h3>
 
               <p className="mb-6 text-xs leading-relaxed text-slate-500">
-                Take a closer look at how PREET can fit into your clinic&apos;s
+                Take a closer look at how FolliCore can fit into your clinic&apos;s
                 current workflow and patient inquiry volume.
               </p>
 
@@ -1341,7 +1440,7 @@ function NextDecision({
 
               <p className="mb-6 text-xs leading-relaxed text-slate-500">
                 Book a private call with our team to walk through your
-                clinic&apos;s specific situation and see if PREET is the right
+                clinic&apos;s specific situation and see if FolliCore is the right
                 fit.
               </p>
 
@@ -1378,7 +1477,7 @@ function NextDecision({
               <a
                 href={DISCUSS_WHATSAPP_URL}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="flex w-full items-center justify-between rounded-xl bg-blue-600 px-5 py-3 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700"
               >
                 <span>

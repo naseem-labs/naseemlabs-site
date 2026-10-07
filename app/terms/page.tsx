@@ -25,7 +25,7 @@ import {
 const sections = [
   ["01", "Agreement & Acceptance"],
   ["02", "What NaseemLabs Provides"],
-  ["03", "PREET & Clinic Workflow"],
+  ["03", "FolliCore & Clinic Workflow"],
   ["04", "Clinic Responsibilities"],
   ["05", "Clinical Responsibility & Human Oversight"],
   ["06", "Preliminary Assessments & Estimates"],
@@ -269,7 +269,7 @@ export default function TermsPage() {
               background: GREEN,
             }}
           >
-            Test PREET
+            Test FolliCore
             <ArrowRight size={15} />
           </WhatsAppLink>
         </div>
@@ -311,7 +311,7 @@ export default function TermsPage() {
 
               <p className="mt-7 max-w-[620px] text-[16px] leading-7 text-[#b8c9c4]">
                 The terms governing your use of the NaseemLabs platform,
-                PREET and the infrastructure connecting clinics with their
+                FolliCore and the infrastructure connecting clinics with their
                 patient inquiries.
               </p>
 
@@ -499,7 +499,7 @@ export default function TermsPage() {
                 <p className="mt-2 text-xs leading-5 text-[#66736e]">
                   These Terms are designed to define clear responsibilities
                   between NaseemLabs, clinics and the services used to operate
-                  PREET.
+                  FolliCore.
                 </p>
               </div>
             </div>
@@ -520,7 +520,7 @@ export default function TermsPage() {
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
                   These Terms of Service (&quot;Terms&quot;) govern your use of the
-                  NaseemLabs platform, including PREET, our patient-progression
+                  NaseemLabs platform, including FolliCore, our patient-progression
                   infrastructure for hair restoration clinics, and associated
                   features, tools, integrations, support and services
                   (collectively, the &quot;Services&quot;).
@@ -533,7 +533,7 @@ export default function TermsPage() {
                 </p>
 
                 <p>
-                  If you are using PREET on behalf of a clinic or other
+                  If you are using FolliCore on behalf of a clinic or other
                   organisation, you confirm that you have authority to accept
                   these Terms on that organisation&apos;s behalf.
                 </p>
@@ -544,7 +544,7 @@ export default function TermsPage() {
                 title="Separate patient relationship"
               >
                 These Terms primarily govern the relationship between
-                  NaseemLabs and the clinic using PREET. A patient&apos;s use of
+                  NaseemLabs and the clinic using FolliCore. A patient&apos;s use of
                 WhatsApp and communication with the clinic does not itself make
                 the patient a customer of NaseemLabs. Patient privacy and
                 processing are addressed in our Privacy Policy and the
@@ -571,7 +571,7 @@ export default function TermsPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <ResponsibilityCard
                   icon={<MessageCircle size={19} />}
-                  title="PREET"
+                  title="FolliCore"
                 >
                   Supports initial patient communication, common questions,
                   information collection and progression of inquiries.
@@ -605,9 +605,9 @@ export default function TermsPage() {
 
               <InfoBox
                 icon={<CircleAlert size={21} />}
-                title="PREET is infrastructure"
+                title="FolliCore is infrastructure"
               >
-                PREET is designed to support a clinic&apos;s patient-progression
+                FolliCore is designed to support a clinic&apos;s patient-progression
                 workflow. It is not a medical practice, healthcare provider,
                 emergency service or substitute for qualified clinical staff.
               </InfoBox>
@@ -620,12 +620,12 @@ export default function TermsPage() {
             >
               <SectionHeading
                 number="03"
-                title="PREET & Clinic Workflow"
+                title="FolliCore & Clinic Workflow"
               />
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  PREET may receive patient messages and information through
+                  FolliCore may receive patient messages and information through
                   configured communication channels and use that information to
                   progress the inquiry according to the clinic&apos;s workflow.
                 </p>
@@ -641,7 +641,7 @@ export default function TermsPage() {
                 <p>
                   The clinic determines the information, pricing,
                   availability, consultation rules and workflow requirements
-                  that PREET is configured to communicate.
+                  that FolliCore is configured to communicate.
                 </p>
               </div>
 
@@ -667,7 +667,7 @@ export default function TermsPage() {
               />
 
               <p className="mb-5 text-[15px] leading-7 text-[#68736f]">
-                The clinic is responsible for the way it uses PREET with its
+                The clinic is responsible for the way it uses FolliCore with its
                 patients.
               </p>
 
@@ -709,7 +709,7 @@ export default function TermsPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  PREET does not replace a doctor, surgeon, nurse or other
+                  FolliCore does not replace a doctor, surgeon, nurse or other
                   qualified healthcare professional.
                 </p>
 
@@ -757,7 +757,7 @@ export default function TermsPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  Depending on configuration, PREET may provide preliminary
+                  Depending on configuration, FolliCore may provide preliminary
                   information based on patient messages or photographs,
                   including observations about apparent hair-loss pattern,
                   Norwood classification, indicative graft ranges or price
@@ -904,9 +904,9 @@ export default function TermsPage() {
                     </h3>
 
                     <p className="text-[15px] leading-7 text-[#5c6964]">
-                      When PREET is connected to WhatsApp Business Platform,
+                      When FolliCore is connected to WhatsApp Business Platform,
                       communications can pass through WhatsApp and Meta&apos;s
-                      systems before being processed by PREET and delivered to
+                      systems before being processed by FolliCore and delivered to
                       the clinic workflow.
                     </p>
                   </div>
@@ -928,7 +928,7 @@ export default function TermsPage() {
                     ],
                     [
                       "03",
-                      "PREET",
+                      "FolliCore",
                       "Processes the conversation according to the configured clinic workflow.",
                     ],
                     [
@@ -967,7 +967,7 @@ export default function TermsPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  Clinics using WhatsApp Business Platform through PREET must
+                  Clinics using WhatsApp Business Platform through FolliCore must
                   comply with the applicable WhatsApp Business Terms, Business
                   Messaging Policy, Messaging Guidelines and other applicable
                   Meta policies.
@@ -1003,7 +1003,7 @@ export default function TermsPage() {
                 title="WhatsApp policy remains separate from these Terms"
               >
                 These Terms do not replace Meta or WhatsApp&apos;s own terms and
-                policies. If a clinic uses WhatsApp through PREET, the clinic
+                policies. If a clinic uses WhatsApp through FolliCore, the clinic
                 must comply with both its agreement with NaseemLabs and the
                 applicable requirements of WhatsApp/Meta.
               </InfoBox>
@@ -1027,7 +1027,7 @@ export default function TermsPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  PREET may depend on third-party services required for
+                  FolliCore may depend on third-party services required for
                   communications, hosting, databases, security, analytics,
                   processing or other technical functions.
                 </p>
@@ -1079,7 +1079,7 @@ export default function TermsPage() {
                   "Send spam or communications that violate WhatsApp or other communication-platform policies.",
                   "Request unnecessary sensitive information from patients.",
                   "Share one patient's information with another patient.",
-                  "Use PREET to make final clinical decisions without appropriate professional oversight.",
+                  "Use FolliCore to make final clinical decisions without appropriate professional oversight.",
                   "Attempt to access another clinic's account or patient information.",
                   "Interfere with, disrupt or compromise the security of the Services.",
                   "Use the Services to facilitate unlawful activity.",
@@ -1247,7 +1247,7 @@ export default function TermsPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  When the clinic terminates its use of PREET, patient
+                  When the clinic terminates its use of FolliCore, patient
                   information will be returned or deleted according to the
                   applicable service agreement, DPA and legal requirements.
                 </p>
@@ -1381,7 +1381,7 @@ export default function TermsPage() {
                 icon={<HeartPulse size={21} />}
                 title="No medical advice"
               >
-                PREET and NaseemLabs do not provide medical diagnosis,
+                FolliCore and NaseemLabs do not provide medical diagnosis,
                 treatment or emergency medical services. Clinical decisions
                 remain with the clinic&apos;s qualified professionals.
               </InfoBox>
@@ -1610,7 +1610,7 @@ export default function TermsPage() {
             </h2>
 
             <p className="mt-6 max-w-[600px] text-[15px] leading-7 text-[#b8c9c4]">
-              PREET helps clinics progress patient inquiries while keeping
+              FolliCore helps clinics progress patient inquiries while keeping
               responsibility clear between infrastructure, communication and
               clinical care.
             </p>
@@ -1619,7 +1619,7 @@ export default function TermsPage() {
               <WhatsAppLink
                 className="inline-flex items-center gap-2 bg-[#79d8bd] px-5 py-3 text-sm font-semibold text-[#062823]"
               >
-                Test PREET
+                Test FolliCore
                 <ArrowRight size={16} />
               </WhatsAppLink>
 

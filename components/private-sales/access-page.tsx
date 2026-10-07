@@ -694,7 +694,7 @@ export default async function AccessPage({ config }: AccessPageProps) {
             <span className="h-4 w-px bg-[#d9dee4]" />
 
             <span className="text-[10px] font-bold text-[#14233d]">
-              PREET
+              FolliCore
             </span>
 
             <span className="text-[10px] text-[#9aa4b1]">|</span>
@@ -733,7 +733,7 @@ export default async function AccessPage({ config }: AccessPageProps) {
           </h1>
 
           <p className="mt-2 max-w-[720px] text-[12px] leading-[1.6] text-[#687587]">
-            A private operational briefing showing how PREET fits into your
+            A private operational briefing showing how FolliCore fits into your
             clinic&apos;s existing patient inquiry workflow.
           </p>
 
@@ -812,7 +812,7 @@ export default async function AccessPage({ config }: AccessPageProps) {
               </div>
             </div>
 
-            {/* With PREET */}
+            {/* With FolliCore */}
             <div className="rounded-xl border border-[#cfe9df] bg-[#f0fbf7] p-4 md:p-5">
               <div className="mb-4 flex items-center gap-2">
                 <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#15956d]">
@@ -820,7 +820,7 @@ export default async function AccessPage({ config }: AccessPageProps) {
                 </span>
 
                 <h3 className="text-[14px] font-bold text-[#087755]">
-                  With PREET
+                  With FolliCore
                 </h3>
 
                 <span className="text-[12px] font-semibold text-[#279879]">
@@ -874,14 +874,14 @@ export default async function AccessPage({ config }: AccessPageProps) {
         </section>
 
         {/* =========================================================
-            SECTION 02 — HOW PREET HANDLES THE CONVERSATION
+            SECTION 02 — HOW FolliCore HANDLES THE CONVERSATION
         ========================================================= */}
         <section className="mt-10">
           <SectionHeader
             number="02"
-            title="How PREET Handles the Conversation"
+            title="How FolliCore Handles the Conversation"
             subtitle="A consistent, clinic-specific conversation flow that saves your team's time."
-            description="PREET operates within clear clinical boundaries. It supports your team, and does not replace the doctor."
+            description="FolliCore operates within clear clinical boundaries. It supports your team, and does not replace the doctor."
           />
 
           <div className="grid gap-4 lg:grid-cols-[0.95fr_1.15fr_0.9fr]">
@@ -901,7 +901,7 @@ export default async function AccessPage({ config }: AccessPageProps) {
 
                   <div className="ml-2 min-w-0">
                     <p className="text-[11px] font-bold leading-tight">
-                      PREET
+                      FolliCore
                     </p>
 
                     <p className="mt-0.5 truncate text-[7px] text-white/80">
@@ -991,11 +991,11 @@ export default async function AccessPage({ config }: AccessPageProps) {
               </div>
             </div>
 
-            {/* MIDDLE — PREET MECHANISM */}
+            {/* MIDDLE — FolliCore MECHANISM */}
             <div className="rounded-xl border border-[#dce3e9] bg-white p-5">
               <div className="mb-5">
                 <h3 className="text-[14px] font-bold text-[#14233d]">
-                  What PREET does inside the conversation
+                  What FolliCore does inside the conversation
                 </h3>
 
                 <p className="mt-1 text-[10px] leading-[1.5] text-[#728093]">
@@ -1347,7 +1347,7 @@ export default async function AccessPage({ config }: AccessPageProps) {
           <SectionHeader
             number="05"
             title="Choose Your Deployment"
-            subtitle="Choose the path that fits how you want to introduce PREET into your clinic."
+            subtitle="Choose the path that fits how you want to introduce FolliCore into your clinic."
             description="Start with a real-world pilot if you want to evaluate the workflow first, or move directly into ongoing deployment if you're ready to put it into operation."
           />
 

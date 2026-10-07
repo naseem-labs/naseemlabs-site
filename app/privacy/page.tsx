@@ -225,7 +225,7 @@ export default function PrivacyPage() {
             className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white"
             style={{ background: GREEN }}
           >
-            Test PREET
+            Test FolliCore
             <ArrowRight size={15} />
           </WhatsAppLink>
         </div>
@@ -266,7 +266,7 @@ export default function PrivacyPage() {
               <p className="mt-7 max-w-[650px] text-[16px] leading-7 text-[#b8c9c4]">
                 We are committed to protecting the privacy, security and
                 confidentiality of information processed through NaseemLabs and
-                PREET, including patient communications, health-related
+                FolliCore, including patient communications, health-related
                 information and images shared with participating clinics.
               </p>
 
@@ -472,7 +472,7 @@ export default function PrivacyPage() {
                 <p className="mt-2 text-xs leading-5 text-[#66736e]">
                   This policy explains how NaseemLabs collects, uses, stores and
                   protects information when patients and clinics interact with
-                  PREET.
+                  FolliCore.
                 </p>
               </div>
             </div>
@@ -486,16 +486,16 @@ export default function PrivacyPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  NaseemLabs (&quot;we&quot;, &quot;us&quot; or &quot;our&quot;) provides PREET, a
+                  NaseemLabs (&quot;we&quot;, &quot;us&quot; or &quot;our&quot;) provides FolliCore, a
                   patient-progression infrastructure designed for hair
                   restoration clinics. This Privacy Policy explains how
                   information is collected, used, stored, protected and deleted
-                  when patients communicate with a clinic through PREET or when
+                  when patients communicate with a clinic through FolliCore or when
                   clinic users access the service.
                 </p>
 
                 <p>
-                  PREET is designed around the practical progression of a
+                  FolliCore is designed around the practical progression of a
                   patient inquiry: initial communication, information
                   collection, questions, preliminary assessment, consultation
                   progression and handover to the clinic team.
@@ -505,7 +505,7 @@ export default function PrivacyPage() {
                   Because hair-restoration conversations can contain information
                   about a person&apos;s health, hair loss, scalp condition,
                   treatment history or photographs, some information processed
-                  through PREET may constitute health or other sensitive
+                  through FolliCore may constitute health or other sensitive
                   personal data under applicable law.
                 </p>
 
@@ -521,7 +521,7 @@ export default function PrivacyPage() {
                 icon={<ShieldCheck size={21} />}
                 title="Clinical Safety & Human Oversight"
               >
-                PREET supports communication and clinic workflow. It does not
+                FolliCore supports communication and clinic workflow. It does not
                 replace a doctor, surgeon or other qualified healthcare
                 professional. Any scalp-image observations, Norwood
                 classifications, graft ranges, price estimates or similar
@@ -543,11 +543,11 @@ export default function PrivacyPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <DataCard icon={<UserRound size={19} />} title="Patient">
                   A person who communicates with a participating clinic through
-                  PREET, including through WhatsApp.
+                  FolliCore, including through WhatsApp.
                 </DataCard>
 
                 <DataCard icon={<UsersRound size={19} />} title="Clinic / Customer">
-                  A hair restoration clinic that uses PREET to manage and
+                  A hair restoration clinic that uses FolliCore to manage and
                   progress patient inquiries.
                 </DataCard>
 
@@ -643,7 +643,7 @@ export default function PrivacyPage() {
               <SectionHeading number="04" title="How We Use Your Information" />
 
               <p className="mb-7 text-[15px] leading-8 text-[#56625e]">
-                Information processed through PREET is used only for purposes
+                Information processed through FolliCore is used only for purposes
                 connected with providing, securing and improving the configured
                 clinic workflow.
               </p>
@@ -665,7 +665,7 @@ export default function PrivacyPage() {
 
               <InfoBox icon={<LockKeyhole size={21} />} title="No advertising use of patient conversations">
                 NaseemLabs does not use patient conversations processed through
-                PREET to build advertising profiles or to sell patient
+                FolliCore to build advertising profiles or to sell patient
                 information to advertisers.
               </InfoBox>
             </section>
@@ -719,9 +719,9 @@ export default function PrivacyPage() {
                 <div>
                   <h3 className="mb-2 text-lg font-semibold">WhatsApp / Meta is part of the communication chain</h3>
                   <p className="text-[15px] leading-7 text-[#5c6964]">
-                    When a clinic uses PREET with WhatsApp, the communication
+                    When a clinic uses FolliCore with WhatsApp, the communication
                     flow can involve the patient, WhatsApp/Meta&apos;s platform,
-                    PREET/NaseemLabs infrastructure and the clinic team.
+                    FolliCore/NaseemLabs infrastructure and the clinic team.
                   </p>
                 </div>
               </div>
@@ -734,7 +734,7 @@ export default function PrivacyPage() {
                   {[
                     ["01", "Patient", "Sends a message or media through WhatsApp."],
                     ["02", "WhatsApp / Meta", "Provides the communication platform and API infrastructure."],
-                    ["03", "PREET / NaseemLabs", "Processes the communication according to the configured clinic workflow."],
+                    ["03", "FolliCore / NaseemLabs", "Processes the communication according to the configured clinic workflow."],
                     ["04", "Clinic", "Receives and acts on the patient inquiry and remains responsible for clinical care."],
                   ].map(([number, title, text], index) => (
                     <div
@@ -763,7 +763,7 @@ export default function PrivacyPage() {
                 </p>
 
                 <p>
-                  Clinics using WhatsApp through PREET are responsible for
+                  Clinics using WhatsApp through FolliCore are responsible for
                   maintaining appropriate patient notices, permissions and
                   consents and for complying with applicable WhatsApp Business
                   and data-protection requirements.
@@ -785,7 +785,7 @@ export default function PrivacyPage() {
               </div>
 
               <InfoBox icon={<XCircle size={21} />} title="Information patients should not send">
-                Patients should not use PREET or WhatsApp to send emergency
+                Patients should not use FolliCore or WhatsApp to send emergency
                 medical information, full payment-card numbers, bank-account
                 credentials, government identification numbers or other highly
                 sensitive information that is unnecessary for a hair-restoration
@@ -815,14 +815,14 @@ export default function PrivacyPage() {
                 </p>
 
                 <p>
-                  PREET is designed to collect only information relevant to the
+                  FolliCore is designed to collect only information relevant to the
                   configured patient-progression workflow. Clinics should not
                   configure or request unnecessary medical information.
                 </p>
               </div>
 
               <InfoBox icon={<HeartPulse size={21} />} title="Clinical boundary">
-                PREET does not independently establish a medical diagnosis,
+                FolliCore does not independently establish a medical diagnosis,
                 determine treatment eligibility or make final clinical
                 decisions. Any preliminary information presented through the
                 system must be reviewed and interpreted by the appropriate
@@ -838,7 +838,7 @@ export default function PrivacyPage() {
                 <p>
                   Patients may voluntarily send scalp photographs through the
                   configured communication channel. These images may be
-                  processed by PREET to support the clinic&apos;s patient-progression
+                  processed by FolliCore to support the clinic&apos;s patient-progression
                   workflow.
                 </p>
 
@@ -871,7 +871,7 @@ export default function PrivacyPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  PREET can use automated processing to interpret conversation
+                  FolliCore can use automated processing to interpret conversation
                   context, organize information, generate summaries, provide
                   configured responses and support workflow progression.
                 </p>
@@ -916,12 +916,12 @@ export default function PrivacyPage() {
                 </DataCard>
 
                 <DataCard icon={<CircleHelp size={19} />} title="No emergency service">
-                  PREET is not an emergency service and should not be used as a
+                  FolliCore is not an emergency service and should not be used as a
                   substitute for urgent medical or emergency care.
                 </DataCard>
 
                 <DataCard icon={<Workflow size={19} />} title="Workflow support">
-                  PREET supports the administrative and conversational stages
+                  FolliCore supports the administrative and conversational stages
                   surrounding consultation progression; it does not take
                   ownership of clinical care.
                 </DataCard>
@@ -935,7 +935,7 @@ export default function PrivacyPage() {
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
                   Information may be accessed or processed by service providers
-                  required to operate PREET, including infrastructure,
+                  required to operate FolliCore, including infrastructure,
                   communications, database, security and other technical
                   providers.
                 </p>
@@ -944,7 +944,7 @@ export default function PrivacyPage() {
                   Depending on the deployment, this can include cloud
                   infrastructure, database services, communication platforms
                   and model or processing providers used to deliver configured
-                  PREET functionality.
+                  FolliCore functionality.
                 </p>
 
                 <p>
@@ -961,7 +961,7 @@ export default function PrivacyPage() {
 
               <InfoBox icon={<Database size={21} />} title="Model and processing providers">
                 Where a third-party model or processing service is used as part
-                of PREET, information may be transmitted to that service as
+                of FolliCore, information may be transmitted to that service as
                 necessary to provide the configured functionality. NaseemLabs
                 does not represent that every third-party provider operates
                 exclusively within the clinic&apos;s hosting jurisdiction. Relevant
@@ -976,7 +976,7 @@ export default function PrivacyPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  PREET deployments may use region-specific infrastructure. For
+                  FolliCore deployments may use region-specific infrastructure. For
                   example, where configured and available, UK clinic data may be
                   hosted on UK infrastructure and UAE clinic data may be hosted
                   on UAE infrastructure.
@@ -1000,14 +1000,14 @@ export default function PrivacyPage() {
 
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 <DataCard icon={<Globe2 size={19} />} title="UK Clinics">
-                  PREET infrastructure can be configured for UK-hosted
+                  FolliCore infrastructure can be configured for UK-hosted
                   processing where the applicable deployment supports it.
                   Separate third-party services may have their own processing
                   locations.
                 </DataCard>
 
                 <DataCard icon={<Globe2 size={19} />} title="UAE Clinics">
-                  PREET infrastructure can be configured for UAE-hosted
+                  FolliCore infrastructure can be configured for UAE-hosted
                   processing where the applicable deployment supports it.
                   Separate third-party services may have their own processing
                   locations.
@@ -1066,7 +1066,7 @@ export default function PrivacyPage() {
                 </p>
 
                 <p>
-                  When a clinic terminates its use of PREET, patient data held
+                  When a clinic terminates its use of FolliCore, patient data held
                   by NaseemLabs will be returned or deleted according to the
                   applicable service agreement, Data Processing Agreement and
                   legal requirements, subject to legitimate backup or legal
@@ -1134,7 +1134,7 @@ export default function PrivacyPage() {
 
                 <p>
                   Website analytics information is separate from the patient
-                  conversation data processed through PREET unless explicitly
+                  conversation data processed through FolliCore unless explicitly
                   connected for a documented operational purpose.
                 </p>
               </div>
@@ -1146,13 +1146,13 @@ export default function PrivacyPage() {
 
               <div className="space-y-5 text-[15px] leading-8 text-[#56625e]">
                 <p>
-                  PREET is intended for use by hair restoration clinics in
+                  FolliCore is intended for use by hair restoration clinics in
                   connection with their patient inquiries and is not designed
                   specifically for children.
                 </p>
 
                 <p>
-                  Clinics must ensure that their use of PREET is appropriate
+                  Clinics must ensure that their use of FolliCore is appropriate
                   for the age of their patients and complies with applicable
                   requirements concerning children, consent, parental
                   responsibility and healthcare.
@@ -1213,7 +1213,7 @@ export default function PrivacyPage() {
                 <p>
                   Clinics should review this policy periodically and ensure that
                   their own patient-facing privacy notices remain consistent
-                  with the way they actually use PREET.
+                  with the way they actually use FolliCore.
                 </p>
               </div>
             </section>
@@ -1240,7 +1240,7 @@ export default function PrivacyPage() {
 
                     <p className="mt-3 max-w-[600px] text-sm leading-7 text-[#64716c]">
                       For privacy, security, data-processing or deletion
-                      questions relating to NaseemLabs or PREET, contact us
+                      questions relating to NaseemLabs or FolliCore, contact us
                       directly.
                     </p>
                   </div>
@@ -1298,7 +1298,7 @@ export default function PrivacyPage() {
             </h2>
 
             <p className="mt-6 max-w-[600px] text-[15px] leading-7 text-[#b8c9c4]">
-              PREET is designed to help clinics progress patient inquiries
+              FolliCore is designed to help clinics progress patient inquiries
               while maintaining clear boundaries between communication,
               infrastructure and clinical responsibility.
             </p>
@@ -1307,7 +1307,7 @@ export default function PrivacyPage() {
               <WhatsAppLink
                 className="inline-flex items-center gap-2 bg-[#79d8bd] px-5 py-3 text-sm font-semibold text-[#062823]"
               >
-                Test PREET
+                Test FolliCore
                 <ArrowRight size={16} />
               </WhatsAppLink>
 

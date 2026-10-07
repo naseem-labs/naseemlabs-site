@@ -44,7 +44,7 @@ export default function PilotPage({ config }: PilotPageProps) {
               </h1>
 
               <p className="mt-6 max-w-2xl text-base leading-7 text-[#10233f]/65 sm:text-lg">
-                You&apos;ve already seen PREET work. Now put it into your real
+                You&apos;ve already seen FolliCore work. Now put it into your real
                 clinic workflow for 14 days and see the impact with your own
                 inquiries.
               </p>
@@ -140,7 +140,7 @@ export default function PilotPage({ config }: PilotPageProps) {
         <SectionHeading
           number="01"
           title="What Happens During These 14 Days?"
-          subtitle="PREET handles your incoming patient inquiries while your team continues running the clinic."
+          subtitle="FolliCore handles your incoming patient inquiries while your team continues running the clinic."
         />
 
         <div className="mt-7 overflow-hidden rounded-[1.75rem] border border-[#10233f]/8 bg-white shadow-[0_15px_50px_rgba(16,35,63,0.05)]">
@@ -155,7 +155,7 @@ export default function PilotPage({ config }: PilotPageProps) {
             <FlowCard
               icon="chat"
               number="02"
-              title="PREET responds"
+              title="FolliCore responds"
               text="The conversation is handled immediately, even when your receptionist is busy or your doctor is in surgery."
             />
 
@@ -310,7 +310,7 @@ export default function PilotPage({ config }: PilotPageProps) {
               </h3>
 
               <div className="mt-6 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-                <IncludedItem text="PREET deployment on your clinic's WhatsApp" />
+                <IncludedItem text="FolliCore deployment on your clinic's WhatsApp" />
                 <IncludedItem text="Preliminary assessment workflow where applicable" />
                 <IncludedItem text="Initial clinic configuration" />
                 <IncludedItem text="Dashboard access for your team" />
@@ -352,7 +352,7 @@ export default function PilotPage({ config }: PilotPageProps) {
                     <li className="flex gap-2">
                       <span className="mt-1">•</span>
                       <span>
-                        The 14 days begin when PREET is live and ready to
+                        The 14 days begin when FolliCore is live and ready to
                         handle inquiries.
                       </span>
                     </li>
@@ -376,7 +376,7 @@ export default function PilotPage({ config }: PilotPageProps) {
                     <li className="flex gap-2">
                       <span className="mt-1">•</span>
                       <span>
-                        PREET provides preliminary information only. Final
+                        FolliCore provides preliminary information only. Final
                         clinical assessment remains with the doctor.
                       </span>
                     </li>
@@ -400,7 +400,7 @@ export default function PilotPage({ config }: PilotPageProps) {
               </h2>
 
               <p className="mt-2 text-sm text-white/65 sm:text-base">
-                Deploy PREET in your clinic and see the real operational
+                Deploy FolliCore in your clinic and see the real operational
                 difference.
               </p>
             </div>

@@ -411,7 +411,7 @@ export default function OnboardingSignup({
           </h1>
 
           <p className="mt-3 text-[14px] sm:text-[15px] leading-[1.65] text-[#555] max-w-[38ch]">
-            Connect your WhatsApp Business Account to securely set up your clinic on PREET.
+            Connect your WhatsApp Business Account to securely set up your clinic on FolliCore.
           </p>
 
           <button

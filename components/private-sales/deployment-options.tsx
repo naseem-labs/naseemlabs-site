@@ -50,7 +50,7 @@ export default function DeploymentOptions({
           </div>
 
           <p className="mt-5 text-sm leading-6 text-[#173b32]/60">
-            Deploy PREET into the clinic&apos;s real inquiry flow and evaluate
+            Deploy FolliCore into the clinic&apos;s real inquiry flow and evaluate
             how it handles patient conversations, qualification and follow-up.
           </p>
 
@@ -101,7 +101,7 @@ export default function DeploymentOptions({
             </p>
 
             <div className="mt-7 space-y-3">
-              <Feature dark text="Full PREET deployment" />
+              <Feature dark text="Full FolliCore deployment" />
               <Feature dark text="Live WhatsApp inquiry handling" />
               <Feature dark text="Follow-up infrastructure" />
               <Feature dark text="Clinic dashboard access" />

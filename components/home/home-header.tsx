@@ -76,7 +76,7 @@ export default function HomeHeader({ activePage = "home" }: { activePage?: HomeA
 
         <div className="ml-auto flex items-center gap-2 shrink-0">
           <WhatsAppLink className="inline-flex items-center justify-center min-h-[40px] px-3.5 sm:px-4 py-2 rounded-full bg-[#1a3c34] text-white text-[12.5px] sm:text-[13px] font-medium tracking-[-0.01em] hover:bg-[#14302a] transition-colors whitespace-nowrap">
-            Test PREET
+            Test FolliCore
             <span className="ml-1.5" aria-hidden>
               →
             </span>

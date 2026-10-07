@@ -10,6 +10,16 @@ type ExchangeRequestBody = {
   phone_number_id?: unknown;
 };
 
+async function parseJsonResponse<T>(
+  response: Response
+): Promise<T | null> {
+  try {
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     let body: ExchangeRequestBody;
@@ -66,16 +76,33 @@ export async function POST(request: Request) {
       }
     );
 
-    const data = (await response.json()) as {
-      access_token?: string;
-      token_type?: string;
-    };
+    const data = await parseJsonResponse<{
+      access_token?: unknown;
+      token_type?: unknown;
+    }>(response);
 
-    if (!response.ok || !data.access_token) {
+    if (!data) {
+      console.error("Meta token exchange returned invalid JSON.");
+
+      return NextResponse.json(
+        { error: "Meta token exchange returned invalid data." },
+        { status: 502 }
+      );
+    }
+
+    if (
+      !response.ok ||
+      typeof data.access_token !== "string" ||
+      !data.access_token
+    ) {
       console.error("Meta token exchange failed:", data);
 
       return NextResponse.json(
-        { error: "Meta token exchange failed." },
+        {
+          error: response.ok
+            ? "Meta token exchange returned invalid data."
+            : "Meta token exchange failed.",
+        },
         { status: response.ok ? 502 : response.status }
       );
     }
@@ -93,11 +120,11 @@ export async function POST(request: Request) {
       }
     );
 
-    const phoneData = (await phoneResponse.json()) as {
+    const phoneData = await parseJsonResponse<{
       display_phone_number?: unknown;
-    };
+    }>(phoneResponse);
     const phoneNumber =
-      typeof phoneData.display_phone_number === "string"
+      typeof phoneData?.display_phone_number === "string"
         ? phoneData.display_phone_number.trim()
         : "";
 
@@ -155,7 +182,19 @@ export async function POST(request: Request) {
     }
 
     const updatedConnections =
-      (await existingConnectionResponse.json()) as unknown[];
+      await parseJsonResponse<unknown[]>(
+        existingConnectionResponse
+      );
+
+    if (!Array.isArray(updatedConnections)) {
+      return NextResponse.json(
+        {
+          error:
+            "The connection service returned invalid data. Please try again.",
+        },
+        { status: 502 }
+      );
+    }
 
     if (updatedConnections.length === 0) {
       const insertResponse = await fetch(

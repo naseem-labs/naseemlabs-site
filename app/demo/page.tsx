@@ -20,7 +20,7 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: "Live Demo — NaseemLabs",
   description:
-    "See a real patient journey and experience how PREET moves a hair restoration inquiry toward consultation.",
+    "See a real patient journey and experience how FolliCore moves a hair restoration inquiry toward consultation.",
 };
 
 const IVORY = "#f7f6f2";
@@ -84,7 +84,7 @@ function PhoneVideo() {
         <div className="relative overflow-hidden rounded-[29px] bg-black">
           <iframe
             src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}`}
-            title="NaseemLabs PREET patient journey"
+            title="NaseemLabs FolliCore patient journey"
             className="block aspect-[9/19.5] w-full border-0"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -168,7 +168,7 @@ export default function DemoPage() {
                 <JourneyCard
                   number="2"
                   title="Understands & Asks"
-                  description="PREET asks relevant questions to understand the patient's situation."
+                  description="FolliCore asks relevant questions to understand the patient's situation."
                 />
 
                 <JourneyCard
@@ -196,7 +196,7 @@ export default function DemoPage() {
                 <JourneyCard
                   number="5"
                   title="Handles Concerns"
-                  description="Patient raises a price objection. PREET explains the why and how."
+                  description="Patient raises a price objection. FolliCore explains the why and how."
                   side="right"
                 />
 
@@ -239,7 +239,7 @@ export default function DemoPage() {
             <div className="mt-7 text-center">
               <WhatsAppLink className="mx-auto inline-flex min-h-[48px] items-center justify-center gap-2 rounded-md border border-white/30 bg-[#0ab394] px-6 py-3 text-[13px] font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition hover:bg-[#0d9e86]">
                 <WhatsAppIcon className="h-5 w-5" />
-                Test PREET Yourself – WhatsApp Us
+                Test FolliCore Yourself – WhatsApp Us
                 <ArrowRight className="h-4 w-4" />
               </WhatsAppLink>
 
@@ -251,14 +251,14 @@ export default function DemoPage() {
         </section>
 
         {/* ========================================================= */}
-        {/* PREET MECHANISM                                          */}
+        {/* FolliCore MECHANISM                                          */}
         {/* ========================================================= */}
 
         <section className="bg-[#f7f6f2] px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
           <div className="mx-auto max-w-[1180px]">
             <div className="text-center">
               <span className="inline-flex rounded-full bg-[#e4efec] px-3 py-1 text-[8px] font-bold uppercase tracking-[0.12em] text-[#087f6b]">
-                The PREET Mechanism
+                The FolliCore Mechanism
               </span>
 
               <h2
@@ -270,7 +270,7 @@ export default function DemoPage() {
               </h2>
 
               <p className="mx-auto mt-4 max-w-[680px] text-[12px] leading-[1.7] text-[#666b68] sm:text-[13px]">
-                PREET understands what the patient is trying to figure out,
+                FolliCore understands what the patient is trying to figure out,
                 identifies what may be holding them back, addresses the
                 relevant concern, and keeps the conversation moving toward
                 consultation.
@@ -312,7 +312,7 @@ export default function DemoPage() {
                 </p>
 
                 <p className="mt-2.5 text-[11px] leading-[1.65] text-[#666b68]">
-                  PREET keeps track of what the patient has asked, what they
+                  FolliCore keeps track of what the patient has asked, what they
                   have shared, what they want, and what still needs to be
                   understood.
                 </p>
@@ -521,13 +521,13 @@ export default function DemoPage() {
             </h2>
 
             <p className="mt-4 max-w-[570px] text-[12px] leading-[1.7] text-white/65 sm:text-[13px]">
-              Send a message on WhatsApp and test PREET with your own
+              Send a message on WhatsApp and test FolliCore with your own
               questions. Ask about cost, procedure, recovery, or share photos.
             </p>
 
             <WhatsAppLink className="mt-7 inline-flex min-h-[50px] items-center justify-center gap-2 rounded-md bg-[#0ab394] px-7 py-3.5 text-[13px] font-semibold text-white shadow-[0_12px_35px_rgba(0,0,0,0.2)]">
               <WhatsAppIcon className="h-5 w-5" />
-              Test PREET Yourself – WhatsApp Us
+              Test FolliCore Yourself – WhatsApp Us
               <ArrowRight className="h-4 w-4" />
             </WhatsAppLink>
 

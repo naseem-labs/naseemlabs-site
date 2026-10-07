@@ -27,7 +27,7 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: "Clinic Workflow — NaseemLabs",
   description:
-    "See how PREET moves hair restoration inquiries from conversation to consultation and clinic handover.",
+    "See how FolliCore moves hair restoration inquiries from conversation to consultation and clinic handover.",
 };
 
 const PAGE = "#f7f6f2";
@@ -35,7 +35,7 @@ const TEXT = "#111111";
 const BORDER = "rgba(26,28,24,0.10)";
 
 const steps = [
-  ["01", "Patient Conversation", "Handled by PREET"],
+  ["01", "Patient Conversation", "Handled by FolliCore"],
   ["02", "Conversation Summary", "Key patient details"],
   ["03", "Consultation Opportunity", "Ready patients"],
   ["04", "Your Team Takes Over", "Full context"],
@@ -98,7 +98,7 @@ function WhatsAppWindow() {
           </div>
 
           <div className="flex-1">
-            <p className="text-[9px] font-semibold">PREET</p>
+            <p className="text-[9px] font-semibold">FolliCore</p>
             <p className="text-[6px] text-[#858b89]">
               Hair Transplant Clinic
             </p>
@@ -608,7 +608,7 @@ export default function BenefitsPage() {
               </h1>
 
               <p className="mt-4 max-w-[460px] text-[13px] leading-[1.65] text-white/75 sm:text-[14px]">
-                Everything your team needs, in one place. PREET handles the
+                Everything your team needs, in one place. FolliCore handles the
                 conversation with the patient, gives your team clear context,
                 and moves the inquiry to the next step — without scrolling
                 through endless chat history.
@@ -806,8 +806,8 @@ export default function BenefitsPage() {
         <WorkflowStep
           number="01"
           eyebrow="CONVERSATION"
-          title="PREET handles the patient conversation."
-          body="Patients ask questions, share concerns, send photos and get accurate information — day or night. PREET keeps the conversation moving and gathers all the details needed for your team."
+          title="FolliCore handles the patient conversation."
+          body="Patients ask questions, share concerns, send photos and get accurate information — day or night. FolliCore keeps the conversation moving and gathers all the details needed for your team."
           checklist={[
             "Answers common and complex questions",
             "Requests relevant information and photos",
@@ -832,7 +832,7 @@ export default function BenefitsPage() {
           number="02"
           eyebrow="CONVERSATION SUMMARY"
           title="Get a clear summary after every conversation."
-          body="PREET automatically creates a concise summary with key information, so your team doesn't have to read the entire chat history before taking action."
+          body="FolliCore automatically creates a concise summary with key information, so your team doesn't have to read the entire chat history before taking action."
           checklist={[
             "Key patient details",
             "Main concerns",
@@ -859,7 +859,7 @@ export default function BenefitsPage() {
           number="03"
           eyebrow="CONSULTATION"
           title="See consultation opportunities at a glance."
-          body="When a patient is ready, PREET identifies the opportunity and notifies your team immediately."
+          body="When a patient is ready, FolliCore identifies the opportunity and notifies your team immediately."
           checklist={[
             "Real-time notifications",
             "Consultation status tracking",
@@ -911,7 +911,7 @@ export default function BenefitsPage() {
           number="05"
           eyebrow="FOLLOW-UP"
           title="Keep the conversation moving."
-          body="If the patient isn't ready to book, PREET can send relevant follow-ups based on the previous conversation and identified concerns."
+          body="If the patient isn't ready to book, FolliCore can send relevant follow-ups based on the previous conversation and identified concerns."
           checklist={[
             "Automatic, context-aware follow-ups",
             "Re-engage interested patients",
@@ -953,7 +953,7 @@ export default function BenefitsPage() {
             <h2
               className={`${newsreader.className} mt-3 text-[34px] leading-[1.05] tracking-[-0.03em] sm:text-[44px]`}
             >
-              See how PREET moves a real patient forward.
+              See how FolliCore moves a real patient forward.
             </h2>
 
             <p className="mt-3 max-w-[580px] text-[11px] leading-[1.65] text-white/70">
@@ -965,7 +965,7 @@ export default function BenefitsPage() {
               className="mt-6 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[#087f6b] px-5 py-3 text-[12px] font-semibold text-white"
             >
               <MessageCircle className="h-3.5 w-3.5" />
-              Test PREET Yourself
+              Test FolliCore Yourself
               <ArrowRight className="h-3.5 w-3.5" />
             </WhatsAppLink>
           </div>

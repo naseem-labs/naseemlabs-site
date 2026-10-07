@@ -264,13 +264,13 @@ export default function ChatSimulator({ messages, setMessages, scenarioId, onRes
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1">
-            <span className="text-[13px] font-semibold truncate">Preet (AI Assistant)</span>
+            <span className="text-[13px] font-semibold truncate">FolliCore</span>
             <VerifiedBadge />
           </div>
           <p className="text-[10px] opacity-90">
             {status === "typing" ? (
               <span className="flex items-center gap-1.5">
-                Preet is typing... <TypingDots />
+                FolliCore is typing... <TypingDots />
               </span>
             ) : (
               "Online"

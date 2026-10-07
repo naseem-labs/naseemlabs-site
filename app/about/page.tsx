@@ -57,9 +57,9 @@ const storyCards = [
   },
   {
     label: "THE NASEEMLABS SOLUTION",
-    title: "PREET keeps the conversation moving.",
+    title: "FolliCore keeps the conversation moving.",
     description:
-      "That's why we built PREET — a dedicated patient-progression infrastructure. Not just a chatbot, but a system that understands Norwood scales, graft counts, and patient psychology.",
+      "That's why we built FolliCore — a dedicated patient-progression infrastructure. Not just a chatbot, but a system that understands Norwood scales, graft counts, and patient psychology.",
     icon: CheckCircle2,
   },
 ];
@@ -142,7 +142,7 @@ export default function AboutPage() {
               <WhatsAppLink
                 className="mt-7 inline-flex min-h-[46px] items-center gap-2 rounded-md bg-[#08a98e] px-5 py-3 text-[12px] font-semibold text-white transition hover:bg-[#09977f]"
               >
-                Test PREET Yourself
+                Test FolliCore Yourself
                 <span className="text-[16px]">→</span>
               </WhatsAppLink>
             </div>
@@ -302,13 +302,13 @@ export default function AboutPage() {
               </h2>
 
               <p className="mx-auto mt-4 max-w-[570px] text-[12px] leading-[1.7] text-white/70 sm:text-[13px]">
-                See how PREET handles real patient inquiries and moves them
+                See how FolliCore handles real patient inquiries and moves them
                 towards consultation.
               </p>
 
               <WhatsAppLink className="mt-7 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-md bg-[#08a98e] px-6 py-3 text-[12px] font-semibold text-white transition hover:bg-[#09977f]">
                 <WhatsAppIcon className="h-4 w-4" />
-                Test PREET Yourself
+                Test FolliCore Yourself
                 <span className="text-[16px]">→</span>
               </WhatsAppLink>
             </div>

@@ -5,14 +5,60 @@ import {
   type PatientPortalRegion,
 } from "@/lib/patient-portal-access";
 
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const SUPABASE_REQUEST_TIMEOUT_MS = 9_000;
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error(
-    "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"
-  );
+type SupabaseConfig = {
+  url: string;
+  serviceRoleKey: string;
+};
+
+class SupabaseRequestTimeoutError extends Error {
+  constructor() {
+    super("Supabase request timed out.");
+    this.name = "SupabaseRequestTimeoutError";
+  }
+}
+
+function getSupabaseConfig(): SupabaseConfig | null {
+  const url = process.env.SUPABASE_URL?.trim();
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+
+  if (!url || !serviceRoleKey) {
+    return null;
+  }
+
+  return {
+    url,
+    serviceRoleKey,
+  };
+}
+
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit = {}
+) {
+  const controller = new AbortController();
+  let timedOut = false;
+  const timeoutId = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, SUPABASE_REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (timedOut) {
+      throw new SupabaseRequestTimeoutError();
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 /* =========================================================
@@ -73,6 +119,10 @@ type LeadAction = {
   created_at: string | null;
 };
 
+function asArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? (value as T[]) : [];
+}
+
 /* =========================================================
    SUPABASE REST HELPER
 ========================================================= */
@@ -81,13 +131,19 @@ async function supabaseRequest<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/${path}`,
+  const config = getSupabaseConfig();
+
+  if (!config) {
+    throw new Error("Configuration unavailable");
+  }
+
+  const response = await fetchWithTimeout(
+    `${config.url}/rest/v1/${path}`,
     {
       ...options,
       headers: {
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
         "Content-Type": "application/json",
         ...(options.headers ?? {}),
       },
@@ -295,10 +351,11 @@ async function findLead(
       "1"
     );
 
-    const leads =
-      await supabaseRequest<Lead[]>(
+    const leads = asArray<Lead>(
+      await supabaseRequest<unknown>(
         `leads?${query.toString()}`
-      );
+      )
+    );
 
     if (leads.length > 0) {
       console.log(
@@ -350,10 +407,11 @@ async function findLead(
     "1"
   );
 
-  const suffixMatches =
-    await supabaseRequest<Lead[]>(
+  const suffixMatches = asArray<Lead>(
+    await supabaseRequest<unknown>(
       `leads?${suffixQuery.toString()}`
-    );
+    )
+  );
 
   if (
     suffixMatches.length > 0
@@ -566,6 +624,16 @@ function normalizeStoragePath(
 async function createSignedPhotoUrl(
   storagePath: string
 ) {
+  const config = getSupabaseConfig();
+
+  if (!config) {
+    console.error(
+      "[Patient Portal] Supabase configuration unavailable"
+    );
+
+    return null;
+  }
+
   const normalizedPath =
     normalizeStoragePath(
       storagePath
@@ -594,20 +662,20 @@ async function createSignedPhotoUrl(
       .join("/");
 
   const endpoint =
-    `${SUPABASE_URL}/storage/v1/object/sign/` +
+    `${config.url}/storage/v1/object/sign/` +
     `patient-photos/${encodedPath}`;
 
   try {
     const response =
-      await fetch(
+      await fetchWithTimeout(
         endpoint,
         {
           method: "POST",
           headers: {
             apikey:
-              SUPABASE_SERVICE_ROLE_KEY,
+              config.serviceRoleKey,
             Authorization:
-              `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+              `Bearer ${config.serviceRoleKey}`,
             "Content-Type":
               "application/json",
           },
@@ -701,7 +769,7 @@ async function createSignedPhotoUrl(
         "/storage/v1/"
       )
     ) {
-      return `${SUPABASE_URL}${signedPath}`;
+      return `${config.url}${signedPath}`;
     }
 
     /*
@@ -712,13 +780,13 @@ async function createSignedPhotoUrl(
         "/object/"
       )
     ) {
-      return `${SUPABASE_URL}/storage/v1${signedPath}`;
+      return `${config.url}/storage/v1${signedPath}`;
     }
 
     /*
      * Fallback.
      */
-    return `${SUPABASE_URL}/storage/v1/${signedPath.replace(
+    return `${config.url}/storage/v1/${signedPath.replace(
       /^\/+/,
       ""
     )}`;
@@ -744,6 +812,18 @@ export async function GET(
   request: NextRequest
 ) {
   try {
+    if (!getSupabaseConfig()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Configuration unavailable",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+
     const phone =
       request.nextUrl.searchParams.get(
         "phone"
@@ -812,12 +892,11 @@ export async function GET(
       "1"
     );
 
-    const profiles =
-      await supabaseRequest<
-        LeadProfile[]
-      >(
+    const profiles = asArray<LeadProfile>(
+      await supabaseRequest<unknown>(
         `lead_profile?${profileQuery.toString()}`
-      );
+      )
+    );
 
     const profile =
       profiles[0] ?? null;
@@ -850,12 +929,11 @@ export async function GET(
       "uploaded_at.desc"
     );
 
-    const photos =
-      await supabaseRequest<
-        LeadPhoto[]
-      >(
+    const photos = asArray<LeadPhoto>(
+      await supabaseRequest<unknown>(
         `lead_photos?${photosQuery.toString()}`
-      );
+      )
+    );
 
     console.log(
       `[Patient Portal] Found ${photos.length} photos for lead ${lead.id}`
@@ -930,12 +1008,11 @@ export async function GET(
       "1"
     );
 
-    const followups =
-      await supabaseRequest<
-        Followup[]
-      >(
+    const followups = asArray<Followup>(
+      await supabaseRequest<unknown>(
         `followup_queue?${followupQuery.toString()}`
-      );
+      )
+    );
 
     const followup =
       followups[0] ?? null;
@@ -967,12 +1044,11 @@ export async function GET(
       "20"
     );
 
-    const actions =
-      await supabaseRequest<
-        LeadAction[]
-      >(
+    const actions = asArray<LeadAction>(
+      await supabaseRequest<unknown>(
         `lead_actions?${actionsQuery.toString()}`
-      );
+      )
+    );
 
     /* -------------------------------------------------------
        6. EXISTING SUMMARY MECHANISM
@@ -1002,14 +1078,11 @@ export async function GET(
         "1"
       );
 
-      const existingRequests =
-        await supabaseRequest<
-          Array<{
-            id: string;
-          }>
-        >(
+      const existingRequests = asArray<{ id: string }>(
+        await supabaseRequest<unknown>(
           `ai_summary_requests?${pendingQuery.toString()}`
-        );
+        )
+      );
 
       if (
         existingRequests.length >
@@ -1097,6 +1170,19 @@ export async function GET(
       "Patient portal API error:",
       error
     );
+
+    if (error instanceof SupabaseRequestTimeoutError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "The patient data service took too long to respond.",
+        },
+        {
+          status: 504,
+        }
+      );
+    }
 
     return NextResponse.json(
       {

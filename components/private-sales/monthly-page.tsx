@@ -634,7 +634,7 @@ export default function MonthlyPage({
 
             <div className="mt-4 rounded-[9px] bg-[#f8faf9] px-4 py-3.5">
               <p className="mb-2 text-[11px] font-bold tracking-[0.14em] text-[#263c35]">
-                PREET HANDLES:
+                FolliCore HANDLES:
               </p>
 
               <ul className="space-y-[7px]">
@@ -708,7 +708,7 @@ export default function MonthlyPage({
             </h2>
 
             <p className="mt-2 max-w-[455px] text-[12px] leading-[1.45] text-[#59635f]">
-              For clinics that want PREET to help the team recover
+              For clinics that want FolliCore to help the team recover
               opportunities, move patients toward consultation, and maintain
               context across the clinic.
             </p>

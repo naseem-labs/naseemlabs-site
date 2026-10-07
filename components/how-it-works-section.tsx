@@ -59,7 +59,7 @@ function PhoneMockup({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-semibold text-[#18201f]">PREET</p>
+            <p className="text-[10px] font-semibold text-[#18201f]">FolliCore</p>
             <p className="text-[6px] text-[#7b8381]">
               Hair Transplant Clinic
             </p>
@@ -474,7 +474,7 @@ export default function HowItWorksSection() {
             </h1>
 
             <p className="mt-4 max-w-[470px] text-[11px] leading-[1.65] text-[#586461] sm:text-[12px]">
-              See exactly how PREET keeps a patient inquiry moving,
+              See exactly how FolliCore keeps a patient inquiry moving,
               handles concerns, collects the right information and gets
               the patient to the point where your team can take over.
             </p>
@@ -492,7 +492,7 @@ export default function HowItWorksSection() {
               <WhatsAppLink
                 className="inline-flex min-h-[38px] items-center rounded-[5px] border border-black/[0.08] bg-white px-4 py-2.5 text-[9px] font-bold text-[#26302e]"
               >
-                Test PREET Yourself
+                Test FolliCore Yourself
               </WhatsAppLink>
             </div>
           </div>
@@ -538,7 +538,7 @@ export default function HowItWorksSection() {
         eyebrow="INQUIRY"
         title="A patient reaches out on WhatsApp."
         description="The conversation starts with a simple question. This could be about cost, procedure, recovery, or just general information."
-        rightTitle="What PREET is doing here"
+        rightTitle="What FolliCore is doing here"
         rightItems={[
           "Recognizes a new inquiry",
           "Understands the initial intent",
@@ -569,9 +569,9 @@ export default function HowItWorksSection() {
         number="02"
         eyebrow="UNDERSTAND"
         title="Understands the patient’s situation."
-        description="PREET asks relevant questions to understand the patient’s goals, hair loss pattern, timeline and expectations."
+        description="FolliCore asks relevant questions to understand the patient’s goals, hair loss pattern, timeline and expectations."
         dark
-        rightTitle="What PREET is doing here"
+        rightTitle="What FolliCore is doing here"
         rightItems={[
           "Understands the patient's situation",
           "Identifies relevant information",
@@ -602,7 +602,7 @@ export default function HowItWorksSection() {
         number="03"
         eyebrow="IDENTIFY CONCERN"
         title="Finds out what is holding the patient back."
-        description="Every patient has specific concerns. PREET identifies what matters most for this patient so the conversation goes in the right direction."
+        description="Every patient has specific concerns. FolliCore identifies what matters most for this patient so the conversation goes in the right direction."
         rightTitle="Common patient concerns"
         rightItems={[
           "Number of grafts",
@@ -636,7 +636,7 @@ export default function HowItWorksSection() {
         number="04"
         eyebrow="EXPLAIN WHY + HOW"
         title="Gives clear explanations, not just quick answers."
-        description="PREET explains reasoning in simple terms — the WHY and HOW behind the recommendations, based on the clinic’s configured information."
+        description="FolliCore explains reasoning in simple terms — the WHY and HOW behind the recommendations, based on the clinic’s configured information."
         dark
         rightTitle="Clear and educational responses"
         rightItems={[
@@ -669,7 +669,7 @@ export default function HowItWorksSection() {
         number="05"
         eyebrow="COLLECT INFORMATION"
         title="Requests and analyzes scalp photos."
-        description="When needed, PREET asks for scalp images, analyzes them and provides a preliminary explanation to help the patient understand their situation."
+        description="When needed, FolliCore asks for scalp images, analyzes them and provides a preliminary explanation to help the patient understand their situation."
         rightTitle="Preliminary Assessment (Example)"
         rightItems={[
           "Norwood Stage — III",
@@ -687,7 +687,7 @@ export default function HowItWorksSection() {
         number="06"
         eyebrow="PROGRESS"
         title="Handles objections and moves the conversation."
-        description="If the patient has concerns or hesitates, PREET identifies the blocker, provides relevant information and continues the conversation until the patient is ready."
+        description="If the patient has concerns or hesitates, FolliCore identifies the blocker, provides relevant information and continues the conversation until the patient is ready."
         dark
         rightTitle="The progression loop"
         rightItems={[
@@ -767,7 +767,7 @@ export default function HowItWorksSection() {
               className="inline-flex min-h-[46px] items-center gap-2 rounded-full bg-[#1a3c34] px-5 py-3 text-[14px] font-medium text-white"
             >
                 <WhatsAppIcon className="h-3.5 w-3.5" />
-                Test PREET Yourself
+                Test FolliCore Yourself
                 <ArrowRight className="h-3 w-3" />
             </WhatsAppLink>
 

@@ -120,14 +120,14 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
                 to reach consultation.
               </h1>
               <p className="mt-5 sm:mt-6 text-[14.5px] sm:text-[15.5px] leading-[1.7] text-[#555] max-w-[480px]">
-                PREET handles your hair-transplant patient inquiries on WhatsApp — understands their
+                FolliCore handles your hair-transplant patient inquiries on WhatsApp — understands their
                 situation, answers questions, handles concerns, collects information and moves them
                 towards consultation, while keeping your team in control.
               </p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3 sm:items-center max-w-full">
                 <WhatsAppLink className="inline-flex w-full sm:w-auto items-center justify-center gap-2 min-h-[46px] px-5 py-3 rounded-full bg-[#1a3c34] text-white text-[14px] font-medium hover:bg-[#14302a] transition-colors">
                   <WhatsAppIcon className="w-4 h-4 shrink-0" />
-                  Test PREET Yourself →
+                  Test FolliCore Yourself →
                 </WhatsAppLink>
                 <Link
                   href="/how-it-works"
@@ -222,7 +222,7 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
               A structured path from first message to consultation.
             </h2>
             <p className="mt-4 text-[14.5px] sm:text-[15.5px] leading-[1.7] text-[#555] max-w-[640px] mx-auto">
-              PREET follows a clear process to keep the conversation moving, handle concerns and
+              FolliCore follows a clear process to keep the conversation moving, handle concerns and
               progress the patient towards consultation.
             </p>
 
@@ -307,7 +307,7 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
                 <h3 className="text-[15.5px] font-semibold tracking-[-0.02em]">What&apos;s happening here?</h3>
                 <ol className="mt-4 space-y-3.5">
                   {[
-                    "PREET understands the patient's goal",
+                    "FolliCore understands the patient's goal",
                     "Requests relevant information (photos)",
                     "Keeps the conversation natural",
                     "Prepares for assessment and accurate information",
@@ -339,7 +339,7 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
                 Turn patient photos into useful information.
               </h2>
               <p className="mt-4 text-[14.5px] sm:text-[15.5px] leading-[1.7] text-[#555] max-w-[560px]">
-                When a patient shares scalp photos, PREET can analyze them and provide preliminary
+                When a patient shares scalp photos, FolliCore can analyze them and provide preliminary
                 information to help the patient understand their situation.
               </p>
             </div>
@@ -468,7 +468,7 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
               <h2
                 className={`${serifClassName} mt-4 text-[28px] sm:text-[38px] lg:text-[44px] leading-[1.12] tracking-[-0.03em]`}
               >
-                Test PREET with a real patient scenario.
+                Test FolliCore with a real patient scenario.
               </h2>
               <p className="mt-4 text-[14.5px] sm:text-[16px] leading-[1.7] text-white/80 max-w-[540px] mx-auto">
                 Ask the questions you actually ask. Be skeptical. Raise concerns. Share photos. See
@@ -477,7 +477,7 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
                 <WhatsAppLink className="inline-flex items-center justify-center gap-2 min-h-[46px] px-5 py-3 rounded-full bg-white text-[#1a3c34] text-[14px] font-medium hover:bg-[#f4f4f0] transition-colors">
                   <WhatsAppIcon className="w-4 h-4 shrink-0" />
-                  Test PREET Yourself →
+                  Test FolliCore Yourself →
                 </WhatsAppLink>
                 <Link
                   href={DEMO_PATH}
