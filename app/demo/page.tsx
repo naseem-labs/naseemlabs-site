@@ -5,6 +5,7 @@ import { Inter, Newsreader } from "next/font/google";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import WhatsAppLink from "@/components/whatsapp-link";
+import PhoneVideoPlayer from "@/components/demo/phone-video-player";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,8 +26,6 @@ export const metadata: Metadata = {
 
 const IVORY = "#f7f6f2";
 const TEXT = "#111111";
-
-const DEMO_VIDEO_ID = "VwP7TXbx7Mo";
 
 function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
@@ -81,16 +80,8 @@ function PhoneVideo() {
       <div className="relative rounded-[38px] border-[7px] border-[#151515] bg-[#080808] p-[3px] shadow-[0_30px_70px_rgba(0,0,0,0.45)]">
         <div className="absolute left-1/2 top-[9px] z-20 h-[22px] w-[92px] -translate-x-1/2 rounded-full bg-black" />
 
-        <div className="relative overflow-hidden rounded-[29px] bg-black">
-          <iframe
-            src={`https://www.youtube.com/embed/${DEMO_VIDEO_ID}`}
-            title="NaseemLabs FolliCore patient journey"
-            className="block aspect-[9/19.5] w-full border-0"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
+        <div className="relative aspect-[9/19.5] overflow-hidden rounded-[29px] bg-black">
+          <PhoneVideoPlayer />
 
           <div className="pointer-events-none absolute inset-0 rounded-[29px] ring-1 ring-white/10" />
         </div>

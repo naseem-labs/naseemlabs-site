@@ -125,16 +125,17 @@ export default function DemoWorkspace() {
               <div className="relative rounded-[42px] bg-[#111] p-[9px] shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
                 {/* Screen */}
                 <div className="relative aspect-[430/765] overflow-hidden rounded-[34px] bg-black">
-                  <iframe
+                  <video
                     width={430}
                     height={765}
-                    src="https://www.youtube.com/embed/VwP7TXbx7Mo"
+                    src="https://media.naseemlabs.com/chat-demo.mp4"
                     title="for the website"
-                    frameBorder={0}
                     className="absolute inset-0 h-full w-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
                   />
 
                   {/* Dynamic Island */}
