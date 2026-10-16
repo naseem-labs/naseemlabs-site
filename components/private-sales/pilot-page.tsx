@@ -10,7 +10,7 @@ type PilotPageProps = {
 export default function PilotPage({ config }: PilotPageProps) {
   const pilotPrice = {
     in: 1999,
-    uk: 49,
+    uk: 195,
     ae: 250,
   }[config.region];
 
@@ -338,7 +338,8 @@ export default function PilotPage({ config }: PilotPageProps) {
                     <li className="flex gap-2">
                       <span className="mt-1">•</span>
                       <span>
-                        {price} is a one-time, non-refundable setup fee.
+                        {price} is a one-time, non-refundable Clinical
+                        Architecture &amp; Setup Fee.
                       </span>
                     </li>
 
@@ -411,7 +412,9 @@ export default function PilotPage({ config }: PilotPageProps) {
               </div>
 
               <p className="mt-1 text-xs text-white/50">
-                One-time setup fee
+                {config.region === "uk"
+                  ? "Non-refundable Clinical Architecture & Setup Fee"
+                  : "One-time setup fee"}
               </p>
             </div>
 
@@ -430,7 +433,7 @@ export default function PilotPage({ config }: PilotPageProps) {
                     label="Pay with PayPal"
                     paymentLink={
                       config.region === "uk"
-                        ? "https://www.paypal.com/ncp/payment/SX6LFQDL723HJ"
+                        ? "https://www.paypal.com/ncp/payment/CY6YKZ8TQW5RN"
                         : "https://www.paypal.com/ncp/payment/HUL92MF6ZEG38"
                     }
                   />
@@ -440,7 +443,7 @@ export default function PilotPage({ config }: PilotPageProps) {
                     label="Pay with Razorpay"
                     paymentLink={
                       config.region === "uk"
-                        ? "https://rzp.io/rzp/jzURIjC"
+                        ? "https://rzp.io/rzp/7l0eufw0"
                         : "https://rzp.io/rzp/8Nqbe8hk"
                     }
                   />

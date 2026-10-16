@@ -17,8 +17,8 @@ const PRICING = {
     locale: "en-IN",
   },
   uk: {
-    standard: 399,
-    growth: 899,
+    standard: 895,
+    growth: 1295,
     currency: "GBP",
     locale: "en-GB",
   },
