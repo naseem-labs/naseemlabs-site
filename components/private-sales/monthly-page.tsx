@@ -23,8 +23,8 @@ const PRICING = {
     locale: "en-GB",
   },
   ae: {
-    standard: 1800,
-    growth: 3600,
+    standard: 4200,
+    growth: 6000,
     currency: "AED",
     locale: "en-AE",
   },

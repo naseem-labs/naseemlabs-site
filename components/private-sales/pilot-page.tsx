@@ -11,7 +11,7 @@ export default function PilotPage({ config }: PilotPageProps) {
   const pilotPrice = {
     in: 1999,
     uk: 195,
-    ae: 250,
+    ae: 950,
   }[config.region];
 
   const price = new Intl.NumberFormat(config.locale, {
@@ -338,8 +338,9 @@ export default function PilotPage({ config }: PilotPageProps) {
                     <li className="flex gap-2">
                       <span className="mt-1">•</span>
                       <span>
-                        {price} is a one-time, non-refundable Clinical
-                        Architecture &amp; Setup Fee.
+                        {config.region === "ae"
+                          ? "AED 950 is a one-time, non-refundable Clinical Architecture & Setup Fee."
+                          : `${price} is a one-time, non-refundable Clinical Architecture & Setup Fee.`}
                       </span>
                     </li>
 
@@ -434,7 +435,7 @@ export default function PilotPage({ config }: PilotPageProps) {
                     paymentLink={
                       config.region === "uk"
                         ? "https://www.paypal.com/ncp/payment/CY6YKZ8TQW5RN"
-                        : "https://www.paypal.com/ncp/payment/HUL92MF6ZEG38"
+                        : "https://www.paypal.com/ncp/payment/HGKZ4JEVGRV5Q"
                     }
                   />
 
@@ -444,7 +445,7 @@ export default function PilotPage({ config }: PilotPageProps) {
                     paymentLink={
                       config.region === "uk"
                         ? "https://rzp.io/rzp/7l0eufw0"
-                        : "https://rzp.io/rzp/8Nqbe8hk"
+                        : "https://rzp.io/rzp/fIkzO4R"
                     }
                   />
                 </>
