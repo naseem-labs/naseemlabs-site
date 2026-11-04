@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const VIDEO_URL = "https://media.naseemlabs.com/chat-demo.mp4";
 const VIDEO_POSTER = "/homepage/video-poster.webp";
@@ -14,8 +14,44 @@ function formatTime(seconds: number) {
 
 export default function PhoneVideoPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const viewportRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const video = viewportRef.current;
+    if (!video || shouldLoad) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  useEffect(() => {
+    if (!shouldLoad) return;
+    const video = videoRef.current;
+    if (!video) return;
+    void video.play().catch(() => undefined);
+  }, [shouldLoad]);
+
+  const startWatching = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setShouldLoad(true);
+    video.preload = "metadata";
+    video.load();
+    void video.play().catch(() => undefined);
+  };
 
   const seek = (value: string) => {
     const video = videoRef.current;
@@ -29,23 +65,27 @@ export default function PhoneVideoPlayer() {
     const video = videoRef.current;
     if (!video) return;
     video.currentTime = 0;
-    void video.play();
+    startWatching();
     setCurrentTime(0);
   };
 
   return (
     <>
       <video
-        ref={videoRef}
+        ref={(element) => {
+          videoRef.current = element;
+          viewportRef.current = element;
+        }}
         src={VIDEO_URL}
         poster={VIDEO_POSTER}
         title="NaseemLabs FolliCore patient journey"
         className="block h-full w-full rounded-[29px] border-0 object-cover"
-        autoPlay={true}
+        autoPlay={shouldLoad}
         loop={true}
         muted={true}
         playsInline={true}
-        preload="metadata"
+        preload={shouldLoad ? "metadata" : "none"}
+        onClick={startWatching}
         onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
         onEnded={replay}
@@ -59,7 +99,10 @@ export default function PhoneVideoPlayer() {
             max={duration || 0}
             step="any"
             value={Math.min(currentTime, duration || 0)}
-            onChange={(event) => seek(event.target.value)}
+            onChange={(event) => {
+              startWatching();
+              seek(event.target.value);
+            }}
             aria-label="Seek video"
             className="h-1 min-w-0 flex-1 cursor-pointer accent-[#6fe1ca]"
           />
