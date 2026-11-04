@@ -1,5 +1,5 @@
 export const HOME_IMAGES = {
-  hero: "/homepage/final-hero-image.png",
+  hero: "/homepage/final-hero-image.webp",
   doctor: "/homepage/doctor-procedure.jpg",
   reception: "/homepage/reception-busy.jpg",
   inquiries: "/homepage/inquiries-hours.jpg",

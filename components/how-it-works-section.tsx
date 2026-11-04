@@ -499,10 +499,9 @@ export default function HowItWorksSection() {
 
           <div className="relative min-h-[320px] sm:min-h-[400px] lg:min-h-[455px]">
             <Image
-              src="/homepage/final-hero-image.png"
+              src="/homepage/final-hero-image.webp"
               alt="Hair restoration consultation"
               fill
-              priority
               className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 60vw"
             />
@@ -739,7 +738,7 @@ export default function HowItWorksSection() {
       <section className="relative overflow-hidden">
         <div className="relative min-h-[330px] sm:min-h-[370px]">
           <Image
-            src="/homepage/final-hero-image.png"
+          src="/homepage/final-hero-image.webp"
             alt="Hair restoration clinic"
             fill
             className="object-cover object-center"

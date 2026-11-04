@@ -1,16 +1,5 @@
-import { Inter, Newsreader } from "next/font/google";
 import HomePage from "@/components/home/home-page";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-});
+import { inter, newsreader } from "@/lib/fonts";
 
 export default function Home() {
   return (

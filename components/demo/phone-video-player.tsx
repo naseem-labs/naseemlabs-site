@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 
 const VIDEO_URL = "https://media.naseemlabs.com/chat-demo.mp4";
+const VIDEO_POSTER = "/homepage/video-poster.webp";
 
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds)) return "0:00";
@@ -37,13 +38,13 @@ export default function PhoneVideoPlayer() {
       <video
         ref={videoRef}
         src={VIDEO_URL}
+        poster={VIDEO_POSTER}
         title="NaseemLabs FolliCore patient journey"
         className="block h-full w-full rounded-[29px] border-0 object-cover"
-        autoPlay
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none"
         onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
         onEnded={replay}

@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import HowItWorksSection from "@/components/how-it-works-section";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
+import { inter } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "How It Works — NaseemLabs",

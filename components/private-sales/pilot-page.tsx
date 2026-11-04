@@ -87,10 +87,9 @@ export default function PilotPage({ config }: PilotPageProps) {
             --------------------------------------------------- */}
             <div className="relative min-h-[430px] overflow-hidden sm:min-h-[500px] lg:min-h-[560px]">
               <Image
-                src="/homepage/pilot_page_image.png"
+                src="/homepage/pilot_page_image.webp"
                 alt="Hair restoration doctor performing a procedure"
                 fill
-                priority
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover object-center"
               />

@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { Inter } from "next/font/google";
+import { inter } from "@/lib/fonts";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 const BG = "#f7f6f2";
 const TEXT = "#111111";

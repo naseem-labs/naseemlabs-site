@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader } from "next/font/google";
 import OnboardingSignup from "@/components/onboarding/onboarding-signup";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
-
-const inter = Inter({ subsets: ["latin"], display: "swap" });
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-});
+import { inter, newsreader } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Onboarding — NaseemLabs",

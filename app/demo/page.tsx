@@ -1,22 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { Inter, Newsreader } from "next/font/google";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import WhatsAppLink from "@/components/whatsapp-link";
 import PhoneVideoPlayer from "@/components/demo/phone-video-player";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-});
+import { inter, newsreader } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Live Demo — NaseemLabs",
@@ -111,10 +100,9 @@ export default function DemoPage() {
         <section className="relative overflow-hidden bg-[#071d1b] text-white">
           <div className="absolute inset-0">
             <Image
-              src="/homepage/final-hero-image.png"
+              src="/homepage/final-hero-image.webp"
               alt=""
               fill
-              priority
               className="object-cover object-center opacity-45"
               sizes="100vw"
             />
@@ -488,7 +476,7 @@ export default function DemoPage() {
         <section className="relative overflow-hidden bg-[#062823] text-white">
           <div className="absolute inset-0">
             <Image
-              src="/homepage/final-hero-image.png"
+              src="/homepage/final-hero-image.webp"
               alt=""
               fill
               className="object-cover opacity-20"

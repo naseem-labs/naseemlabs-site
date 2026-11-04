@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Inter, Newsreader } from "next/font/google";
 import {
   ArrowRight,
   CheckCircle2,
@@ -12,17 +11,7 @@ import {
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import WhatsAppLink from "@/components/whatsapp-link";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-});
+import { inter, newsreader } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Clinic Workflow — NaseemLabs",
@@ -582,10 +571,9 @@ export default function BenefitsPage() {
         <section className="relative overflow-hidden bg-[#0b2925] text-white">
           <div className="absolute inset-0">
             <Image
-              src="/homepage/final-hero-image.png"
+              src="/homepage/final-hero-image.webp"
               alt="Hair restoration clinic"
               fill
-              priority
               className="object-cover object-center"
               sizes="100vw"
             />
@@ -935,7 +923,7 @@ export default function BenefitsPage() {
         <section className="relative overflow-hidden bg-[#062823] text-white">
           <div className="absolute inset-0 opacity-25">
             <Image
-              src="/homepage/final-hero-image.png"
+              src="/homepage/final-hero-image.webp"
               alt=""
               fill
               className="object-cover"

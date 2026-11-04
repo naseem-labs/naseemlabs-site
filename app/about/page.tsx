@@ -1,21 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CheckCircle2, MessageSquare, Settings, Users } from "lucide-react";
-import { Inter, Newsreader } from "next/font/google";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import WhatsAppLink from "@/components/whatsapp-link";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-});
+import { inter, newsreader } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "About — NaseemLabs",
@@ -103,10 +92,9 @@ export default function AboutPage() {
 
         <section className="relative min-h-[470px] overflow-hidden bg-[#061b19] text-white sm:min-h-[500px]">
           <Image
-            src="/homepage/final-hero-image.png"
+            src="/homepage/final-hero-image.webp"
             alt="Hair restoration clinic environment"
             fill
-            priority
             className="object-cover object-center"
             sizes="100vw"
           />
@@ -280,7 +268,7 @@ export default function AboutPage() {
 
         <section className="relative min-h-[330px] overflow-hidden">
           <Image
-            src="/homepage/final-hero-image.png"
+            src="/homepage/final-hero-image.webp"
             alt="Hair restoration clinic"
             fill
             className="object-cover object-center"

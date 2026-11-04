@@ -125,19 +125,6 @@ export default function DemoWorkspace() {
               <div className="relative rounded-[42px] bg-[#111] p-[9px] shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
                 {/* Screen */}
                 <div className="relative aspect-[430/765] overflow-hidden rounded-[34px] bg-black">
-                  <video
-                    width={430}
-                    height={765}
-                    src="https://media.naseemlabs.com/chat-demo.mp4"
-                    title="for the website"
-                    className="absolute inset-0 h-full w-full border-0"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                  />
-
                   {/* Dynamic Island */}
                   <div className="pointer-events-none absolute left-1/2 top-2.5 z-10 h-6 w-[92px] -translate-x-1/2 rounded-full bg-black" />
                 </div>
