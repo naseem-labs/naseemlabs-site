@@ -157,6 +157,7 @@ export default function HomePage({ serifClassName }: { serifClassName: string })
                   alt="Clinic reception with a patient speaking to a receptionist"
                   fill
                   priority
+                  loading="eager"
                   className="object-cover object-center"
                   sizes="(max-width: 1024px) 100vw, 48vw"
                 />
