@@ -41,10 +41,11 @@ export default function PhoneVideoPlayer() {
         poster={VIDEO_POSTER}
         title="NaseemLabs FolliCore patient journey"
         className="block h-full w-full rounded-[29px] border-0 object-cover"
-        muted
-        loop
-        playsInline
-        preload="none"
+        autoPlay={true}
+        loop={true}
+        muted={true}
+        playsInline={true}
+        preload="metadata"
         onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
         onEnded={replay}
